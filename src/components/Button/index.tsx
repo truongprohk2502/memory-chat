@@ -8,6 +8,8 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'circle';
   color: 'light';
   icon?: IconDefinition;
+  hasPingBadge?: boolean;
+  isActive?: boolean;
   hasTooltip?: boolean;
   tooltipName?: string;
   tooltipPlacement?:
@@ -27,6 +29,8 @@ export const Button = ({
   variant,
   color,
   icon,
+  hasPingBadge = false,
+  isActive = false,
   hasTooltip = false,
   tooltipName = '',
   tooltipPlacement = 'right',
@@ -44,7 +48,11 @@ export const Button = ({
           { 'w-10 rounded-full': variant === 'circle' },
           {
             'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
-              color === 'light',
+              color === 'light' && !isActive,
+          },
+          {
+            'bg-blue-500 hover:bg-blue-600 text-white':
+              color === 'light' && isActive,
           },
           'h-10 transition duration-300',
         )}
@@ -67,6 +75,12 @@ export const Button = ({
             {tooltipName}
           </div>
         </div>
+      )}
+      {hasPingBadge && (
+        <span className="absolute top-0 right-0 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
+        </span>
       )}
     </div>
   );

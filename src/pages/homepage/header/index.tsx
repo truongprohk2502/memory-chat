@@ -12,8 +12,14 @@ import logo from 'assets/images/logo.png';
 import { Button } from 'components/Button';
 import { useTranslation } from 'react-i18next';
 import { getThemeSetting, setThemeSetting } from 'utils/storage';
+import { ISubFrameType } from 'interfaces/stringLiterals';
 
-const Header = () => {
+interface IProps {
+  subFrame: ISubFrameType;
+  setSubFrame: (subFrame: ISubFrameType) => void;
+}
+
+const Header = ({ subFrame, setSubFrame }: IProps) => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -41,7 +47,8 @@ const Header = () => {
         <img
           src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
           alt="logo"
-          className="w-12 h-12 object-cover rounded-full border-4 border-blue-500 mt-16"
+          className="w-12 h-12 object-cover rounded-full border-4 border-blue-500 mt-16 cursor-pointer"
+          onClick={() => setSubFrame('dashboard')}
         />
         <Button
           containerClassName="mt-8"
@@ -51,7 +58,8 @@ const Header = () => {
           hasTooltip
           tooltipName={t('header.friends')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={() => setSubFrame('friend')}
+          isActive={subFrame === 'friend'}
         />
         <Button
           containerClassName="mt-8"
@@ -61,7 +69,8 @@ const Header = () => {
           hasTooltip
           tooltipName={t('header.groups')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={() => setSubFrame('group')}
+          isActive={subFrame === 'group'}
         />
         <Button
           containerClassName="mt-8"
@@ -71,17 +80,20 @@ const Header = () => {
           hasTooltip
           tooltipName={t('header.documents')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={() => setSubFrame('document')}
+          isActive={subFrame === 'document'}
         />
         <Button
           containerClassName="mt-8"
           variant="circle"
           color="light"
           icon={faBell}
+          hasPingBadge
           hasTooltip
           tooltipName={t('header.notifications')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={() => setSubFrame('notification')}
+          isActive={subFrame === 'notification'}
         />
         <Button
           containerClassName="mt-8"
@@ -91,7 +103,8 @@ const Header = () => {
           hasTooltip
           tooltipName={t('header.settings')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={() => setSubFrame('setting')}
+          isActive={subFrame === 'setting'}
         />
       </div>
       <div className="w-full flex flex-col items-center">
