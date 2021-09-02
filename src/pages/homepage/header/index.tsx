@@ -5,6 +5,7 @@ import {
   faFileAlt,
   faMoon,
   faPowerOff,
+  faSun,
   faUser,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -41,7 +42,7 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
   };
 
   return (
-    <section className="w-28 h-screen px-5 py-10 flex flex-col justify-between border-r border-gray-150 dark:bg-gray-900">
+    <section className="fixed z-10 left-0 inset-y-0 w-28 px-5 py-10 flex flex-col justify-between border-r border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
       <div className="w-full flex flex-col items-center">
         <img src={logo} alt="logo" className="w-12 h-12" />
         <img
@@ -53,8 +54,8 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faUser}
+          hasOnlyButton={false}
           hasTooltip
           tooltipName={t('header.friends')}
           tooltipPlacement="right"
@@ -64,8 +65,8 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faUsers}
+          hasOnlyButton={false}
           hasTooltip
           tooltipName={t('header.groups')}
           tooltipPlacement="right"
@@ -75,8 +76,8 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faFileAlt}
+          hasOnlyButton={false}
           hasTooltip
           tooltipName={t('header.documents')}
           tooltipPlacement="right"
@@ -86,8 +87,8 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faBell}
+          hasOnlyButton={false}
           hasPingBadge
           hasTooltip
           tooltipName={t('header.notifications')}
@@ -98,8 +99,8 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faCog}
+          hasOnlyButton={false}
           hasTooltip
           tooltipName={t('header.settings')}
           tooltipPlacement="right"
@@ -111,18 +112,20 @@ const Header = ({ subFrame, setSubFrame }: IProps) => {
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
-          icon={faMoon}
+          icon={darkMode ? faSun : faMoon}
+          hasOnlyButton={false}
           hasTooltip
-          tooltipName={t('header.dark_mode')}
+          tooltipName={
+            darkMode ? t('header.light_mode') : t('header.dark_mode')
+          }
           tooltipPlacement="right"
           onClick={handleChangeThemeMode}
         />
         <Button
           containerClassName="mt-8"
           variant="circle"
-          color="light"
           icon={faPowerOff}
+          hasOnlyButton={false}
           hasTooltip
           tooltipName={t('header.sign_out')}
           tooltipPlacement="right"

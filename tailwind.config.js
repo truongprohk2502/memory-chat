@@ -2,7 +2,14 @@ module.exports = {
   purge: ['./src/**/*.html', './src/**/*.js'],
   darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        fit: 'fit-content',
+      },
+      maxHeight: {
+        infinite: '66px',
+      },
+    },
   },
   variants: {
     extend: {

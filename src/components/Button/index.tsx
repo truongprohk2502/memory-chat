@@ -5,9 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'button' | 'submit' | 'reset';
-  variant: 'circle';
-  color: 'light';
+  variant?: 'circle' | 'normal';
+  color?: 'light';
+  size?: 'sm' | 'md';
   icon?: IconDefinition;
+  text?: string;
+  hasOnlyButton?: boolean;
   hasPingBadge?: boolean;
   isActive?: boolean;
   hasTooltip?: boolean;
@@ -26,9 +29,12 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = ({
   type = 'button',
-  variant,
-  color,
+  variant = 'normal',
+  color = 'light',
+  size = 'md',
   icon,
+  text = '',
+  hasOnlyButton = true,
   hasPingBadge = false,
   isActive = false,
   hasTooltip = false,
@@ -38,27 +44,39 @@ export const Button = ({
   buttonClassName = '',
   onClick,
 }: IProps) => {
-  return (
+  const renderButton = (
+    <button
+      type={type}
+      onClick={onClick}
+      className={clsx(
+        buttonClassName,
+        { 'w-8': variant === 'circle' && size === 'sm' },
+        { 'w-10': variant === 'circle' && size === 'md' },
+        { 'rounded-full': variant === 'circle' },
+        { 'rounded-md px-2': variant === 'normal' },
+        {
+          'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
+            color === 'light' && !isActive,
+        },
+        {
+          'bg-blue-500 hover:bg-blue-600 text-white':
+            color === 'light' && isActive,
+        },
+        { 'h-8': size === 'sm' },
+        { 'h-10': size === 'md' },
+        'transition duration-300 flex justify-center items-center',
+      )}
+    >
+      <FontAwesomeIcon icon={icon} />
+      {text && <span className="pl-1">{text}</span>}
+    </button>
+  );
+
+  return hasOnlyButton ? (
+    renderButton
+  ) : (
     <div className={clsx(containerClassName, 'relative group')}>
-      <button
-        type={type}
-        onClick={onClick}
-        className={clsx(
-          buttonClassName,
-          { 'w-10 rounded-full': variant === 'circle' },
-          {
-            'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
-              color === 'light' && !isActive,
-          },
-          {
-            'bg-blue-500 hover:bg-blue-600 text-white':
-              color === 'light' && isActive,
-          },
-          'h-10 transition duration-300',
-        )}
-      >
-        <FontAwesomeIcon icon={icon} />
-      </button>
+      {renderButton}
       {hasTooltip && (
         <div
           className={clsx(
