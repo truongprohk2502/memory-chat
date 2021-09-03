@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import { ISubFrameType } from 'interfaces/stringLiterals';
 import Header from 'pages/Homepage/Header';
 import SubFrame from 'pages/Homepage/SubFrame';
 
-export type ReadingTypes = 'some' | 'variants' | 'of' | 'strings';
+type SubFrameContextType = {
+  subFrame: ISubFrameType;
+  setSubFrame: (subFrame: ISubFrameType) => void;
+};
+
+export const SubFrameContext = createContext<SubFrameContextType>(null);
 
 const Homepage = () => {
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
 
   return (
-    <>
-      <Header
-        subFrame={subFrame}
-        setSubFrame={(subFrame: ISubFrameType) => setSubFrame(subFrame)}
-      />
-      <SubFrame subFrame={subFrame} />
-    </>
+    <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
+      <Header />
+      <SubFrame />
+    </SubFrameContext.Provider>
   );
 };
 

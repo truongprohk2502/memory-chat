@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   faBell,
   faCog,
@@ -13,17 +13,13 @@ import logo from 'assets/images/logo.png';
 import { Button } from 'components/Button';
 import { useTranslation } from 'react-i18next';
 import { getThemeSetting, setThemeSetting } from 'utils/storage';
-import { ISubFrameType } from 'interfaces/stringLiterals';
+import { SubFrameContext } from '..';
 
-interface IProps {
-  subFrame: ISubFrameType;
-  setSubFrame: (subFrame: ISubFrameType) => void;
-}
-
-const Header = ({ subFrame, setSubFrame }: IProps) => {
+const Header = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const { subFrame, setSubFrame } = useContext(SubFrameContext);
 
   useEffect(() => {
     const themeSetting = getThemeSetting();

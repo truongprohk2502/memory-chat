@@ -15,6 +15,11 @@ module.exports = {
     extend: {
       inset: ['group-hover'],
       display: ['group-hover'],
+      padding: ['disabled'],
+      borderWidth: ['disabled', 'focus'],
+      fontSize: ['disabled'],
+      fontWeight: ['disabled'],
+      backgroundColor: ['disabled'],
     },
   },
   plugins: [],

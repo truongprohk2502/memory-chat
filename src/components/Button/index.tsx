@@ -24,7 +24,6 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | 'bottom-right';
   containerClassName?: string;
   buttonClassName?: string;
-  onClick: () => void;
 }
 
 export const Button = ({
@@ -43,6 +42,7 @@ export const Button = ({
   containerClassName = '',
   buttonClassName = '',
   onClick,
+  ...props
 }: IProps) => {
   const renderButton = (
     <button
@@ -66,6 +66,7 @@ export const Button = ({
         { 'h-10': size === 'md' },
         'transition duration-300 flex justify-center items-center',
       )}
+      {...props}
     >
       <FontAwesomeIcon icon={icon} />
       {text && <span className="pl-1">{text}</span>}
