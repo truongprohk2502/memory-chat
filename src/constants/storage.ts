@@ -1,3 +1,4 @@
-const THEME_SETTING = 'theme_setting';
+const DARK_MODE = 'dark_mode';
+const LANGUAGE = 'language';
 
-export { THEME_SETTING };
+export { DARK_MODE, LANGUAGE };

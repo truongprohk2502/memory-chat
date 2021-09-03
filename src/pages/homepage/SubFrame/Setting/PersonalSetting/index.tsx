@@ -74,7 +74,7 @@ const PersonalSetting = () => {
             />
           )}
         </div>
-        <div className="mb-2">
+        <div className="pb-2">
           <div className="text-gray-500">
             {t('setting.options.personal_info.labels.name')}
           </div>
@@ -90,7 +90,7 @@ const PersonalSetting = () => {
             disabled={!editMode}
           />
         </div>
-        <div className="my-2">
+        <div className="py-2">
           <div className="text-gray-500">
             {t('setting.options.personal_info.labels.email')}
           </div>
@@ -106,7 +106,7 @@ const PersonalSetting = () => {
             disabled={!editMode}
           />
         </div>
-        <div className="my-2">
+        <div className="py-2">
           <div className="text-gray-500">
             {t('setting.options.personal_info.labels.phone')}
           </div>
@@ -122,7 +122,7 @@ const PersonalSetting = () => {
             disabled={!editMode}
           />
         </div>
-        <div className="mt-2 mb-5">
+        <div className="py-2">
           <div className="text-gray-500">
             {t('setting.options.personal_info.labels.address')}
           </div>

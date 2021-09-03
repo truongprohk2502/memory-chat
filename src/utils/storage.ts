@@ -1,7 +1,7 @@
 import AES from 'crypto-js/aes';
 import encUtf8 from 'crypto-js/enc-utf8';
-import { THEME_SETTING } from 'constants/storage';
-import { IThemeMode } from 'interfaces/storage';
+import { DARK_MODE, LANGUAGE } from 'constants/storage';
+import { LanguageType } from 'interfaces/system';
 
 const { REACT_APP_CRYPTO_KEY: CRYPTO_KEY } = process.env;
 const encryptData = str => AES.encrypt(str, CRYPTO_KEY).toString();
@@ -35,10 +35,23 @@ const customLocalStorage = {
   remove: removeLocalStorage,
 };
 
-// Theme
-const getThemeSetting = (): IThemeMode => customLocalStorage.get(THEME_SETTING);
-const setThemeSetting = (value: IThemeMode) =>
-  customLocalStorage.set(THEME_SETTING, value);
-const removeThemeSetting = () => customLocalStorage.remove(THEME_SETTING);
+// Dark mode
+const getDarkMode = (): boolean => customLocalStorage.get(DARK_MODE);
+const setDarkMode = (value: boolean) =>
+  customLocalStorage.set(DARK_MODE, value);
+const removeDarkMode = () => customLocalStorage.remove(DARK_MODE);
 
-export { getThemeSetting, setThemeSetting, removeThemeSetting };
+// Language
+const getLanguage = (): LanguageType => customLocalStorage.get(LANGUAGE);
+const setLanguage = (value: LanguageType) =>
+  customLocalStorage.set(LANGUAGE, value);
+const removeLanguage = () => customLocalStorage.remove(LANGUAGE);
+
+export {
+  getDarkMode,
+  setDarkMode,
+  removeDarkMode,
+  getLanguage,
+  setLanguage,
+  removeLanguage,
+};

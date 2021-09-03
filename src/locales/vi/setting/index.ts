@@ -31,6 +31,18 @@ const translation = {
         },
       },
     },
+    system: {
+      title: 'Hệ thông',
+      options: {
+        language: {
+          title: 'Ngôn ngữ',
+          options: {
+            english: 'Tiếng Anh',
+            vietnamese: 'Tiếng Việt',
+          },
+        },
+      },
+    },
   },
 };
 

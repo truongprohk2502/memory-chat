@@ -9,6 +9,9 @@ module.exports = {
       maxHeight: {
         infinite: '66px',
       },
+      inset: {
+        'beyond-full': 'calc(100% + 2px)',
+      },
     },
   },
   variants: {
@@ -17,6 +20,7 @@ module.exports = {
       display: ['group-hover'],
       padding: ['disabled'],
       borderWidth: ['disabled', 'focus'],
+      borderRadius: ['first', 'last'],
       fontSize: ['disabled'],
       fontWeight: ['disabled'],
       backgroundColor: ['disabled'],

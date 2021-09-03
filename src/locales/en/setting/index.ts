@@ -31,6 +31,18 @@ const translation = {
         },
       },
     },
+    system: {
+      title: 'System',
+      options: {
+        language: {
+          title: 'Language',
+          options: {
+            english: 'English',
+            vietnamese: 'Vietnamese',
+          },
+        },
+      },
+    },
   },
 };
 

@@ -12,7 +12,7 @@ import {
 import logo from 'assets/images/logo.png';
 import { Button } from 'components/Button';
 import { useTranslation } from 'react-i18next';
-import { getThemeSetting, setThemeSetting } from 'utils/storage';
+import { getDarkMode, setDarkMode as setStorageDarkMode } from 'utils/storage';
 import { SubFrameContext } from '..';
 
 const Header = () => {
@@ -22,8 +22,8 @@ const Header = () => {
   const { subFrame, setSubFrame } = useContext(SubFrameContext);
 
   useEffect(() => {
-    const themeSetting = getThemeSetting();
-    if (themeSetting?.darkMode) {
+    const darkMode = getDarkMode();
+    if (darkMode) {
       document.documentElement.classList.add('dark');
       setDarkMode(true);
     }
@@ -34,7 +34,7 @@ const Header = () => {
       ? document.documentElement.classList.remove('dark')
       : document.documentElement.classList.add('dark');
     setDarkMode(!darkMode);
-    setThemeSetting({ darkMode: !darkMode });
+    setStorageDarkMode(!darkMode);
   };
 
   return (

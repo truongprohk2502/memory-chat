@@ -10,6 +10,7 @@ interface IProps {
 
 export const Accordion = ({ title, children }: IProps) => {
   const [expanding, setExpanding] = useState<boolean>(false);
+  const [hiddenOverflow, setHiddenOverflow] = useState<boolean>(true);
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   const contentRef = useRef<HTMLDivElement>();
@@ -22,13 +23,31 @@ export const Accordion = ({ title, children }: IProps) => {
   useEffect(() => {
     if (maxHeight) {
       contentRef.current.style.maxHeight = expanding ? `${maxHeight}px` : '0';
+      if (expanding) {
+      }
     }
   }, [maxHeight, expanding]);
 
+  const handleClick = () => {
+    setExpanding(!expanding);
+    if (!expanding) {
+      setTimeout(() => {
+        setHiddenOverflow(false);
+      }, 500);
+    } else {
+      setHiddenOverflow(true);
+    }
+  };
+
   return (
-    <div className="rounded-md overflow-hidden border border-gray-300 px-2">
+    <div
+      className={clsx(
+        { 'overflow-hidden': hiddenOverflow },
+        'rounded-md border border-gray-300 px-2 my-2',
+      )}
+    >
       <div
-        onClick={() => setExpanding(!expanding)}
+        onClick={handleClick}
         className="h-8 flex justify-between items-center cursor-pointer py-1"
       >
         <div className="font-semibold">{title}</div>

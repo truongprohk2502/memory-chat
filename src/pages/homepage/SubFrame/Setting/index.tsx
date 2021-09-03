@@ -3,6 +3,7 @@ import { Button } from 'components/Button';
 import SubFrameLayout from 'layouts/SubFrameLayout';
 import { useTranslation } from 'react-i18next';
 import PersonalSetting from './PersonalSetting';
+import SystemSetting from './SystemSetting';
 
 const Setting = () => {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ const Setting = () => {
       </div>
       <div className="font-bold my-6 text-center">Nguyen Dinh Truong</div>
       <PersonalSetting />
+      <SystemSetting />
     </SubFrameLayout>
   );
 };
