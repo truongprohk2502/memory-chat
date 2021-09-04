@@ -9,4 +9,11 @@ const LANGUAGES = [
   },
 ];
 
-export { LANGUAGES };
+const DEFAULT_LANGUAGE = 'en';
+
+const DEFAULT_NOTIFICATION_SETTING = {
+  soundNotification: true,
+  desktopNotification: true,
+};
+
+export { LANGUAGES, DEFAULT_LANGUAGE, DEFAULT_NOTIFICATION_SETTING };

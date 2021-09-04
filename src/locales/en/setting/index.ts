@@ -41,6 +41,14 @@ const translation = {
             vietnamese: 'Vietnamese',
           },
         },
+        sound_notification: 'Sound notification',
+        desktop_notification: {
+          title: 'Desktop notification',
+          errors: {
+            unsupport: 'Unsupport desktop notification',
+            denied: 'Notification is denied',
+          },
+        },
       },
     },
   },

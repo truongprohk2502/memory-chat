@@ -41,6 +41,14 @@ const translation = {
             vietnamese: 'Tiếng Việt',
           },
         },
+        sound_notification: 'Âm thanh thông báo',
+        desktop_notification: {
+          title: 'Thông báo trên desktop',
+          errors: {
+            unsupport: 'Không hỗ trợ thông báo',
+            denied: 'Quyền thông báo bị từ chối',
+          },
+        },
       },
     },
   },

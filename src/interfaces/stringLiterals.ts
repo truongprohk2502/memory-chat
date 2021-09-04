@@ -5,3 +5,5 @@ export type ISubFrameType =
   | 'document'
   | 'notification'
   | 'setting';
+
+export type SettingLabelType = 'personal-info' | 'system';

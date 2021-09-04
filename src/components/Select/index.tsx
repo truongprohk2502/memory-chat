@@ -43,7 +43,7 @@ export const Select = ({ value, options, onChange }: IProps) => {
   };
 
   return (
-    <div className="relative mb-2">
+    <div className="relative">
       <button
         onClick={handleClick}
         className="py-1 pl-2 pr-6 bg-gray-200 rounded-md dark:bg-gray-700"
@@ -57,7 +57,7 @@ export const Select = ({ value, options, onChange }: IProps) => {
         ref={wrapperRef}
         className={clsx(
           { hidden: !showSelectBox },
-          'absolute right-0 top-beyond-full bg-white shadow-lg rounded-md dark:bg-gray-700',
+          'absolute right-0 top-beyond-full bg-white shadow-lg z-10 rounded-md dark:bg-gray-700',
         )}
       >
         {options.map(option => (

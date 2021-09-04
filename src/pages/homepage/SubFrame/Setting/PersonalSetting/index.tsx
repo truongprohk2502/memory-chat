@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   faFileExport,
   faFileImport,
@@ -10,8 +10,18 @@ import { Input } from 'components/Input';
 import { useFormik } from 'formik';
 import PersonalInfoSchema from 'validations/personalInfo.schema';
 import { useTranslation } from 'react-i18next';
+import { SettingLabelType } from 'interfaces/stringLiterals';
 
-const PersonalSetting = () => {
+interface IProps {
+  expandingSettingType: SettingLabelType;
+  setExpandingSettingType: (value: SettingLabelType) => void;
+}
+
+const PersonalSetting = ({
+  expandingSettingType,
+  setExpandingSettingType,
+}: IProps) => {
+  const [expanding, setExpanding] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -40,13 +50,30 @@ const PersonalSetting = () => {
     },
   });
 
+  useEffect(() => {
+    if (expandingSettingType !== 'personal-info') {
+      setExpanding(false);
+    }
+  }, [expandingSettingType]);
+
   const handleCancel = () => {
     resetForm({ values: initialFormValues });
     setEditMode(false);
   };
 
+  const handleToggleExpand = () => {
+    if (!expanding) {
+      setExpandingSettingType('personal-info');
+    }
+    setExpanding(!expanding);
+  };
+
   return (
-    <Accordion title={t('setting.options.personal_info.title')}>
+    <Accordion
+      title={t('setting.options.personal_info.title')}
+      expanding={expanding}
+      onToggleExpand={handleToggleExpand}
+    >
       <form>
         <div className="flex justify-end">
           {editMode ? (

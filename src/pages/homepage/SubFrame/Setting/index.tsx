@@ -1,11 +1,16 @@
+import { useState } from 'react';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
+import { SettingLabelType } from 'interfaces/stringLiterals';
 import SubFrameLayout from 'layouts/SubFrameLayout';
 import { useTranslation } from 'react-i18next';
 import PersonalSetting from './PersonalSetting';
 import SystemSetting from './SystemSetting';
 
 const Setting = () => {
+  const [expandingSettingType, setExpandingSettingType] =
+    useState<SettingLabelType>(null);
+
   const { t } = useTranslation();
 
   return (
@@ -25,8 +30,18 @@ const Setting = () => {
         />
       </div>
       <div className="font-bold my-6 text-center">Nguyen Dinh Truong</div>
-      <PersonalSetting />
-      <SystemSetting />
+      <PersonalSetting
+        expandingSettingType={expandingSettingType}
+        setExpandingSettingType={(value: SettingLabelType) =>
+          setExpandingSettingType(value)
+        }
+      />
+      <SystemSetting
+        expandingSettingType={expandingSettingType}
+        setExpandingSettingType={(value: SettingLabelType) =>
+          setExpandingSettingType(value)
+        }
+      />
     </SubFrameLayout>
   );
 };

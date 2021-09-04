@@ -1,7 +1,8 @@
 import AES from 'crypto-js/aes';
 import encUtf8 from 'crypto-js/enc-utf8';
-import { DARK_MODE, LANGUAGE } from 'constants/storage';
+import { DARK_MODE, LANGUAGE, NOTIFICATION_SETTING } from 'constants/storage';
 import { LanguageType } from 'interfaces/system';
+import { INotificationSetting } from 'interfaces/storage';
 
 const { REACT_APP_CRYPTO_KEY: CRYPTO_KEY } = process.env;
 const encryptData = str => AES.encrypt(str, CRYPTO_KEY).toString();
@@ -47,6 +48,14 @@ const setLanguage = (value: LanguageType) =>
   customLocalStorage.set(LANGUAGE, value);
 const removeLanguage = () => customLocalStorage.remove(LANGUAGE);
 
+// Notification
+const getNotificationSetting = (): INotificationSetting =>
+  customLocalStorage.get(NOTIFICATION_SETTING);
+const setNotificationSetting = (value: INotificationSetting) =>
+  customLocalStorage.set(NOTIFICATION_SETTING, value);
+const removeNotificationSetting = () =>
+  customLocalStorage.remove(NOTIFICATION_SETTING);
+
 export {
   getDarkMode,
   setDarkMode,
@@ -54,4 +63,7 @@ export {
   getLanguage,
   setLanguage,
   removeLanguage,
+  getNotificationSetting,
+  setNotificationSetting,
+  removeNotificationSetting,
 };

@@ -5,11 +5,19 @@ import clsx from 'clsx';
 
 interface IProps {
   title: string;
+  expanding: boolean;
   children: ReactNode;
+  onToggleExpand: () => void;
+  onExpand?: () => void;
 }
 
-export const Accordion = ({ title, children }: IProps) => {
-  const [expanding, setExpanding] = useState<boolean>(false);
+export const Accordion = ({
+  title,
+  expanding,
+  children,
+  onToggleExpand,
+  onExpand,
+}: IProps) => {
   const [hiddenOverflow, setHiddenOverflow] = useState<boolean>(true);
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
@@ -21,22 +29,24 @@ export const Accordion = ({ title, children }: IProps) => {
   }, []);
 
   useEffect(() => {
-    if (maxHeight) {
-      contentRef.current.style.maxHeight = expanding ? `${maxHeight}px` : '0';
-      if (expanding) {
-      }
-    }
-  }, [maxHeight, expanding]);
-
-  const handleClick = () => {
-    setExpanding(!expanding);
-    if (!expanding) {
+    if (expanding) {
       setTimeout(() => {
         setHiddenOverflow(false);
       }, 500);
     } else {
       setHiddenOverflow(true);
     }
+  }, [expanding]);
+
+  useEffect(() => {
+    if (maxHeight) {
+      contentRef.current.style.maxHeight = expanding ? `${maxHeight}px` : '0';
+    }
+  }, [maxHeight, expanding]);
+
+  const handleClick = () => {
+    onToggleExpand();
+    !expanding && onExpand && onExpand();
   };
 
   return (
