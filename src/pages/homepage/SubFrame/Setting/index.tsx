@@ -14,12 +14,12 @@ const Setting = () => {
   const { t } = useTranslation();
 
   return (
-    <SubFrameLayout title={t('setting.title')} subFrameType="setting">
+    <SubFrameLayout title={t('header.settings')} subFrameType="setting">
       <div className="relative w-fit mx-auto">
         <img
           src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
           alt="logo"
-          className="w-24 h-24 object-cover mx-auto rounded-full mt-8 cursor-pointer"
+          className="w-24 h-24 object-cover mx-auto rounded-full mt-4 cursor-pointer"
         />
         <Button
           variant="circle"

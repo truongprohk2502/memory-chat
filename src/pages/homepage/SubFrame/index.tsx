@@ -1,7 +1,13 @@
-import Setting from 'pages/Homepage/SubFrame/Setting';
+import Setting from './Setting';
+import FriendList from './FriendList';
 
 const SubFrame = () => {
-  return <Setting />;
+  return (
+    <>
+      <FriendList />
+      <Setting />
+    </>
+  );
 };
 
 export default SubFrame;

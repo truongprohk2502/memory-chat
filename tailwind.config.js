@@ -18,6 +18,7 @@ module.exports = {
     extend: {
       inset: ['group-hover'],
       display: ['group-hover'],
+      margin: ['last'],
       padding: ['disabled'],
       borderWidth: ['disabled', 'focus'],
       borderRadius: ['first', 'last'],

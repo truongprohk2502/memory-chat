@@ -95,13 +95,13 @@ const SystemSetting = ({
 
   return (
     <Accordion
-      title={t('setting.options.system.title')}
+      title={t('setting.system.title')}
       expanding={expanding}
       onToggleExpand={handleToggleExpand}
     >
       <div className="flex justify-between items-center h-10 py-2">
         <div className="font-semibold text-sm">
-          {t('setting.options.system.options.language.title')}
+          {t('setting.system.options.language.title')}
         </div>
         <Select
           value={language}
@@ -111,7 +111,7 @@ const SystemSetting = ({
       </div>
       <div className="flex justify-between items-center h-10 py-2">
         <div className="font-semibold text-sm">
-          {t('setting.options.system.options.sound_notification')}
+          {t('setting.system.options.sound_notification')}
         </div>
         <Toggle
           checked={checkedSoundNotification}
@@ -122,7 +122,7 @@ const SystemSetting = ({
       </div>
       <div className="flex justify-between items-center h-10 py-2">
         <div className="font-semibold text-sm">
-          {t('setting.options.system.options.desktop_notification.title')}
+          {t('setting.system.options.desktop_notification.title')}
         </div>
         <Toggle
           checked={checkedDesktopNotification}
@@ -130,12 +130,10 @@ const SystemSetting = ({
           tooltip={
             !supportNotification
               ? t(
-                  'setting.options.system.options.desktop_notification.errors.unsupport',
+                  'setting.system.options.desktop_notification.errors.unsupport',
                 )
               : deniedNotification &&
-                t(
-                  'setting.options.system.options.desktop_notification.errors.denied',
-                )
+                t('setting.system.options.desktop_notification.errors.denied')
           }
           onChange={() =>
             setCheckedDesktopNotification(!checkedDesktopNotification)

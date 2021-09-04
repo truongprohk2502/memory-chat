@@ -70,7 +70,7 @@ const PersonalSetting = ({
 
   return (
     <Accordion
-      title={t('setting.options.personal_info.title')}
+      title={t('setting.personal_info.title')}
       expanding={expanding}
       onToggleExpand={handleToggleExpand}
     >
@@ -103,7 +103,7 @@ const PersonalSetting = ({
         </div>
         <div className="pb-2">
           <div className="text-gray-500">
-            {t('setting.options.personal_info.labels.name')}
+            {t('setting.personal_info.labels.name')}
           </div>
           <Input
             type="text"
@@ -119,7 +119,7 @@ const PersonalSetting = ({
         </div>
         <div className="py-2">
           <div className="text-gray-500">
-            {t('setting.options.personal_info.labels.email')}
+            {t('setting.personal_info.labels.email')}
           </div>
           <Input
             type="email"
@@ -135,7 +135,7 @@ const PersonalSetting = ({
         </div>
         <div className="py-2">
           <div className="text-gray-500">
-            {t('setting.options.personal_info.labels.phone')}
+            {t('setting.personal_info.labels.phone')}
           </div>
           <Input
             type="text"
@@ -151,7 +151,7 @@ const PersonalSetting = ({
         </div>
         <div className="py-2">
           <div className="text-gray-500">
-            {t('setting.options.personal_info.labels.address')}
+            {t('setting.personal_info.labels.address')}
           </div>
           <Input
             type="text"

@@ -23,7 +23,7 @@ export const Input = ({
       <input
         className={clsx(
           { 'w-full': blocked },
-          'h-8 px-2 border border-gray-300 focus:outline-none focus:border-2 focus:border-black rounded-md disabled:border-0 disabled:px-0 disabled:text-sm disabled:font-semibold dark:bg-gray-700 dark:text-white dark:disabled:bg-gray-900',
+          'h-8 px-2 border border-gray-300 bg-gray-200 disabled:bg-white focus:outline-none focus:border-2 focus:border-black rounded-md disabled:border-0 disabled:px-0 disabled:text-sm disabled:font-semibold dark:bg-gray-700 dark:text-white dark:disabled:bg-gray-900',
           {
             'border-red-500 focus:border-red-600 pr-7':
               i18nErrorPath && touched,
