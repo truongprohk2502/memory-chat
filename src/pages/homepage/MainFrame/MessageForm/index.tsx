@@ -26,7 +26,7 @@ const MessageForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="py-4 px-5 xl:px-20 flex justify-between border-t border-gray-150 dark:border-gray-500"
+      className="absolute inset-x-0 bottom-0 h-16 py-4 px-5 xl:px-20 flex justify-between items-center border-t border-gray-150 dark:border-gray-500 bg-white dark:bg-gray-900"
     >
       <div className="flex">
         <Button

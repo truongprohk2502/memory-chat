@@ -5,9 +5,11 @@ import MessageForm from './MessageForm';
 const MainFrame = () => {
   return (
     <section className="fixed flex flex-col justify-between left-28 lg:left-124 transition-all duration-150 right-0 inset-y-0 border-l border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
-      <Header />
-      <Chat />
-      <MessageForm />
+      <div className="w-full h-full relative">
+        <Header />
+        <Chat />
+        <MessageForm />
+      </div>
     </section>
   );
 };

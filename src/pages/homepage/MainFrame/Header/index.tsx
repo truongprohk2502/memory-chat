@@ -17,7 +17,7 @@ const Header = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="h-20 w-full px-5 xl:px-20 flex justify-between items-center border-b border-gray-150 dark:border-gray-500">
+    <div className="absolute top-0 inset-x-0 h-20 w-full px-5 xl:px-20 flex justify-between items-center border-b border-gray-150 dark:border-gray-500">
       <div className="flex flex-auto items-center">
         <div className="relative">
           <img
