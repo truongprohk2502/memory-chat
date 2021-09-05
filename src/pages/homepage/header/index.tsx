@@ -38,7 +38,7 @@ const Header = () => {
   };
 
   return (
-    <section className="fixed z-10 left-0 inset-y-0 w-28 px-5 py-10 flex flex-col justify-between border-r border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
+    <section className="fixed z-20 left-0 inset-y-0 w-28 px-5 py-10 flex flex-col justify-between border-r border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
       <div className="w-full flex flex-col items-center">
         <img src={logo} alt="logo" className="w-12 h-12" />
         <img

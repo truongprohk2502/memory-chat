@@ -4,9 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
+interface IOption {
+  value: string;
+  i18nLabelPath: string;
+}
+
 interface IProps {
   value: string;
-  options: Array<{ value: string; i18nLabelPath: string }>;
+  options: IOption[];
   onChange: (value: string) => void;
 }
 

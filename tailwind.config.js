@@ -11,6 +11,7 @@ module.exports = {
       },
       inset: {
         'beyond-full': 'calc(100% + 2px)',
+        124: '31rem',
       },
     },
   },

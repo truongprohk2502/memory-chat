@@ -1,7 +1,8 @@
 import { createContext, useState } from 'react';
 import { ISubFrameType } from 'interfaces/stringLiterals';
-import Header from 'pages/Homepage/Header';
-import SubFrame from 'pages/Homepage/SubFrame';
+import Header from './Header';
+import SubFrame from './SubFrame';
+import MainFrame from './MainFrame';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -17,6 +18,7 @@ const Homepage = () => {
     <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
       <Header />
       <SubFrame />
+      <MainFrame />
     </SubFrameContext.Provider>
   );
 };
