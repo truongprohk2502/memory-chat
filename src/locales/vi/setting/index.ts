@@ -49,13 +49,6 @@ const translation = {
       },
     },
   },
-  chat: {
-    actions: {
-      profile: 'Thông tin cá nhân',
-      delete: 'Xóa liên hệ',
-      block: 'Chặn liên hệ',
-    },
-  },
 };
 
 export default translation;

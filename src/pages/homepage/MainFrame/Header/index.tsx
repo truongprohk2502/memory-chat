@@ -61,19 +61,19 @@ const Header = () => {
             {
               icon: faUserAlt,
               iconColorTailwind: 'text-blue-500',
-              i18nLabelPath: 'setting.chat.actions.profile',
+              i18nLabelPath: 'chat.more_actions.profile',
               onClick: () => {},
             },
             {
               icon: faTrashAlt,
               iconColorTailwind: 'text-red-500',
-              i18nLabelPath: 'setting.chat.actions.delete',
+              i18nLabelPath: 'chat.more_actions.delete',
               onClick: () => {},
             },
             {
               icon: faBan,
               iconColorTailwind: 'text-gray-600',
-              i18nLabelPath: 'setting.chat.actions.block',
+              i18nLabelPath: 'chat.more_actions.block',
               onClick: () => {},
             },
           ]}

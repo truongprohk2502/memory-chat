@@ -49,13 +49,6 @@ const translation = {
       },
     },
   },
-  chat: {
-    actions: {
-      profile: 'Profile',
-      delete: 'Delete',
-      block: 'Block',
-    },
-  },
 };
 
 export default translation;

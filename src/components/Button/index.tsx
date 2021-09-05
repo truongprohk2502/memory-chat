@@ -4,15 +4,19 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  id?: string;
   type?: 'button' | 'submit' | 'reset';
   variant?: 'circle' | 'normal';
-  color?: 'light';
+  color?: 'light' | 'primary';
   size?: 'sm' | 'md';
+  isFileButton?: boolean;
   icon?: IconDefinition;
+  iconColorClassName?: string;
   text?: string;
   hasOnlyButton?: boolean;
   hasPingBadge?: boolean;
   isActive?: boolean;
+  disabled?: boolean;
   hasTooltip?: boolean;
   tooltipName?: string;
   tooltipPlacement?:
@@ -27,15 +31,19 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = ({
+  id,
   type = 'button',
   variant = 'normal',
   color = 'light',
   size = 'md',
+  isFileButton = false,
   icon,
+  iconColorClassName = '',
   text = '',
   hasOnlyButton = true,
   hasPingBadge = false,
   isActive = false,
+  disabled = false,
   hasTooltip = false,
   tooltipName = '',
   tooltipPlacement = 'right',
@@ -44,9 +52,41 @@ export const Button = ({
   onClick,
   ...props
 }: IProps) => {
-  const renderButton = (
+  const renderButton = isFileButton ? (
+    <>
+      <label
+        htmlFor={id}
+        className={clsx(
+          buttonClassName,
+          { 'w-8': variant === 'circle' && size === 'sm' },
+          { 'w-10': variant === 'circle' && size === 'md' },
+          { 'rounded-full': variant === 'circle' },
+          { 'rounded-md px-2': variant === 'normal' },
+          {
+            'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
+              color === 'light' && !isActive,
+          },
+          {
+            'bg-blue-500 hover:bg-blue-600 text-white':
+              color === 'light' && isActive,
+          },
+          { 'text-white': color === 'primary' },
+          { 'bg-blue-500 hover:bg-blue-400': color === 'primary' && !disabled },
+          { 'bg-blue-300 cursor-default': color === 'primary' && disabled },
+          { 'h-8': size === 'sm' },
+          { 'h-10': size === 'md' },
+          'transition duration-300 flex justify-center items-center cursor-pointer',
+        )}
+      >
+        <FontAwesomeIcon icon={icon} className={iconColorClassName} />
+        {text && <span className="pl-1">{text}</span>}
+      </label>
+      <input type="file" id={id} className="hidden" />
+    </>
+  ) : (
     <button
       type={type}
+      disabled={disabled}
       onClick={onClick}
       className={clsx(
         buttonClassName,
@@ -62,13 +102,16 @@ export const Button = ({
           'bg-blue-500 hover:bg-blue-600 text-white':
             color === 'light' && isActive,
         },
+        { 'text-white': color === 'primary' },
+        { 'bg-blue-500 hover:bg-blue-400': color === 'primary' && !disabled },
+        { 'bg-blue-300 cursor-default': color === 'primary' && disabled },
         { 'h-8': size === 'sm' },
         { 'h-10': size === 'md' },
         'transition duration-300 flex justify-center items-center',
       )}
       {...props}
     >
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon icon={icon} className={iconColorClassName} />
       {text && <span className="pl-1">{text}</span>}
     </button>
   );
