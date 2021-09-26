@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { RoleType } from 'constants/roles';
 import { RootState } from 'reducers';
 import { ROUTES } from 'constants/routes';
+import ErrorPage from 'pages/Error';
 
 interface IProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ const PrivateRoute = ({ children, roles, ...props }: IProps) => {
           roles.includes(role) ? (
             children
           ) : (
-            <span>asd</span>
+            <ErrorPage code={403} />
           )
         ) : (
           <Redirect
