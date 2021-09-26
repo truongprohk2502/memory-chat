@@ -1,5 +1,5 @@
 import { all } from 'redux-saga/effects';
 
-export default function* watcherSaga() {
+export default function* rootSaga() {
   yield all([]);
 }

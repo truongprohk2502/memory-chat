@@ -16,3 +16,27 @@
   background: rgb(59, 130, 246);
   border-radius: 0.15rem;
 }
+
+@font-face {
+  font-family: 'Arvo';
+  src: local('Arvo'), url(./fonts/Arvo-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Arvo';
+  font-weight: 900;
+  src: local('Arvo'), url(./fonts/Arvo-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Arvo';
+  font-style: italic;
+  src: local('Arvo'), url(./fonts/Arvo-Italic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Arvo';
+  font-style: italic;
+  font-weight: 900;
+  src: local('Arvo'), url(./fonts/Arvo-BoldItalic.ttf) format('truetype');
+}

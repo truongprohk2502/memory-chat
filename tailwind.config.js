@@ -14,6 +14,13 @@ module.exports = {
         124: '31rem',
       },
     },
+    fontFamily: {
+      arvo: ['Arvo', 'serif'],
+    },
+    backgroundColor: theme => ({
+      ...theme('colors'),
+      lightGreen: '#39ad31',
+    }),
   },
   variants: {
     extend: {

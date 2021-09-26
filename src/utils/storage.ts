@@ -1,8 +1,15 @@
 import AES from 'crypto-js/aes';
 import encUtf8 from 'crypto-js/enc-utf8';
-import { DARK_MODE, LANGUAGE, NOTIFICATION_SETTING } from 'constants/storage';
+import {
+  DARK_MODE,
+  LANGUAGE,
+  NOTIFICATION_SETTING,
+  ROLE,
+  TOKEN,
+} from 'constants/storage';
 import { LanguageType } from 'interfaces/system';
 import { INotificationSetting } from 'interfaces/storage';
+import { RoleType } from 'constants/roles';
 
 const { REACT_APP_CRYPTO_KEY: CRYPTO_KEY } = process.env;
 const encryptData = str => AES.encrypt(str, CRYPTO_KEY).toString();
@@ -56,6 +63,16 @@ const setNotificationSetting = (value: INotificationSetting) =>
 const removeNotificationSetting = () =>
   customLocalStorage.remove(NOTIFICATION_SETTING);
 
+// Token
+const getToken = (): string => customLocalStorage.get(TOKEN);
+const setToken = (value: string) => customLocalStorage.set(TOKEN, value);
+const removeToken = () => customLocalStorage.remove(TOKEN);
+
+// Token
+const getRole = (): RoleType => customLocalStorage.get(ROLE);
+const setRole = (value: RoleType) => customLocalStorage.set(ROLE, value);
+const removeRole = () => customLocalStorage.remove(ROLE);
+
 export {
   getDarkMode,
   setDarkMode,
@@ -66,4 +83,10 @@ export {
   getNotificationSetting,
   setNotificationSetting,
   removeNotificationSetting,
+  getToken,
+  setToken,
+  removeToken,
+  getRole,
+  setRole,
+  removeRole,
 };
