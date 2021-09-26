@@ -13,6 +13,15 @@ module.exports = {
         'beyond-full': 'calc(100% + 2px)',
         124: '31rem',
       },
+      spacing: {
+        signing: '760px',
+      },
+      minHeight: {
+        'screen-3/4': '75vh',
+      },
+      backgroundImage: {
+        signing: "url('assets/images/signing.webp')",
+      },
     },
     fontFamily: {
       arvo: ['Arvo', 'serif'],
@@ -20,6 +29,7 @@ module.exports = {
     backgroundColor: theme => ({
       ...theme('colors'),
       lightGreen: '#39ad31',
+      facebook: '#3b5998',
     }),
   },
   variants: {
@@ -33,6 +43,7 @@ module.exports = {
       fontSize: ['disabled'],
       fontWeight: ['disabled'],
       backgroundColor: ['disabled'],
+      backgroundImage: ['hover'],
     },
   },
   plugins: [],
