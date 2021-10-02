@@ -75,6 +75,8 @@ const translation = {
   },
   registration_form: 'Form đăng ký',
   sign_up: 'Đăng ký',
+  have_an_account: 'Đã có tài khoản?',
+  sign_in_here: 'Đăng nhập tại đây',
 };
 
 export default translation;

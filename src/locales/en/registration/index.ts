@@ -75,6 +75,8 @@ const translation = {
   },
   registration_form: 'Registration Form',
   sign_up: 'Sign Up',
+  have_an_account: 'Have already an account?',
+  sign_in_here: 'Sign In Here',
 };
 
 export default translation;

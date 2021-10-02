@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import SigningLayout from 'layouts/SigningLayout';
 import { SigningInput } from 'components/SigningInput';
 import SignUpSchema from 'validations/signUp.schema';
+import { ROUTES } from 'constants/routes';
 
 const Registration = () => {
   const { t } = useTranslation();
@@ -141,7 +142,18 @@ const Registration = () => {
         >
           {t('registration.sign_up')}
         </button>
-      </form>
+      </form>{' '}
+      <div className="flex justify-center mt-5">
+        <span className="text-gray-400">
+          {t('registration.have_an_account')}
+        </span>
+        <a
+          href={ROUTES.LOGIN}
+          className="text-gray-400 underline ml-1 transition duration-150 hover:text-blue-500"
+        >
+          {t('registration.sign_in_here')}
+        </a>
+      </div>
     </SigningLayout>
   );
 };
