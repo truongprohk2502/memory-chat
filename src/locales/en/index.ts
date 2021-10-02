@@ -3,6 +3,7 @@ import setting from './setting';
 import chat from './chat';
 import error from './error';
 import login from './login';
+import registration from './registration';
 
 const translations = {
   header,
@@ -10,6 +11,7 @@ const translations = {
   chat,
   error,
   login,
+  registration,
 };
 
 export default translations;

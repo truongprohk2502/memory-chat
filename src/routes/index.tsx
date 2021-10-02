@@ -5,6 +5,7 @@ import { ROUTES } from 'constants/routes';
 import { Spinner } from 'components/Spinner';
 
 const LoginPage = lazy(() => import('pages/Login'));
+const RegistrationPage = lazy(() => import('pages/Registration'));
 const Homepage = lazy(() => import('pages/Homepage'));
 const ErrorPage = lazy(() => import('pages/Error'));
 
@@ -24,6 +25,9 @@ const Router = () => {
           </PrivateRoute>
           <Route exact path={ROUTES.LOGIN}>
             <LoginPage />
+          </Route>
+          <Route exact path={ROUTES.REGISTRATION}>
+            <RegistrationPage />
           </Route>
           <Route path="*">
             <ErrorPage code={404} />

@@ -1,9 +1,10 @@
 const translation = {
-  username: {
-    title: 'Username / Email',
-    placeholder: 'Enter username / email',
+  email: {
+    title: 'Email',
+    placeholder: 'Enter email',
     errors: {
-      null: 'Required username',
+      invalid: 'Invalid email',
+      null: 'Required email',
     },
   },
   password: {

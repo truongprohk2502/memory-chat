@@ -1,9 +1,10 @@
 const translation = {
-  username: {
-    title: 'Tên tài khoản / Email',
-    placeholder: 'Nhập tên tài khoản / email',
+  email: {
+    title: 'Email',
+    placeholder: 'Nhập tài khoản email',
     errors: {
-      null: 'Yêu cầu nhập tên tài khoản hoặc email',
+      invalid: 'Email không hợp lệ',
+      null: 'Yêu cầu nhập email',
     },
   },
   password: {
