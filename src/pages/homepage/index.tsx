@@ -16,7 +16,6 @@ const Homepage = () => {
 
   return (
     <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
-      asd
       <Header />
       <SubFrame />
       <MainFrame />
