@@ -13,11 +13,13 @@ import { FullSpinner } from 'components/FullSpinner';
 import { toast } from 'react-toastify';
 import {
   getSendResetPasswordRequest,
+  postFacebookSignInRequest,
   postGoogleSignInRequest,
   postSignInRequest,
 } from 'reducers/auth';
 import { useHistory } from 'react-router-dom';
 import { useGoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -98,10 +100,31 @@ const LoginPage = () => {
             verifyingEmail || sendResetPasswordSuccess ? 5 : 10
           } flex justify-between`}
         >
-          <button className="bg-facebook rounded-md px-6 py-3 text-lg font-bold text-white w-64 transition duration-300 hover:opacity-80">
-            <FontAwesomeIcon icon={faFacebookSquare} />
-            <span className="ml-2">Facebook</span>
-          </button>
+          <FacebookLogin
+            appId={process.env.REACT_APP_FACEBOOK_ID}
+            autoLoad={false}
+            fields="first_name,middle_name,last_name,email,picture"
+            callback={res => {
+              dispatch(
+                postFacebookSignInRequest({
+                  email: res.email,
+                  firstName: res.first_name || '',
+                  middleName: res.middle_name || '',
+                  lastName: res.last_name || '',
+                  imageUrl: res.picture.data.url,
+                }),
+              );
+            }}
+            render={renderProps => (
+              <button
+                onClick={renderProps.onClick}
+                className="bg-facebook rounded-md px-6 py-3 text-lg font-bold text-white w-64 transition duration-300 hover:opacity-80"
+              >
+                <FontAwesomeIcon icon={faFacebookSquare} />
+                <span className="ml-2">Facebook</span>
+              </button>
+            )}
+          />
           <button
             onClick={signIn}
             className="bg-red-500 rounded-md px-6 py-3 text-lg font-bold text-white w-64 transition duration-300 hover:bg-red-400"
