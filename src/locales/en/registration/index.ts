@@ -77,6 +77,11 @@ const translation = {
   sign_up: 'Sign Up',
   have_an_account: 'Have already an account?',
   sign_in_here: 'Sign In Here',
+  toasts: {
+    sign_up_success: 'Sign up successfully',
+    already_exist_email: 'Email aready exists',
+    internal_server: 'An error occurred',
+  },
 };
 
 export default translation;

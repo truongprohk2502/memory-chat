@@ -77,6 +77,11 @@ const translation = {
   sign_up: 'Đăng ký',
   have_an_account: 'Đã có tài khoản?',
   sign_in_here: 'Đăng nhập tại đây',
+  toasts: {
+    sign_up_success: 'Đăng ký thành công',
+    already_exist_email: 'Email đã tồn tại',
+    internal_server: 'Đã có lỗi xảy ra',
+  },
 };
 
 export default translation;

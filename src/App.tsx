@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import Router from 'routes';
+import { ToastContainer } from 'react-toastify';
 import { getLanguage } from 'utils/storage';
+import 'react-toastify/dist/ReactToastify.css';
+import Router from 'routes';
 
 const App = () => {
   const { i18n } = useTranslation();
@@ -13,6 +15,16 @@ const App = () => {
 
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+      />
       <Router />
     </div>
   );

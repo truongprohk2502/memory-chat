@@ -1,12 +1,26 @@
+import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import SigningLayout from 'layouts/SigningLayout';
 import { SigningInput } from 'components/SigningInput';
 import SignUpSchema from 'validations/signUp.schema';
 import { ROUTES } from 'constants/routes';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFilterPropsObject } from 'utils/filterProps';
+import { postSignUpRequest } from 'reducers/auth';
+import { RootState } from 'reducers';
+import { FullSpinner } from 'components/FullSpinner';
+import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Registration = () => {
+  const history = useHistory();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { pending, error, userInfo } = useSelector(
+    (state: RootState) => state.auth,
+  );
+
   const { handleSubmit, handleChange, handleBlur, values, errors, touched } =
     useFormik({
       initialValues: {
@@ -23,9 +37,24 @@ const Registration = () => {
       },
       validationSchema: SignUpSchema,
       onSubmit: values => {
-        alert(JSON.stringify(values, null, 2));
+        dispatch(
+          postSignUpRequest(getFilterPropsObject(values, ['confirmPassword'])),
+        );
       },
     });
+
+  useEffect(() => {
+    if (userInfo) {
+      toast.success(t('registration.toasts.sign_up_success'));
+      history.replace(ROUTES.LOGIN);
+    }
+  }, [userInfo, history, t]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(t(`registration.toasts.${error}`));
+    }
+  }, [error, t]);
 
   return (
     <SigningLayout title={t('registration.registration_form')}>
@@ -154,6 +183,7 @@ const Registration = () => {
           {t('registration.sign_in_here')}
         </a>
       </div>
+      {pending && <FullSpinner />}
     </SigningLayout>
   );
 };
