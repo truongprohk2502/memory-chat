@@ -12,13 +12,24 @@ import {
 import logo from 'assets/images/logo.png';
 import { Button } from 'components/Button';
 import { useTranslation } from 'react-i18next';
-import { getDarkMode, setDarkMode as setStorageDarkMode } from 'utils/storage';
+import {
+  getDarkMode,
+  removeRole,
+  removeToken,
+  setDarkMode as setStorageDarkMode,
+} from 'utils/storage';
 import { SubFrameContext } from '..';
+import { useHistory } from 'react-router-dom';
+import { ROUTES } from 'constants/routes';
+import { resetAuthState } from 'reducers/auth';
+import { useDispatch } from 'react-redux';
 
 const Header = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const { subFrame, setSubFrame } = useContext(SubFrameContext);
 
   useEffect(() => {
@@ -35,6 +46,13 @@ const Header = () => {
       : document.documentElement.classList.add('dark');
     setDarkMode(!darkMode);
     setStorageDarkMode(!darkMode);
+  };
+
+  const handleLogout = () => {
+    removeToken();
+    removeRole();
+    dispatch(resetAuthState());
+    history.replace(ROUTES.LOGIN);
   };
 
   return (
@@ -125,7 +143,7 @@ const Header = () => {
           hasTooltip
           tooltipName={t('header.sign_out')}
           tooltipPlacement="right"
-          onClick={() => {}}
+          onClick={handleLogout}
         />
       </div>
     </section>

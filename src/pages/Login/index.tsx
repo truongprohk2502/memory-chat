@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import {
   getSendResetPasswordRequest,
   postFacebookSignInRequest,
-  postGoogleSignInRequest,
+  getGoogleSignInRequest,
   postSignInRequest,
 } from 'reducers/auth';
 import { useHistory } from 'react-router-dom';
@@ -30,8 +30,11 @@ const LoginPage = () => {
 
   const { signIn } = useGoogleLogin({
     clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-    // @ts-ignore
-    onSuccess: res => dispatch(postGoogleSignInRequest(res.profileObj)),
+    onSuccess: res =>
+      dispatch(
+        // @ts-ignore
+        getGoogleSignInRequest(res.accessToken),
+      ),
     onFailure: () => toast.error(t('login.toasts.error_occurred')),
   });
 

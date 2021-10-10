@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RoleType } from 'constants/roles';
-import { getRole, getToken, setRole, setToken } from 'utils/storage';
+import {
+  getRole,
+  getToken,
+  removeRole,
+  removeToken,
+  setRole,
+  setToken,
+} from 'utils/storage';
 
 interface IUserInfo {
   id: number;
@@ -26,6 +33,7 @@ interface StateProps {
   userInfo: IUserInfo;
   verifyingEmail: boolean;
   sendResetPasswordSuccess: boolean;
+  initializedToken: boolean;
   pending: boolean;
   error: string;
 }
@@ -36,6 +44,7 @@ const initialState: StateProps = {
   userInfo: null,
   verifyingEmail: false,
   sendResetPasswordSuccess: false,
+  initializedToken: false,
   pending: false,
   error: null,
 };
@@ -44,6 +53,11 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    resetAuthState: state => {
+      state.token = null;
+      state.role = null;
+      state.userInfo = null;
+    },
     postSignInRequest: (state, action) => {
       state.pending = true;
       state.error = null;
@@ -57,6 +71,7 @@ export const authSlice = createSlice({
       state.role = role;
       state.pending = false;
       state.error = null;
+      state.verifyingEmail = false;
     },
     postSignInFailure: (state, action) => {
       if (state.verifyingEmail && action.payload !== 'inactive_user') {
@@ -65,11 +80,11 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
-    postGoogleSignInRequest: (state, action) => {
+    getGoogleSignInRequest: (state, action) => {
       state.pending = true;
       state.error = null;
     },
-    postGoogleSignInSuccess: (state, action) => {
+    getGoogleSignInSuccess: (state, action) => {
       const { token, role, ...userInfo } = action.payload;
       setToken(token);
       setRole(role);
@@ -79,7 +94,7 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = null;
     },
-    postGoogleSignInFailure: (state, action) => {
+    getGoogleSignInFailure: (state, action) => {
       state.pending = false;
       state.error = action.payload;
     },
@@ -132,16 +147,37 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    getUserInfoRequest: state => {
+      state.pending = true;
+      state.error = null;
+    },
+    getUserInfoSuccess: (state, action) => {
+      state.userInfo = action.payload;
+      state.initializedToken = true;
+      state.pending = false;
+      state.error = null;
+    },
+    getUserInfoFailure: (state, action) => {
+      removeToken();
+      removeRole();
+      state.userInfo = null;
+      state.token = null;
+      state.role = null;
+      state.initializedToken = true;
+      state.pending = false;
+      state.error = action.payload;
+    },
   },
 });
 
 export const {
+  resetAuthState,
   postSignInRequest,
   postSignInSuccess,
   postSignInFailure,
-  postGoogleSignInRequest,
-  postGoogleSignInSuccess,
-  postGoogleSignInFailure,
+  getGoogleSignInRequest,
+  getGoogleSignInSuccess,
+  getGoogleSignInFailure,
   postFacebookSignInRequest,
   postFacebookSignInSuccess,
   postFacebookSignInFailure,
@@ -151,6 +187,9 @@ export const {
   getSendResetPasswordRequest,
   getSendResetPasswordSuccess,
   getSendResetPasswordFailure,
+  getUserInfoRequest,
+  getUserInfoSuccess,
+  getUserInfoFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import { ROUTES } from 'constants/routes';
 import { Spinner } from 'components/Spinner';
+import SigningRoute from './SigningRoute';
 
 const LoginPage = lazy(() => import('pages/Login'));
 const RegistrationPage = lazy(() => import('pages/Registration'));
@@ -23,12 +24,12 @@ const Router = () => {
           <PrivateRoute roles={['user']} exact path={ROUTES.HOMEPAGE}>
             <Homepage />
           </PrivateRoute>
-          <Route exact path={ROUTES.LOGIN}>
+          <SigningRoute exact path={ROUTES.LOGIN}>
             <LoginPage />
-          </Route>
-          <Route exact path={ROUTES.REGISTRATION}>
+          </SigningRoute>
+          <SigningRoute exact path={ROUTES.REGISTRATION}>
             <RegistrationPage />
-          </Route>
+          </SigningRoute>
           <Route path="*">
             <ErrorPage code={404} />
           </Route>

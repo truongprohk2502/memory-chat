@@ -8,12 +8,15 @@ import {
   getSendResetPasswordRequest,
   getSendResetPasswordSuccess,
   getSendResetPasswordFailure,
-  postGoogleSignInRequest,
-  postGoogleSignInSuccess,
-  postGoogleSignInFailure,
+  getGoogleSignInRequest,
+  getGoogleSignInSuccess,
+  getGoogleSignInFailure,
   postFacebookSignInRequest,
   postFacebookSignInSuccess,
   postFacebookSignInFailure,
+  getUserInfoRequest,
+  getUserInfoSuccess,
+  getUserInfoFailure,
 } from 'reducers/auth';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -32,17 +35,17 @@ export function* postSignIn(action) {
   );
 }
 
-export function* postGoogleSignIn(action) {
+export function* getGoogleSignIn(action) {
   yield sagaLayoutFunction(
     {
-      method: 'post',
+      method: 'get',
       urlTemplate: '/auth/signin-google',
-      data: action.payload,
+      queries: [{ name: 'token', value: action.payload }],
     },
     function* (data) {
-      yield put(postGoogleSignInSuccess(data));
+      yield put(getGoogleSignInSuccess(data));
     },
-    postGoogleSignInFailure,
+    getGoogleSignInFailure,
   );
 }
 
@@ -88,10 +91,24 @@ export function* getSendResetPassword(action) {
   );
 }
 
+export function* getUserInfo(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'get',
+      urlTemplate: '/auth/get-info',
+    },
+    function* (data) {
+      yield put(getUserInfoSuccess(data));
+    },
+    getUserInfoFailure,
+  );
+}
+
 export function* authWatcher() {
   yield takeEvery(postSignInRequest, postSignIn);
-  yield takeEvery(postGoogleSignInRequest, postGoogleSignIn);
+  yield takeEvery(getGoogleSignInRequest, getGoogleSignIn);
   yield takeEvery(postFacebookSignInRequest, postFacebookSignIn);
   yield takeEvery(postSignUpRequest, postSignUp);
   yield takeEvery(getSendResetPasswordRequest, getSendResetPassword);
+  yield takeEvery(getUserInfoRequest, getUserInfo);
 }
