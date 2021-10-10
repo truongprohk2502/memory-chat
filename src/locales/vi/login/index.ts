@@ -21,6 +21,7 @@ const translation = {
     required_email: 'Vui lòng nhập email của bạn',
     send_mail_failed: 'Gửi mail thất bại',
     send_reset_password_success: 'Gửi mail thành công',
+    error_occurred: 'Đã có lỗi xảy ra',
   },
   forgot: 'Quên mật khẩu?',
   sign_in: 'Đăng Ký',

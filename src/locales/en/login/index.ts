@@ -21,6 +21,7 @@ const translation = {
     required_email: 'Please enter your email',
     send_mail_failed: 'Send mail failed',
     send_reset_password_success: 'Send mail successfully',
+    error_occurred: 'An error has occurred',
   },
   forgot: 'Forgot?',
   sign_in: 'Sign In',

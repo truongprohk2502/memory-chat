@@ -11,8 +11,13 @@ import { RootState } from 'reducers';
 import { useDispatch, useSelector } from 'react-redux';
 import { FullSpinner } from 'components/FullSpinner';
 import { toast } from 'react-toastify';
-import { getSendResetPasswordRequest, postSignInRequest } from 'reducers/auth';
+import {
+  getSendResetPasswordRequest,
+  postGoogleSignInRequest,
+  postSignInRequest,
+} from 'reducers/auth';
 import { useHistory } from 'react-router-dom';
+import { useGoogleLogin } from 'react-google-login';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -20,6 +25,13 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const { pending, verifyingEmail, sendResetPasswordSuccess, error, userInfo } =
     useSelector((state: RootState) => state.auth);
+
+  const { signIn } = useGoogleLogin({
+    clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    // @ts-ignore
+    onSuccess: res => dispatch(postGoogleSignInRequest(res.profileObj)),
+    onFailure: () => toast.error(t('login.toasts.error_occurred')),
+  });
 
   const {
     setFieldValue,
@@ -90,7 +102,10 @@ const LoginPage = () => {
             <FontAwesomeIcon icon={faFacebookSquare} />
             <span className="ml-2">Facebook</span>
           </button>
-          <button className="bg-red-500 rounded-md px-6 py-3 text-lg font-bold text-white w-64 transition duration-300 hover:bg-red-400">
+          <button
+            onClick={signIn}
+            className="bg-red-500 rounded-md px-6 py-3 text-lg font-bold text-white w-64 transition duration-300 hover:bg-red-400"
+          >
             <FontAwesomeIcon icon={faGoogle} />
             <span className="ml-2">Google</span>
           </button>

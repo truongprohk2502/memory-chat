@@ -59,6 +59,27 @@ export const authSlice = createSlice({
       state.error = null;
     },
     postSignInFailure: (state, action) => {
+      if (state.verifyingEmail && action.payload !== 'inactive_user') {
+        state.verifyingEmail = false;
+      }
+      state.pending = false;
+      state.error = action.payload;
+    },
+    postGoogleSignInRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    postGoogleSignInSuccess: (state, action) => {
+      const { token, role, ...userInfo } = action.payload;
+      setToken(token);
+      setRole(role);
+      state.userInfo = userInfo;
+      state.token = token;
+      state.role = role;
+      state.pending = false;
+      state.error = null;
+    },
+    postGoogleSignInFailure: (state, action) => {
       state.pending = false;
       state.error = action.payload;
     },
@@ -100,6 +121,9 @@ export const {
   postSignInRequest,
   postSignInSuccess,
   postSignInFailure,
+  postGoogleSignInRequest,
+  postGoogleSignInSuccess,
+  postGoogleSignInFailure,
   postSignUpRequest,
   postSignUpSuccess,
   postSignUpFailure,
