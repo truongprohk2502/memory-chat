@@ -98,11 +98,11 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
-    postFacebookSignInRequest: (state, action) => {
+    getFacebookSignInRequest: (state, action) => {
       state.pending = true;
       state.error = null;
     },
-    postFacebookSignInSuccess: (state, action) => {
+    getFacebookSignInSuccess: (state, action) => {
       const { token, role, ...userInfo } = action.payload;
       setToken(token);
       setRole(role);
@@ -112,7 +112,7 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = null;
     },
-    postFacebookSignInFailure: (state, action) => {
+    getFacebookSignInFailure: (state, action) => {
       state.pending = false;
       state.error = action.payload;
     },
@@ -178,9 +178,9 @@ export const {
   getGoogleSignInRequest,
   getGoogleSignInSuccess,
   getGoogleSignInFailure,
-  postFacebookSignInRequest,
-  postFacebookSignInSuccess,
-  postFacebookSignInFailure,
+  getFacebookSignInRequest,
+  getFacebookSignInSuccess,
+  getFacebookSignInFailure,
   postSignUpRequest,
   postSignUpSuccess,
   postSignUpFailure,

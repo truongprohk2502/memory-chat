@@ -11,9 +11,9 @@ import {
   getGoogleSignInRequest,
   getGoogleSignInSuccess,
   getGoogleSignInFailure,
-  postFacebookSignInRequest,
-  postFacebookSignInSuccess,
-  postFacebookSignInFailure,
+  getFacebookSignInRequest,
+  getFacebookSignInSuccess,
+  getFacebookSignInFailure,
   getUserInfoRequest,
   getUserInfoSuccess,
   getUserInfoFailure,
@@ -49,17 +49,21 @@ export function* getGoogleSignIn(action) {
   );
 }
 
-export function* postFacebookSignIn(action) {
+export function* getFacebookSignIn(action) {
+  const { token, id } = action.payload;
   yield sagaLayoutFunction(
     {
-      method: 'post',
+      method: 'get',
       urlTemplate: '/auth/signin-facebook',
-      data: action.payload,
+      queries: [
+        { name: 'id', value: id },
+        { name: 'token', value: token },
+      ],
     },
     function* (data) {
-      yield put(postFacebookSignInSuccess(data));
+      yield put(getFacebookSignInSuccess(data));
     },
-    postFacebookSignInFailure,
+    getFacebookSignInFailure,
   );
 }
 
@@ -107,7 +111,7 @@ export function* getUserInfo(action) {
 export function* authWatcher() {
   yield takeEvery(postSignInRequest, postSignIn);
   yield takeEvery(getGoogleSignInRequest, getGoogleSignIn);
-  yield takeEvery(postFacebookSignInRequest, postFacebookSignIn);
+  yield takeEvery(getFacebookSignInRequest, getFacebookSignIn);
   yield takeEvery(postSignUpRequest, postSignUp);
   yield takeEvery(getSendResetPasswordRequest, getSendResetPassword);
   yield takeEvery(getUserInfoRequest, getUserInfo);

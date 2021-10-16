@@ -13,7 +13,7 @@ import { FullSpinner } from 'components/FullSpinner';
 import { toast } from 'react-toastify';
 import {
   getSendResetPasswordRequest,
-  postFacebookSignInRequest,
+  getFacebookSignInRequest,
   getGoogleSignInRequest,
   postSignInRequest,
 } from 'reducers/auth';
@@ -106,15 +106,11 @@ const LoginPage = () => {
           <FacebookLogin
             appId={process.env.REACT_APP_FACEBOOK_ID}
             autoLoad={false}
-            fields="first_name,middle_name,last_name,email,picture"
             callback={res => {
               dispatch(
-                postFacebookSignInRequest({
-                  email: res.email,
-                  firstName: res.first_name || '',
-                  middleName: res.middle_name || '',
-                  lastName: res.last_name || '',
-                  imageUrl: res.picture.data.url,
+                getFacebookSignInRequest({
+                  id: res.userID,
+                  token: res.accessToken,
                 }),
               );
             }}
