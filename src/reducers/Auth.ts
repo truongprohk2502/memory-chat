@@ -34,6 +34,7 @@ interface StateProps {
   verifyingEmail: boolean;
   sendResetPasswordSuccess: boolean;
   initializedToken: boolean;
+  updateInfoSuccess: boolean;
   pending: boolean;
   error: string;
 }
@@ -45,6 +46,7 @@ const initialState: StateProps = {
   verifyingEmail: false,
   sendResetPasswordSuccess: false,
   initializedToken: false,
+  updateInfoSuccess: false,
   pending: false,
   error: null,
 };
@@ -167,6 +169,22 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    putUserInfoRequest: (state, action) => {
+      state.updateInfoSuccess = false;
+      state.pending = true;
+      state.error = null;
+    },
+    putUserInfoSuccess: (state, action) => {
+      state.userInfo = action.payload;
+      state.updateInfoSuccess = true;
+      state.pending = false;
+      state.error = null;
+    },
+    putUserInfoFailure: (state, action) => {
+      state.updateInfoSuccess = false;
+      state.pending = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -190,6 +208,9 @@ export const {
   getUserInfoRequest,
   getUserInfoSuccess,
   getUserInfoFailure,
+  putUserInfoRequest,
+  putUserInfoSuccess,
+  putUserInfoFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

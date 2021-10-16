@@ -11,6 +11,11 @@ import { useFormik } from 'formik';
 import PersonalInfoSchema from 'validations/personalInfo.schema';
 import { useTranslation } from 'react-i18next';
 import { SettingLabelType } from 'interfaces/stringLiterals';
+import { RootState } from 'reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { putUserInfoRequest } from 'reducers/auth';
+import { getFilterPropsObject } from 'utils/filterProps';
+import { toast } from 'react-toastify';
 
 interface IProps {
   expandingSettingType: SettingLabelType;
@@ -24,13 +29,21 @@ const PersonalSetting = ({
   const [expanding, setExpanding] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
 
+  const { userInfo, updateInfoSuccess, error } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const initialFormValues = {
-    fullName: 'Nguyen Dinh Truong',
-    email: 'nguyendinhtruong98@gmail.com',
-    phone: '0789250298',
-    address: '898 Tran Cao Van',
+    firstName: userInfo?.firstName || '',
+    middleName: userInfo?.middleName || '',
+    lastName: userInfo?.lastName || '',
+    email: userInfo?.email || '',
+    gender: userInfo?.gender || '',
+    phone: userInfo?.phone || '',
+    dob: userInfo?.dob || '',
+    address: userInfo?.address || '',
   };
 
   const {
@@ -42,10 +55,11 @@ const PersonalSetting = ({
     errors,
     touched,
   } = useFormik({
+    enableReinitialize: true,
     initialValues: initialFormValues,
     validationSchema: PersonalInfoSchema,
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+      dispatch(putUserInfoRequest(getFilterPropsObject(values, ['email'])));
       setEditMode(false);
     },
   });
@@ -55,6 +69,17 @@ const PersonalSetting = ({
       setExpanding(false);
     }
   }, [expandingSettingType]);
+
+  useEffect(() => {
+    updateInfoSuccess &&
+      toast.success(t('setting.personal_info.toasts.updated_info_success'));
+  }, [updateInfoSuccess, t]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(t(`setting.personal_info.toasts.${error}`));
+    }
+  }, [error, t]);
 
   const handleCancel = () => {
     resetForm({ values: initialFormValues });
@@ -103,14 +128,46 @@ const PersonalSetting = ({
         </div>
         <div className="pb-2">
           <div className="text-gray-500">
-            {t('setting.personal_info.labels.name')}
+            {t('setting.personal_info.labels.first_name')}&nbsp;*
           </div>
           <Input
             type="text"
-            name="fullName"
-            value={values.fullName}
-            i18nErrorPath={errors.fullName}
-            touched={touched.fullName}
+            name="firstName"
+            value={values.firstName}
+            i18nErrorPath={errors.firstName}
+            touched={touched.firstName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            blocked
+            disabled={!editMode}
+          />
+        </div>
+        <div className="pb-2">
+          <div className="text-gray-500">
+            {t('setting.personal_info.labels.middle_name')}
+          </div>
+          <Input
+            type="text"
+            name="middleName"
+            value={values.middleName}
+            i18nErrorPath={errors.middleName}
+            touched={touched.middleName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            blocked
+            disabled={!editMode}
+          />
+        </div>
+        <div className="pb-2">
+          <div className="text-gray-500">
+            {t('setting.personal_info.labels.last_name')}&nbsp;*
+          </div>
+          <Input
+            type="text"
+            name="lastName"
+            value={values.lastName}
+            i18nErrorPath={errors.lastName}
+            touched={touched.lastName}
             onChange={handleChange}
             onBlur={handleBlur}
             blocked
@@ -131,11 +188,57 @@ const PersonalSetting = ({
             onBlur={handleBlur}
             blocked
             disabled={!editMode}
+            readOnly
           />
         </div>
         <div className="py-2">
           <div className="text-gray-500">
-            {t('setting.personal_info.labels.phone')}
+            {t('setting.personal_info.labels.gender')}&nbsp;*
+          </div>
+          <Input
+            type="radio-group"
+            name="gender"
+            radioOptions={[
+              { value: 'male', label: t('registration.gender.options.male') },
+              {
+                value: 'female',
+                label: t('registration.gender.options.female'),
+              },
+            ]}
+            selectedRadioLabel={
+              values.gender
+                ? t(`registration.gender.options.${values.gender}`)
+                : ''
+            }
+            value={values.gender}
+            i18nErrorPath={errors.gender}
+            touched={touched.gender}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            blocked
+            disabled={!editMode}
+            readOnly
+          />
+        </div>
+        <div className="pb-2">
+          <div className="text-gray-500">
+            {t('setting.personal_info.labels.dob')}&nbsp;*
+          </div>
+          <Input
+            type="date"
+            name="dob"
+            value={values.dob}
+            i18nErrorPath={errors.dob}
+            touched={touched.dob}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            blocked
+            disabled={!editMode}
+          />
+        </div>
+        <div className="py-2">
+          <div className="text-gray-500">
+            {t('setting.personal_info.labels.phone')}&nbsp;*
           </div>
           <Input
             type="text"
@@ -151,7 +254,7 @@ const PersonalSetting = ({
         </div>
         <div className="py-2">
           <div className="text-gray-500">
-            {t('setting.personal_info.labels.address')}
+            {t('setting.personal_info.labels.address')}&nbsp;*
           </div>
           <Input
             type="text"

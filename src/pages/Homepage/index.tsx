@@ -9,6 +9,7 @@ import { getUserInfoRequest } from 'reducers/auth';
 import { RootState } from 'reducers';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
+import { FullSpinner } from 'components/FullSpinner';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -19,9 +20,11 @@ export const SubFrameContext = createContext<SubFrameContextType>(null);
 
 const Homepage = () => {
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
-  const { initializedToken, userInfo } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const {
+    initializedToken,
+    userInfo,
+    pending: authPending,
+  } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -41,6 +44,7 @@ const Homepage = () => {
       <Header />
       <SubFrame />
       <MainFrame />
+      {authPending && <FullSpinner />}
     </SubFrameContext.Provider>
   );
 };

@@ -7,18 +7,27 @@ const translation = {
       cancel: 'Thoát',
     },
     labels: {
-      name: 'Họ tên',
+      first_name: 'Tên',
+      middle_name: 'Tên đệm',
+      last_name: 'Họ',
       email: 'Email',
+      gender: 'Giới tính',
+      dob: 'Ngày sinh',
       phone: 'Số điện thoại',
       address: 'Địa chỉ',
     },
     errors: {
-      name: {
-        null: 'Yêu cầu họ tên',
+      first_name: {
+        null: 'Yêu cầu tên',
       },
-      email: {
-        null: 'Yêu cầu email',
-        invalid: 'Email không hợp lệ',
+      last_name: {
+        null: 'Yêu cầu họ',
+      },
+      gender: {
+        null: 'Yêu cầu giới tính',
+      },
+      dob: {
+        null: 'Yêu cầu ngày sinh',
       },
       phone: {
         null: 'Yêu cầu số điện thoại',
@@ -27,6 +36,11 @@ const translation = {
       address: {
         null: 'Yêu cầu địa chỉ',
       },
+    },
+    toasts: {
+      updated_info_success: 'Cập nhật thông tin người dùng thành công',
+      not_exist_email: 'Email không tồn tại',
+      internal_server: 'Đã có lỗi xảy ra',
     },
   },
   system: {

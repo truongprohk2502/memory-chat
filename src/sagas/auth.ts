@@ -17,6 +17,9 @@ import {
   getUserInfoRequest,
   getUserInfoSuccess,
   getUserInfoFailure,
+  putUserInfoRequest,
+  putUserInfoSuccess,
+  putUserInfoFailure,
 } from 'reducers/auth';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -108,6 +111,20 @@ export function* getUserInfo(action) {
   );
 }
 
+export function* putUserInfo(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/auth/update-info',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(putUserInfoSuccess(data));
+    },
+    putUserInfoFailure,
+  );
+}
+
 export function* authWatcher() {
   yield takeEvery(postSignInRequest, postSignIn);
   yield takeEvery(getGoogleSignInRequest, getGoogleSignIn);
@@ -115,4 +132,5 @@ export function* authWatcher() {
   yield takeEvery(postSignUpRequest, postSignUp);
   yield takeEvery(getSendResetPasswordRequest, getSendResetPassword);
   yield takeEvery(getUserInfoRequest, getUserInfo);
+  yield takeEvery(putUserInfoRequest, putUserInfo);
 }
