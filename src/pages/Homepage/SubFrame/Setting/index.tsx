@@ -6,8 +6,10 @@ import SubFrameLayout from 'layouts/SubFrameLayout';
 import { useTranslation } from 'react-i18next';
 import PersonalSetting from './PersonalSetting';
 import SystemSetting from './SystemSetting';
+import { UploadAvatarModal } from 'components/UploadAvatarModal';
 
 const Setting = () => {
+  const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
   const [expandingSettingType, setExpandingSettingType] =
     useState<SettingLabelType>(null);
 
@@ -25,7 +27,7 @@ const Setting = () => {
           variant="circle"
           size="sm"
           icon={faPen}
-          onClick={() => {}}
+          onClick={() => setOpenAvatarModal(true)}
           buttonClassName="absolute bottom-0 right-0"
         />
       </div>
@@ -41,6 +43,10 @@ const Setting = () => {
         setExpandingSettingType={(value: SettingLabelType) =>
           setExpandingSettingType(value)
         }
+      />
+      <UploadAvatarModal
+        isOpen={openAvatarModal}
+        onClose={() => setOpenAvatarModal(false)}
       />
     </SubFrameLayout>
   );

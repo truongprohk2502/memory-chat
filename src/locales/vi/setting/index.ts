@@ -63,6 +63,20 @@ const translation = {
       },
     },
   },
+  avatar_setting: {
+    buttons: {
+      discard: 'Hủy bỏ',
+      cancel: 'Thoát',
+      save: 'Lưu',
+    },
+    toasts: {
+      invalid_file_type: 'Tệp phải là một hình ảnh',
+    },
+    setting_avatar: 'Chọn hình đại diện',
+    drop_here: 'Thả tệp vào đây',
+    drag_or_click:
+      'Kéo và thả tệp hình ảnh vào đây, hoặc click chuột để chọn ảnh',
+  },
 };
 
 export default translation;

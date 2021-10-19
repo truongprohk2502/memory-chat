@@ -15,6 +15,10 @@ module.exports = {
       },
       spacing: {
         signing: '760px',
+        100: '25rem',
+        120: '30rem',
+        160: '40rem',
+        192: '96rem',
       },
       minHeight: {
         'screen-3/4': '75vh',
@@ -31,10 +35,14 @@ module.exports = {
       lightGreen: '#39ad31',
       facebook: '#3b5998',
     }),
+    minHeight: {
+      120: '40rem',
+    },
   },
   variants: {
     extend: {
       inset: ['group-hover'],
+      cursor: ['disabled'],
       display: ['group-hover'],
       margin: ['last'],
       padding: ['disabled'],

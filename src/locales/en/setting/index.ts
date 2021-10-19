@@ -63,6 +63,19 @@ const translation = {
       },
     },
   },
+  avatar_setting: {
+    buttons: {
+      discard: 'Discard',
+      cancel: 'Cancel',
+      save: 'Save',
+    },
+    toasts: {
+      invalid_file_type: 'File must be an image',
+    },
+    setting_avatar: 'Select avatar',
+    drop_here: 'Drop the file here',
+    drag_or_click: 'Drag and drop image file here, or click to select file',
+  },
 };
 
 export default translation;
