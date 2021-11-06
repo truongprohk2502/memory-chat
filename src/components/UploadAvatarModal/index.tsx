@@ -14,7 +14,7 @@ import useResizeAvatar, { ICutOffPostition } from 'hooks/useResizeAvatar';
 import { getTranslateNumber } from 'utils/getTranslateNumber';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { postAvatarRequest, resetUpdateSuccessState } from 'reducers/auth';
+import { postAvatarRequest } from 'reducers/auth';
 import { RootState } from 'reducers';
 
 interface IProps {
@@ -52,16 +52,13 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
   useEffect(() => {
     if (updateAvatarSuccess) {
       handleReset();
-      dispatch(resetUpdateSuccessState());
       onClose();
       resetDataBlob();
       toast.success(t('setting.avatar_setting.toasts.updated_avatar_success'));
     }
-  }, [updateAvatarSuccess, resetDataBlob, onClose, t, dispatch]);
+  }, [updateAvatarSuccess, resetDataBlob, onClose, t]);
 
   useEffect(() => {
-    console.log(dataBlob);
-
     if (dataBlob) {
       const formData = new FormData();
       formData.append('file', dataBlob, 'avatar.png');

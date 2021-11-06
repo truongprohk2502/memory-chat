@@ -22,10 +22,13 @@ import { SubFrameContext } from '..';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { resetAuthState } from 'reducers/auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
 
 const Header = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const { t } = useTranslation();
   const history = useHistory();
@@ -60,7 +63,7 @@ const Header = () => {
       <div className="w-full flex flex-col items-center">
         <img src={logo} alt="logo" className="w-12 h-12" />
         <img
-          src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
+          src={userInfo?.avatar}
           alt="logo"
           className="w-12 h-12 object-cover rounded-full border-4 border-blue-500 mt-16 cursor-pointer"
           onClick={() => setSubFrame('dashboard')}

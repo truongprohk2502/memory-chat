@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import PersonalSetting from './PersonalSetting';
 import SystemSetting from './SystemSetting';
 import { UploadAvatarModal } from 'components/UploadAvatarModal';
+import { useSelector } from 'react-redux';
+import { RootState } from 'reducers';
 
 const Setting = () => {
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
@@ -14,6 +16,8 @@ const Setting = () => {
     useState<SettingLabelType>(null);
 
   const { t } = useTranslation();
+
+  const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const handleCloseSettingAvatarModal = useCallback(() => {
     setOpenAvatarModal(false);
@@ -23,7 +27,7 @@ const Setting = () => {
     <SubFrameLayout title={t('header.settings')} subFrameType="setting">
       <div className="relative w-fit mx-auto">
         <img
-          src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
+          src={userInfo?.avatar}
           alt="logo"
           className="w-24 h-24 object-cover mx-auto rounded-full mt-4 cursor-pointer"
         />
@@ -35,7 +39,7 @@ const Setting = () => {
           buttonClassName="absolute bottom-0 right-0"
         />
       </div>
-      <div className="font-bold my-6 text-center">Nguyen Dinh Truong</div>
+      <div className="font-bold my-6 text-center">{`${userInfo?.lastName} ${userInfo?.middleName} ${userInfo?.firstName}`}</div>
       <PersonalSetting
         expandingSettingType={expandingSettingType}
         setExpandingSettingType={(value: SettingLabelType) =>

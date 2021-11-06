@@ -88,8 +88,6 @@ const useResizeAvatar = (
   }, [image, canvas, fromPosition]);
 
   const handleResetDataBlob = useCallback(() => {
-    console.log('reset roi');
-
     setDataBlob(null);
     setImage(null);
   }, []);
