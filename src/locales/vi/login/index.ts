@@ -28,7 +28,7 @@ const translation = {
   not_a_member: 'Không phải thành viên?',
   sign_up_now: 'Đăng ký ngay',
   sign_in_with: 'Đăng nhập với',
-  verifying_email: 'Vui lòng vào tài khoản email để xác thực',
+  verifying_email: 'Vui lòng vào tài khoản email để xác thực trong 2 phút',
   reset_password: 'Vui lòng vào tài khoản email để đặt lại mật khẩu',
 };
 

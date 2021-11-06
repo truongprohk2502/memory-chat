@@ -71,6 +71,7 @@ const translation = {
     },
     toasts: {
       invalid_file_type: 'File must be an image',
+      updated_avatar_success: 'Updated avatar image successfully',
     },
     setting_avatar: 'Select avatar',
     drop_here: 'Drop the file here',

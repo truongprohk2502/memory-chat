@@ -171,7 +171,7 @@ const Registration = () => {
         >
           {t('registration.sign_up')}
         </button>
-      </form>{' '}
+      </form>
       <div className="flex justify-center mt-5">
         <span className="text-gray-400">
           {t('registration.have_an_account')}

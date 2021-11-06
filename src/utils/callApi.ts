@@ -14,6 +14,7 @@ interface ICallApiProps {
   queries?: IParam[];
   params?: IParam[];
   data?: object;
+  formData?: FormData;
 }
 
 interface IResponse {
@@ -29,6 +30,7 @@ export const axiosCallApi = ({
   queries = [],
   params = [],
   data,
+  formData,
 }: ICallApiProps) => {
   let query = {};
   queries.forEach(({ name, value }) => {
@@ -41,15 +43,24 @@ export const axiosCallApi = ({
   });
   url = stringifyUrl({ url, query });
 
-  return axios(
-    data
-      ? {
-          method,
-          url,
-          data,
-        }
-      : { method, url },
-  );
+  if (data) {
+    return axios({
+      method,
+      url,
+      data,
+    });
+  } else if (formData) {
+    return axios({
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      method,
+      url,
+      data: formData,
+    });
+  } else {
+    return axios({ method, url });
+  }
 };
 
 export function* sagaLayoutFunction(

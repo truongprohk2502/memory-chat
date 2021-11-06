@@ -71,6 +71,7 @@ const translation = {
     },
     toasts: {
       invalid_file_type: 'Tệp phải là một hình ảnh',
+      updated_avatar_success: 'Cập nhật ảnh đại diện thành công',
     },
     setting_avatar: 'Chọn hình đại diện',
     drop_here: 'Thả tệp vào đây',

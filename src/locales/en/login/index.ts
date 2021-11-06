@@ -28,7 +28,7 @@ const translation = {
   not_a_member: 'Not a member?',
   sign_up_now: 'Sign up now',
   sign_in_with: 'Sign In With',
-  verifying_email: 'Please access your email to verify',
+  verifying_email: 'Please access your email to verify in 2 minutes',
   reset_password: 'Please access your email to reset password',
 };
 

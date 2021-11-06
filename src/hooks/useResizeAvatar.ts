@@ -1,5 +1,5 @@
 import { AVATAR_CANVAS_SIZE, AVATAR_WIDTH_PERCENTAGE } from 'constants/file';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface ICutOffPostition {
   fromX: number;
@@ -7,7 +7,10 @@ export interface ICutOffPostition {
   scale: number;
 }
 
-const useResizeAvatar = (file: File, fromPosition: ICutOffPostition): Blob => {
+const useResizeAvatar = (
+  file: File,
+  fromPosition: ICutOffPostition,
+): [Blob, () => void] => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement>(null);
   const [image, setImage] = useState<HTMLImageElement>(null);
   const [dataBlob, setDataBlob] = useState<Blob>(null);
@@ -60,7 +63,7 @@ const useResizeAvatar = (file: File, fromPosition: ICutOffPostition): Blob => {
           AVATAR_CANVAS_SIZE,
         );
 
-      const dataURI = canvas.toDataURL();
+      const dataURI = canvas.toDataURL('image/png');
 
       const byteString =
         dataURI.split(',')[0].indexOf('base64') >= 0
@@ -84,7 +87,14 @@ const useResizeAvatar = (file: File, fromPosition: ICutOffPostition): Blob => {
     return () => {};
   }, [image, canvas, fromPosition]);
 
-  return dataBlob;
+  const handleResetDataBlob = useCallback(() => {
+    console.log('reset roi');
+
+    setDataBlob(null);
+    setImage(null);
+  }, []);
+
+  return [dataBlob, handleResetDataBlob];
 };
 
 export default useResizeAvatar;

@@ -37,6 +37,7 @@ interface StateProps {
   updateInfoSuccess: boolean;
   pending: boolean;
   error: string;
+  updateAvatarSuccess: boolean;
 }
 
 const initialState: StateProps = {
@@ -49,6 +50,7 @@ const initialState: StateProps = {
   updateInfoSuccess: false,
   pending: false,
   error: null,
+  updateAvatarSuccess: false,
 };
 
 export const authSlice = createSlice({
@@ -185,6 +187,25 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    postAvatarRequest: (state, action) => {
+      state.updateAvatarSuccess = false;
+      state.pending = true;
+      state.error = null;
+    },
+    postAvatarSuccess: (state, action) => {
+      state.userInfo.avatar = action.payload;
+      state.updateAvatarSuccess = true;
+      state.pending = false;
+      state.error = null;
+    },
+    postAvatarFailure: (state, action) => {
+      state.updateAvatarSuccess = false;
+      state.pending = false;
+      state.error = action.payload;
+    },
+    resetUpdateSuccessState: state => {
+      state.updateAvatarSuccess = false;
+    },
   },
 });
 
@@ -211,6 +232,10 @@ export const {
   putUserInfoRequest,
   putUserInfoSuccess,
   putUserInfoFailure,
+  postAvatarRequest,
+  postAvatarSuccess,
+  postAvatarFailure,
+  resetUpdateSuccessState,
 } = authSlice.actions;
 
 export default authSlice.reducer;

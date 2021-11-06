@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
 import { SettingLabelType } from 'interfaces/stringLiterals';
@@ -14,6 +14,10 @@ const Setting = () => {
     useState<SettingLabelType>(null);
 
   const { t } = useTranslation();
+
+  const handleCloseSettingAvatarModal = useCallback(() => {
+    setOpenAvatarModal(false);
+  }, []);
 
   return (
     <SubFrameLayout title={t('header.settings')} subFrameType="setting">
@@ -46,7 +50,7 @@ const Setting = () => {
       />
       <UploadAvatarModal
         isOpen={openAvatarModal}
-        onClose={() => setOpenAvatarModal(false)}
+        onClose={handleCloseSettingAvatarModal}
       />
     </SubFrameLayout>
   );

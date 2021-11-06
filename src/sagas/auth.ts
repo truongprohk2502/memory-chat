@@ -20,6 +20,9 @@ import {
   putUserInfoRequest,
   putUserInfoSuccess,
   putUserInfoFailure,
+  postAvatarRequest,
+  postAvatarSuccess,
+  postAvatarFailure,
 } from 'reducers/auth';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -125,6 +128,20 @@ export function* putUserInfo(action) {
   );
 }
 
+export function* postAvatar(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'post',
+      urlTemplate: '/auth/upload-avatar',
+      formData: action.payload,
+    },
+    function* (data) {
+      yield put(postAvatarSuccess(data));
+    },
+    postAvatarFailure,
+  );
+}
+
 export function* authWatcher() {
   yield takeEvery(postSignInRequest, postSignIn);
   yield takeEvery(getGoogleSignInRequest, getGoogleSignIn);
@@ -133,4 +150,5 @@ export function* authWatcher() {
   yield takeEvery(getSendResetPasswordRequest, getSendResetPassword);
   yield takeEvery(getUserInfoRequest, getUserInfo);
   yield takeEvery(putUserInfoRequest, putUserInfo);
+  yield takeEvery(postAvatarRequest, postAvatar);
 }

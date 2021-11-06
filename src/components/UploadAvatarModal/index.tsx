@@ -13,6 +13,9 @@ import { toast } from 'react-toastify';
 import useResizeAvatar, { ICutOffPostition } from 'hooks/useResizeAvatar';
 import { getTranslateNumber } from 'utils/getTranslateNumber';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { postAvatarRequest, resetUpdateSuccessState } from 'reducers/auth';
+import { RootState } from 'reducers';
 
 interface IProps {
   isOpen: boolean;
@@ -37,15 +40,34 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
   });
   const [fromPosition, setFromPosition] = useState<ICutOffPostition>(null);
 
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  const { updateAvatarSuccess } = useSelector((state: RootState) => state.auth);
 
   const imageContainerRef = useRef<HTMLImageElement>(null);
 
-  const dataBlob = useResizeAvatar(file, fromPosition);
+  const [dataBlob, resetDataBlob] = useResizeAvatar(file, fromPosition);
 
   useEffect(() => {
-    dataBlob && console.log(dataBlob);
-  }, [dataBlob]);
+    if (updateAvatarSuccess) {
+      handleReset();
+      dispatch(resetUpdateSuccessState());
+      onClose();
+      resetDataBlob();
+      toast.success(t('setting.avatar_setting.toasts.updated_avatar_success'));
+    }
+  }, [updateAvatarSuccess, resetDataBlob, onClose, t, dispatch]);
+
+  useEffect(() => {
+    console.log(dataBlob);
+
+    if (dataBlob) {
+      const formData = new FormData();
+      formData.append('file', dataBlob, 'avatar.png');
+      dispatch(postAvatarRequest(formData));
+    }
+  }, [dataBlob, dispatch]);
 
   const onDrop = useCallback(
     (files: File[]) => {
@@ -182,6 +204,17 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
     };
   }, []);
 
+  const handleReset = () => {
+    setScale(AVATAR_WIDTH_PERCENTAGE);
+    setFile(null);
+    setImageRatio(1);
+    setMaxTranslateX(0);
+    setMaxTranslateY(0);
+    setMouseDownPosition(null);
+    setTranslateRange({ x: 0, y: 0 });
+    setFromPosition(null);
+  };
+
   const handleMouseDown = event => {
     setMouseDownPosition({ x: event.clientX, y: event.clientY });
   };
@@ -206,7 +239,7 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={handleUpload}
-      onCancel={file ? () => setFile(null) : () => onClose()}
+      onCancel={file ? handleReset : onClose}
       confirmText={t('setting.avatar_setting.buttons.save')}
       cancelText={
         file
