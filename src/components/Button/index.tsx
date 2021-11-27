@@ -7,8 +7,8 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   id?: string;
   type?: 'button' | 'submit' | 'reset';
   variant?: 'circle' | 'normal';
-  color?: 'light' | 'primary';
-  size?: 'sm' | 'md';
+  color?: 'light' | 'primary' | 'danger';
+  size?: 'xs' | 'sm' | 'md';
   isFileButton?: boolean;
   icon?: IconDefinition;
   iconColorClassName?: string;
@@ -58,10 +58,11 @@ export const Button = ({
         htmlFor={id}
         className={clsx(
           buttonClassName,
+          { 'w-5': variant === 'circle' && size === 'xs' },
           { 'w-8': variant === 'circle' && size === 'sm' },
           { 'w-10': variant === 'circle' && size === 'md' },
           { 'rounded-full': variant === 'circle' },
-          { 'rounded-md px-2': variant === 'normal' },
+          { 'rounded-md': variant === 'normal' },
           {
             'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
               color === 'light' && !isActive,
@@ -73,8 +74,14 @@ export const Button = ({
           { 'text-white': color === 'primary' },
           { 'bg-blue-500 hover:bg-blue-400': color === 'primary' && !disabled },
           { 'bg-blue-300 cursor-default': color === 'primary' && disabled },
-          { 'h-8': size === 'sm' },
-          { 'h-10': size === 'md' },
+          {
+            'bg-red-500 hover:bg-red-400 text-white':
+              color === 'danger' && !disabled,
+          },
+          { 'bg-red-300 cursor-default': color === 'danger' && disabled },
+          { 'h-5 px-1': size === 'xs' },
+          { 'h-8 px-2': size === 'sm' },
+          { 'h-10 px-2': size === 'md' },
           'transition duration-300 flex justify-center items-center cursor-pointer',
         )}
       >
@@ -90,10 +97,11 @@ export const Button = ({
       onClick={onClick}
       className={clsx(
         buttonClassName,
+        { 'w-5': variant === 'circle' && size === 'sm' },
         { 'w-8': variant === 'circle' && size === 'sm' },
         { 'w-10': variant === 'circle' && size === 'md' },
         { 'rounded-full': variant === 'circle' },
-        { 'rounded-md px-2': variant === 'normal' },
+        { 'rounded-md': variant === 'normal' },
         {
           'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white':
             color === 'light' && !isActive,
@@ -105,14 +113,20 @@ export const Button = ({
         { 'text-white': color === 'primary' },
         { 'bg-blue-500 hover:bg-blue-400': color === 'primary' && !disabled },
         { 'bg-blue-300 cursor-default': color === 'primary' && disabled },
-        { 'h-8': size === 'sm' },
-        { 'h-10': size === 'md' },
+        {
+          'bg-red-500 hover:bg-red-400 text-white':
+            color === 'danger' && !disabled,
+        },
+        { 'bg-red-300 cursor-default': color === 'danger' && disabled },
+        { 'h-5 px-1': size === 'xs' },
+        { 'h-8 px-2': size === 'sm' },
+        { 'h-10 px-2': size === 'md' },
         'transition duration-300 flex justify-center items-center',
       )}
       {...props}
     >
       <FontAwesomeIcon icon={icon} className={iconColorClassName} />
-      {text && <span className="pl-1">{text}</span>}
+      {text && <span className={icon ? 'pl-1' : ''}>{text}</span>}
     </button>
   );
 

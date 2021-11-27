@@ -203,6 +203,9 @@ export const authSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    resetUpdateAvatarState: state => {
+      state.updateAvatarSuccess = false;
+    },
   },
 });
 
@@ -232,6 +235,7 @@ export const {
   postAvatarRequest,
   postAvatarSuccess,
   postAvatarFailure,
+  resetUpdateAvatarState,
 } = authSlice.actions;
 
 export default authSlice.reducer;

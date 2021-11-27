@@ -14,7 +14,7 @@ import useResizeAvatar, { ICutOffPostition } from 'hooks/useResizeAvatar';
 import { getTranslateNumber } from 'utils/getTranslateNumber';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { postAvatarRequest } from 'reducers/auth';
+import { postAvatarRequest, resetUpdateAvatarState } from 'reducers/auth';
 import { RootState } from 'reducers';
 
 interface IProps {
@@ -55,8 +55,9 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
       onClose();
       resetDataBlob();
       toast.success(t('setting.avatar_setting.toasts.updated_avatar_success'));
+      dispatch(resetUpdateAvatarState());
     }
-  }, [updateAvatarSuccess, resetDataBlob, onClose, t]);
+  }, [updateAvatarSuccess, resetDataBlob, onClose, dispatch, t]);
 
   useEffect(() => {
     if (dataBlob) {
@@ -287,9 +288,13 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
           <input {...getInputProps()} />
           <FontAwesomeIcon icon={faCloudUploadAlt} className="text-5xl mb-4" />
           {isDragActive ? (
-            <p>{t('setting.avatar_setting.drop_here')}</p>
+            <p className="text-center">
+              {t('setting.avatar_setting.drop_here')}
+            </p>
           ) : (
-            <p>{t('setting.avatar_setting.drag_or_click')}</p>
+            <p className="text-center">
+              {t('setting.avatar_setting.drag_or_click')}
+            </p>
           )}
         </div>
       )}

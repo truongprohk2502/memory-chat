@@ -1,4 +1,5 @@
 const translation = {
+  management: 'Quản lý',
   friends: 'Bạn bè',
   groups: 'Nhóm',
   documents: 'Tài liệu',

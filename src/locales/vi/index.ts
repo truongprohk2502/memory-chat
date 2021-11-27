@@ -4,6 +4,7 @@ import chat from './chat';
 import error from './error';
 import login from './login';
 import registration from './registration';
+import management from './management';
 
 const translations = {
   header,
@@ -12,6 +13,7 @@ const translations = {
   error,
   login,
   registration,
+  management,
 };
 
 export default translations;

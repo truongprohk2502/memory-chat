@@ -1,4 +1,5 @@
 const translation = {
+  management: 'Management',
   friends: 'Friends',
   groups: 'Groups',
   documents: 'Documents',
