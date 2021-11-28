@@ -20,11 +20,16 @@ export const SubFrameContext = createContext<SubFrameContextType>(null);
 
 const Homepage = () => {
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
+
   const {
     initializedToken,
     userInfo,
     pending: authPending,
   } = useSelector((state: RootState) => state.auth);
+  const { pending: userPending } = useSelector(
+    (state: RootState) => state.user,
+  );
+
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -44,7 +49,7 @@ const Homepage = () => {
       <Header />
       <SubFrame />
       <MainFrame />
-      {authPending && <FullSpinner />}
+      {(authPending || userPending) && <FullSpinner />}
     </SubFrameContext.Provider>
   );
 };

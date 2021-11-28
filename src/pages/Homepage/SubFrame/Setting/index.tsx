@@ -9,6 +9,7 @@ import SystemSetting from './SystemSetting';
 import { UploadAvatarModal } from 'components/UploadAvatarModal';
 import { useSelector } from 'react-redux';
 import { RootState } from 'reducers';
+import { getFullname } from 'utils/getFullname';
 
 const Setting = () => {
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
@@ -39,7 +40,14 @@ const Setting = () => {
           buttonClassName="absolute bottom-0 right-0"
         />
       </div>
-      <div className="font-bold my-6 text-center">{`${userInfo?.lastName} ${userInfo?.middleName} ${userInfo?.firstName}`}</div>
+      <div className="font-bold my-6 text-center">
+        {userInfo &&
+          getFullname(
+            userInfo.firstName,
+            userInfo.middleName,
+            userInfo.lastName,
+          )}
+      </div>
       <PersonalSetting
         expandingSettingType={expandingSettingType}
         setExpandingSettingType={(value: SettingLabelType) =>

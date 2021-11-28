@@ -85,7 +85,7 @@ export const Button = ({
           'transition duration-300 flex justify-center items-center cursor-pointer',
         )}
       >
-        <FontAwesomeIcon icon={icon} className={iconColorClassName} />
+        {icon && <FontAwesomeIcon icon={icon} className={iconColorClassName} />}
         {text && <span className="pl-1">{text}</span>}
       </label>
       <input type="file" id={id} className="hidden" />
@@ -125,7 +125,7 @@ export const Button = ({
       )}
       {...props}
     >
-      <FontAwesomeIcon icon={icon} className={iconColorClassName} />
+      {icon && <FontAwesomeIcon icon={icon} className={iconColorClassName} />}
       {text && <span className={icon ? 'pl-1' : ''}>{text}</span>}
     </button>
   );

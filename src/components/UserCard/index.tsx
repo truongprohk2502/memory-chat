@@ -5,21 +5,18 @@ interface IProps {
   name: string;
   email: string;
   phone: string;
+  avatar: string;
   type: 'make-request' | 'send-request' | 'receive-request';
 }
 
-export const UserCard = ({ name, email, phone, type }: IProps) => {
+export const UserCard = ({ name, email, phone, avatar, type }: IProps) => {
   const { t } = useTranslation();
 
   return (
     <div className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer transition duration-150 rounded-md">
       <div className="flex">
         <div className="w-1/4 flex items-center pl-2">
-          <img
-            className="rounded-full w-14 h-14"
-            alt=""
-            src="https://cdn.eva.vn/upload/2-2019/images/2019-05-01/kim-dung-thay-doi-cai-ket-thien-long-bat-bo-vuong-ngu-yen-bo-doan-du-chon-mo-dung-phuc-04-1556685144-556-width640height458.jpg"
-          />
+          <img className="rounded-full w-14 h-14" alt="" src={avatar} />
         </div>
         <div className="w-3/4 ml-2">
           <div className="w-full font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -29,7 +26,7 @@ export const UserCard = ({ name, email, phone, type }: IProps) => {
             {email}
           </div>
           <div className="w-full italic text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-            {phone}
+            {phone ? phone : ''}
           </div>
         </div>
       </div>
