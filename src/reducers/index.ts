@@ -4,12 +4,14 @@ import { logger } from 'redux-logger';
 import rootSaga from 'sagas';
 import authReducer from './auth';
 import userReducer from './user';
+import contactReducer from './contact';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  contact: contactReducer,
 });
 
 const store = configureStore({

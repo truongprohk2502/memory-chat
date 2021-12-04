@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -8,13 +9,15 @@ interface IProps {
 }
 
 const SearchInput = ({ value, onChange, onSubmit }: IProps) => {
+  const { t } = useTranslation();
+
   return (
     <form className="relative py-3" onSubmit={onSubmit}>
       <input
         value={value}
         onChange={onChange}
         type="text"
-        placeholder="Input name or email"
+        placeholder={t('management.placeholders.search_user')}
         className="rounded-full border border-gray-400 dark:bg-gray-300 dark:text-black pl-3 pr-7 py-1 w-full"
       />
       <button

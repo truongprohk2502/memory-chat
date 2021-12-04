@@ -8,6 +8,9 @@ const translation = {
     confirm_request: 'Confirm request',
     delete_request: 'Delete request',
   },
+  placeholders: {
+    search_user: 'Input email or phone number',
+  },
 };
 
 export default translation;

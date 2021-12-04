@@ -8,6 +8,9 @@ const translation = {
     confirm_request: 'Xác nhận yêu cầu',
     delete_request: 'Xóa yêu cầu',
   },
+  placeholders: {
+    search_user: 'Nhập email hoặc số điện thoại',
+  },
 };
 
 export default translation;

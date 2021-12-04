@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   faUserCheck,
   faUserClock,
@@ -13,6 +13,7 @@ import SearchInput from './components/SearchInput';
 import { getUsersByKeywordRequest } from 'reducers/user';
 import SendRequestList from './SendRequestList';
 import ReceiveRequestList from './ReceiveRequestList';
+import { getContactsRequest } from 'reducers/contact';
 
 const Management = () => {
   const [managePage, setManagePage] = useState<
@@ -22,6 +23,10 @@ const Management = () => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getContactsRequest());
+  }, [dispatch]);
 
   const handleSetKeyword = e => {
     setKeyword(e.target.value);
