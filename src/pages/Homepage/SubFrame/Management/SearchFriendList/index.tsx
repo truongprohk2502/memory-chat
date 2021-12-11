@@ -31,6 +31,7 @@ const SearchFriendList = () => {
           }
           name={getFullname(user.firstName, user.middleName, user.lastName)}
           email={user.email}
+          accountType={user.accountType}
           phone={user.phone}
           avatar={user.avatar}
         />

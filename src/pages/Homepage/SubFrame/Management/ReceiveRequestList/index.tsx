@@ -15,13 +15,14 @@ const ReceiveRequestList = () => {
           key={contact.id}
           type="receive-request"
           name={getFullname(
-            contact.invitingUsers?.[0]?.firstName,
-            contact.invitingUsers?.[0]?.middleName,
-            contact.invitingUsers?.[0]?.lastName,
+            contact.members?.[0]?.firstName,
+            contact.members?.[0]?.middleName,
+            contact.members?.[0]?.lastName,
           )}
-          email={contact.invitingUsers?.[0]?.email}
-          phone={contact.invitingUsers?.[0]?.phone}
-          avatar={contact.invitingUsers?.[0]?.avatar}
+          email={contact.members?.[0]?.email}
+          accountType={contact.members?.[0]?.accountType}
+          phone={contact.members?.[0]?.phone}
+          avatar={contact.members?.[0]?.avatar}
         />
       ))}
     </div>

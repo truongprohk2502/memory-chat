@@ -1,16 +1,38 @@
-import { Button } from 'components/Button';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { Button } from 'components/Button';
+import { AccountType } from 'reducers/user';
+import { createContactRequest } from 'reducers/contact';
 
 interface IProps {
   name: string;
   email: string;
+  accountType: AccountType;
   phone: string;
   avatar: string;
   type: 'make-request' | 'send-request' | 'receive-request';
 }
 
-export const UserCard = ({ name, email, phone, avatar, type }: IProps) => {
+export const UserCard = ({
+  name,
+  email,
+  phone,
+  avatar,
+  type,
+  accountType,
+}: IProps) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const makeRequest = (email: string, accountType: AccountType) => {
+    dispatch(createContactRequest({ email, accountType }));
+  };
+
+  const cancelRequest = (email: string, accountType: AccountType) => {};
+
+  const confirmRequest = (email: string, accountType: AccountType) => {};
+
+  const deleteRequest = (email: string, accountType: AccountType) => {};
 
   return (
     <div className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer transition duration-150 rounded-md">
@@ -36,12 +58,14 @@ export const UserCard = ({ name, email, phone, avatar, type }: IProps) => {
             text={t('management.buttons.make_friend')}
             color="primary"
             size="xs"
+            onClick={() => makeRequest(email, accountType)}
           />
         ) : type === 'send-request' ? (
           <Button
             text={t('management.buttons.cancel_request')}
             color="danger"
             size="xs"
+            onClick={() => cancelRequest(email, accountType)}
           />
         ) : (
           <>
@@ -50,11 +74,13 @@ export const UserCard = ({ name, email, phone, avatar, type }: IProps) => {
               color="danger"
               size="xs"
               buttonClassName="mr-2"
+              onClick={() => deleteRequest(email, accountType)}
             />
             <Button
               text={t('management.buttons.confirm_request')}
               color="primary"
               size="xs"
+              onClick={() => confirmRequest(email, accountType)}
             />
           </>
         )}

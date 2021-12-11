@@ -49,10 +49,34 @@ export const contactSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    createContactRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    createContactSuccess: (state, action) => {
+      state.sendingContacts = [...state.sendingContacts, action.payload];
+
+      state.pending = false;
+      state.error = null;
+    },
+    createContactFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
+    addReceivingContact: (state, action) => {
+      state.receivingContacts = [...state.receivingContacts, action.payload];
+    },
   },
 });
 
-export const { getContactsRequest, getContactsSuccess, getContactsFailure } =
-  contactSlice.actions;
+export const {
+  getContactsRequest,
+  getContactsSuccess,
+  getContactsFailure,
+  createContactRequest,
+  createContactSuccess,
+  createContactFailure,
+  addReceivingContact,
+} = contactSlice.actions;
 
 export default contactSlice.reducer;

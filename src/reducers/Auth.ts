@@ -8,6 +8,7 @@ import {
   setRole,
   setToken,
 } from 'utils/storage';
+import { AccountType, GenderType } from './user';
 
 interface IUserInfo {
   id: number;
@@ -15,12 +16,12 @@ interface IUserInfo {
   middleName: string;
   lastName: string;
   email: string;
-  gender: 'male' | 'female';
+  gender: GenderType;
   phone: string;
   dob: string;
   address: string;
   avatar: string;
-  accountType: 'normal' | 'google' | 'facebook';
+  accountType: AccountType;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

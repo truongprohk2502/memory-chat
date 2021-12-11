@@ -1,17 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export type AccountType = 'normal' | 'google' | 'facebook';
+export type GenderType = 'male' | 'female';
+
 export interface IUser {
   id: number;
   firstName: string;
   middleName: string;
   lastName: string;
   email: string;
-  gender: 'male' | 'female';
+  gender: GenderType;
   phone: string;
   dob: string;
   address: string;
   avatar: string;
-  accountType: 'normal' | 'google' | 'facebook';
+  accountType: AccountType;
 }
 
 interface StateProps {

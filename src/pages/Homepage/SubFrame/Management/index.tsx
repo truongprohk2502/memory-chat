@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   faUserCheck,
   faUserClock,
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SubFrameLayout from 'layouts/SubFrameLayout';
 import SearchFriendList from './SearchFriendList';
 import RadioOption from './components/RadioOption';
@@ -13,7 +13,10 @@ import SearchInput from './components/SearchInput';
 import { getUsersByKeywordRequest } from 'reducers/user';
 import SendRequestList from './SendRequestList';
 import ReceiveRequestList from './ReceiveRequestList';
-import { getContactsRequest } from 'reducers/contact';
+import { addReceivingContact, getContactsRequest } from 'reducers/contact';
+import { PusherContext } from 'pages/Homepage';
+import { RECEIVE_CONTACT } from 'constants/pusherEvents';
+import { RootState } from 'reducers';
 
 const Management = () => {
   const [managePage, setManagePage] = useState<
@@ -21,8 +24,25 @@ const Management = () => {
   >('search');
   const [keyword, setKeyword] = useState<string>('');
 
+  const { sendingContacts, receivingContacts } = useSelector(
+    (state: RootState) => state.contact,
+  );
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const channel = useContext(PusherContext);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(RECEIVE_CONTACT, data => {
+        dispatch(addReceivingContact(data));
+      });
+
+      return () => {
+        channel.unbind(RECEIVE_CONTACT);
+      };
+    }
+  }, [channel, dispatch]);
 
   useEffect(() => {
     dispatch(getContactsRequest());
@@ -53,6 +73,7 @@ const Management = () => {
           icon={faUserClock}
           label={t('management.waiting_for_confirmation')}
           isActive={managePage === 'waiting'}
+          count={receivingContacts.length}
           onClick={() => setManagePage('waiting')}
         />
         <RadioOption
@@ -60,6 +81,7 @@ const Management = () => {
           label={t('management.friend_request')}
           className="rounded-b-md"
           isActive={managePage === 'request'}
+          count={sendingContacts.length}
           onClick={() => setManagePage('request')}
         />
         <SearchInput

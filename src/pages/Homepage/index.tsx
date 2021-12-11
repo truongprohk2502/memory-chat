@@ -10,6 +10,7 @@ import { RootState } from 'reducers';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { FullSpinner } from 'components/FullSpinner';
+import Pusher, { Channel } from 'pusher-js';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -17,9 +18,11 @@ type SubFrameContextType = {
 };
 
 export const SubFrameContext = createContext<SubFrameContextType>(null);
+export const PusherContext = createContext<Channel>(null);
 
 const Homepage = () => {
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
+  const [channel, setChannel] = useState<Channel>(null);
 
   const {
     initializedToken,
@@ -34,6 +37,22 @@ const Homepage = () => {
   const history = useHistory();
 
   useEffect(() => {
+    if (userInfo) {
+      const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
+        cluster: process.env.REACT_APP_PUSHER_CLUSTER,
+      });
+      const channelName = `channel_${userInfo.id}`;
+      const channel = pusher.subscribe(channelName);
+      setChannel(channel);
+
+      return () => {
+        pusher.unsubscribe(channelName);
+        pusher.disconnect();
+      };
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
     const token = getToken();
     if (token) {
       dispatch(getUserInfoRequest());
@@ -45,12 +64,14 @@ const Homepage = () => {
   }, [initializedToken, userInfo, history]);
 
   return (
-    <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
-      <Header />
-      <SubFrame />
-      <MainFrame />
-      {(authPending || userPending) && <FullSpinner />}
-    </SubFrameContext.Provider>
+    <PusherContext.Provider value={channel}>
+      <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
+        <Header />
+        <SubFrame />
+        <MainFrame />
+        {(authPending || userPending) && <FullSpinner />}
+      </SubFrameContext.Provider>
+    </PusherContext.Provider>
   );
 };
 

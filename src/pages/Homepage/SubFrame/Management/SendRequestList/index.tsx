@@ -18,6 +18,7 @@ const SendRequestList = () => {
             contact.invitingUsers?.[0]?.lastName,
           )}
           email={contact.invitingUsers?.[0]?.email}
+          accountType={contact.invitingUsers?.[0]?.accountType}
           phone={contact.invitingUsers?.[0]?.phone}
           avatar={contact.invitingUsers?.[0]?.avatar}
         />
