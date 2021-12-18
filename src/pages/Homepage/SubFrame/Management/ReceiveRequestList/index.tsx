@@ -13,6 +13,7 @@ const ReceiveRequestList = () => {
       {receivingContacts.map(contact => (
         <UserCard
           key={contact.id}
+          contactId={contact.id}
           type="receive-request"
           name={getFullname(
             contact.members?.[0]?.firstName,

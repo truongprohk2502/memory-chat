@@ -13,9 +13,13 @@ import SearchInput from './components/SearchInput';
 import { getUsersByKeywordRequest } from 'reducers/user';
 import SendRequestList from './SendRequestList';
 import ReceiveRequestList from './ReceiveRequestList';
-import { addReceivingContact, getContactsRequest } from 'reducers/contact';
+import {
+  addReceivingContact,
+  getContactsRequest,
+  removeReceivingContact,
+} from 'reducers/contact';
 import { PusherContext } from 'pages/Homepage';
-import { RECEIVE_CONTACT } from 'constants/pusherEvents';
+import { CANCEL_CONTACT, RECEIVE_CONTACT } from 'constants/pusherEvents';
 import { RootState } from 'reducers';
 
 const Management = () => {
@@ -38,8 +42,13 @@ const Management = () => {
         dispatch(addReceivingContact(data));
       });
 
+      channel.bind(CANCEL_CONTACT, data => {
+        dispatch(removeReceivingContact(data));
+      });
+
       return () => {
         channel.unbind(RECEIVE_CONTACT);
+        channel.unbind(CANCEL_CONTACT);
       };
     }
   }, [channel, dispatch]);

@@ -2,9 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Button } from 'components/Button';
 import { AccountType } from 'reducers/user';
-import { createContactRequest } from 'reducers/contact';
+import { cancelContactRequest, createContactRequest } from 'reducers/contact';
 
 interface IProps {
+  contactId?: number;
   name: string;
   email: string;
   accountType: AccountType;
@@ -14,6 +15,7 @@ interface IProps {
 }
 
 export const UserCard = ({
+  contactId,
   name,
   email,
   phone,
@@ -28,7 +30,9 @@ export const UserCard = ({
     dispatch(createContactRequest({ email, accountType }));
   };
 
-  const cancelRequest = (email: string, accountType: AccountType) => {};
+  const cancelRequest = (contactId: number) => {
+    dispatch(cancelContactRequest(contactId));
+  };
 
   const confirmRequest = (email: string, accountType: AccountType) => {};
 
@@ -65,7 +69,7 @@ export const UserCard = ({
             text={t('management.buttons.cancel_request')}
             color="danger"
             size="xs"
-            onClick={() => cancelRequest(email, accountType)}
+            onClick={() => cancelRequest(contactId)}
           />
         ) : (
           <>

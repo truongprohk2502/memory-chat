@@ -63,8 +63,29 @@ export const contactSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    cancelContactRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    cancelContactSuccess: (state, action) => {
+      state.sendingContacts = state.sendingContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
+
+      state.pending = false;
+      state.error = null;
+    },
+    cancelContactFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     addReceivingContact: (state, action) => {
       state.receivingContacts = [...state.receivingContacts, action.payload];
+    },
+    removeReceivingContact: (state, action) => {
+      state.receivingContacts = state.receivingContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
     },
   },
 });
@@ -76,7 +97,11 @@ export const {
   createContactRequest,
   createContactSuccess,
   createContactFailure,
+  cancelContactRequest,
+  cancelContactSuccess,
+  cancelContactFailure,
   addReceivingContact,
+  removeReceivingContact,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

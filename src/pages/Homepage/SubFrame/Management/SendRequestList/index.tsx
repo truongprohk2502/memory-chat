@@ -11,6 +11,7 @@ const SendRequestList = () => {
       {sendingContacts.map(contact => (
         <UserCard
           key={contact.id}
+          contactId={contact.id}
           type="send-request"
           name={getFullname(
             contact.invitingUsers?.[0]?.firstName,

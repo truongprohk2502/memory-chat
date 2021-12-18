@@ -18,6 +18,21 @@ const SearchFriendList = () => {
       {searchUsers.map(user => (
         <UserCard
           key={user.id}
+          contactId={
+            sendingContacts.some(contact =>
+              isTheSameUser(contact.invitingUsers?.[0], user),
+            )
+              ? sendingContacts.find(contact =>
+                  isTheSameUser(contact.invitingUsers?.[0], user),
+                ).id
+              : receivingContacts.some(contact =>
+                  isTheSameUser(contact.members?.[0], user),
+                )
+              ? receivingContacts.find(contact =>
+                  isTheSameUser(contact.members?.[0], user),
+                ).id
+              : 0
+          }
           type={
             sendingContacts.some(contact =>
               isTheSameUser(contact.invitingUsers?.[0], user),
