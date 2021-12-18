@@ -79,11 +79,32 @@ export const contactSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    deleteContactRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    deleteContactSuccess: (state, action) => {
+      state.receivingContacts = state.receivingContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
+
+      state.pending = false;
+      state.error = null;
+    },
+    deleteContactFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     addReceivingContact: (state, action) => {
       state.receivingContacts = [...state.receivingContacts, action.payload];
     },
     removeReceivingContact: (state, action) => {
       state.receivingContacts = state.receivingContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
+    },
+    removeSendingContact: (state, action) => {
+      state.sendingContacts = state.sendingContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
     },
@@ -100,8 +121,12 @@ export const {
   cancelContactRequest,
   cancelContactSuccess,
   cancelContactFailure,
+  deleteContactRequest,
+  deleteContactSuccess,
+  deleteContactFailure,
   addReceivingContact,
   removeReceivingContact,
+  removeSendingContact,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

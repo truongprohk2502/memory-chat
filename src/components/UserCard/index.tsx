@@ -2,7 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Button } from 'components/Button';
 import { AccountType } from 'reducers/user';
-import { cancelContactRequest, createContactRequest } from 'reducers/contact';
+import {
+  cancelContactRequest,
+  createContactRequest,
+  deleteContactRequest,
+} from 'reducers/contact';
 
 interface IProps {
   contactId?: number;
@@ -36,7 +40,9 @@ export const UserCard = ({
 
   const confirmRequest = (email: string, accountType: AccountType) => {};
 
-  const deleteRequest = (email: string, accountType: AccountType) => {};
+  const deleteRequest = (contactId: number) => {
+    dispatch(deleteContactRequest(contactId));
+  };
 
   return (
     <div className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer transition duration-150 rounded-md">
@@ -78,7 +84,7 @@ export const UserCard = ({
               color="danger"
               size="xs"
               buttonClassName="mr-2"
-              onClick={() => deleteRequest(email, accountType)}
+              onClick={() => deleteRequest(contactId)}
             />
             <Button
               text={t('management.buttons.confirm_request')}

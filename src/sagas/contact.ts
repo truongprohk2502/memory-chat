@@ -8,6 +8,9 @@ import {
   cancelContactRequest,
   cancelContactSuccess,
   cancelContactFailure,
+  deleteContactRequest,
+  deleteContactSuccess,
+  deleteContactFailure,
 } from 'reducers/contact';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -53,8 +56,23 @@ export function* cancelContact(action) {
   );
 }
 
+export function* deleteContact(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'delete',
+      urlTemplate: '/contact/delete-duo/:contactId',
+      params: [{ name: 'contactId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(deleteContactSuccess(data));
+    },
+    deleteContactFailure,
+  );
+}
+
 export function* contactWatcher() {
   yield takeEvery(getContactsRequest, getContacts);
   yield takeEvery(createContactRequest, createContact);
   yield takeEvery(cancelContactRequest, cancelContact);
+  yield takeEvery(deleteContactRequest, deleteContact);
 }

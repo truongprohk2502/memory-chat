@@ -17,9 +17,14 @@ import {
   addReceivingContact,
   getContactsRequest,
   removeReceivingContact,
+  removeSendingContact,
 } from 'reducers/contact';
 import { PusherContext } from 'pages/Homepage';
-import { CANCEL_CONTACT, RECEIVE_CONTACT } from 'constants/pusherEvents';
+import {
+  CANCEL_CONTACT,
+  DELETE_CONTACT,
+  RECEIVE_CONTACT,
+} from 'constants/pusherEvents';
 import { RootState } from 'reducers';
 
 const Management = () => {
@@ -46,9 +51,14 @@ const Management = () => {
         dispatch(removeReceivingContact(data));
       });
 
+      channel.bind(DELETE_CONTACT, data => {
+        dispatch(removeSendingContact(data));
+      });
+
       return () => {
         channel.unbind(RECEIVE_CONTACT);
         channel.unbind(CANCEL_CONTACT);
+        channel.unbind(DELETE_CONTACT);
       };
     }
   }, [channel, dispatch]);
