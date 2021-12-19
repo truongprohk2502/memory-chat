@@ -1,13 +1,19 @@
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IUser } from 'reducers/user';
+import { getFullname } from 'utils/getFullname';
 
-export const ContactCard = () => {
+interface IProps {
+  userInfo: IUser;
+}
+
+export const ContactCard = ({ userInfo }: IProps) => {
   return (
     <div className="rounded-md px-2 py-2 mb-3 last:mb-0 shadow-md bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 flex justify-between items-center cursor-pointer transition duration-150 hover:bg-gray-300">
       <div className="relative">
         <img
           className="w-10 h-10 rounded-full"
-          src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
+          src={userInfo.avatar}
           alt="avatar"
         />
         <FontAwesomeIcon
@@ -17,7 +23,13 @@ export const ContactCard = () => {
       </div>
       <div className="flex-auto flex items-center">
         <div className="flex-auto px-2">
-          <div className="font-semibold text-sm">Nguyen Dinh Truong</div>
+          <div className="font-semibold text-sm">
+            {getFullname(
+              userInfo.firstName,
+              userInfo.middleName,
+              userInfo.lastName,
+            )}
+          </div>
           <div className="text-xs text-gray-400">
             I need job, please help me
           </div>

@@ -6,7 +6,7 @@ import { IUser } from 'reducers/user';
 
 const SearchFriendList = () => {
   const { searchUsers } = useSelector((state: RootState) => state.user);
-  const { sendingContacts, receivingContacts } = useSelector(
+  const { sendingContacts, receivingContacts, activeContacts } = useSelector(
     (state: RootState) => state.contact,
   );
 
@@ -31,6 +31,16 @@ const SearchFriendList = () => {
               ? receivingContacts.find(contact =>
                   isTheSameUser(contact.members?.[0], user),
                 ).id
+              : activeContacts.some(
+                  contact =>
+                    isTheSameUser(contact.members?.[0], user) ||
+                    isTheSameUser(contact.members?.[1], user),
+                )
+              ? activeContacts.find(
+                  contact =>
+                    isTheSameUser(contact.members?.[0], user) ||
+                    isTheSameUser(contact.members?.[1], user),
+                ).id
               : 0
           }
           type={
@@ -42,6 +52,12 @@ const SearchFriendList = () => {
                   isTheSameUser(contact.members?.[0], user),
                 )
               ? 'receive-request'
+              : activeContacts.some(
+                  contact =>
+                    isTheSameUser(contact.members?.[0], user) ||
+                    isTheSameUser(contact.members?.[1], user),
+                )
+              ? 'friend'
               : 'make-request'
           }
           name={getFullname(user.firstName, user.middleName, user.lastName)}

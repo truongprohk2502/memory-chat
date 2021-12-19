@@ -63,6 +63,32 @@ export const contactSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    confirmContactRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    confirmContactSuccess: (state, action) => {
+      const approvedContact = state.receivingContacts.find(
+        contact => contact.id === action.payload.contactId,
+      );
+      const receiver = approvedContact?.invitingUsers?.[0];
+
+      if (receiver) {
+        approvedContact.members = [...approvedContact.members, receiver];
+        approvedContact.invitingUsers = [];
+        state.activeContacts = [...state.activeContacts, approvedContact];
+        state.receivingContacts = state.receivingContacts.filter(
+          contact => contact.id !== action.payload.contactId,
+        );
+      }
+
+      state.pending = false;
+      state.error = null;
+    },
+    confirmContactFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     cancelContactRequest: (state, action) => {
       state.pending = true;
       state.error = null;
@@ -108,6 +134,20 @@ export const contactSlice = createSlice({
         contact => contact.id !== action.payload.contactId,
       );
     },
+    addApprovedContact: (state, action) => {
+      const approvedContact = state.sendingContacts.find(
+        contact => contact.id === action.payload.contactId,
+      );
+      const receiver = approvedContact?.invitingUsers?.[0];
+      if (receiver) {
+        approvedContact.members = [...approvedContact.members, receiver];
+        approvedContact.invitingUsers = [];
+        state.activeContacts = [...state.activeContacts, approvedContact];
+        state.sendingContacts = state.sendingContacts.filter(
+          contact => contact.id !== action.payload.contactId,
+        );
+      }
+    },
   },
 });
 
@@ -118,6 +158,9 @@ export const {
   createContactRequest,
   createContactSuccess,
   createContactFailure,
+  confirmContactRequest,
+  confirmContactSuccess,
+  confirmContactFailure,
   cancelContactRequest,
   cancelContactSuccess,
   cancelContactFailure,
@@ -127,6 +170,7 @@ export const {
   addReceivingContact,
   removeReceivingContact,
   removeSendingContact,
+  addApprovedContact,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

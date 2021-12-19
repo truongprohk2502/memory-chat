@@ -4,12 +4,14 @@ const translation = {
   friend_request: 'Yêu cầu kết bạn',
   buttons: {
     make_friend: 'Kết bạn',
+    unfriend: 'Hủy kết bạn',
     cancel_request: 'Hủy yêu cầu',
     confirm_request: 'Xác nhận yêu cầu',
     delete_request: 'Xóa yêu cầu',
   },
   placeholders: {
     search_user: 'Nhập email hoặc số điện thoại',
+    search_friend: 'Nhập tên...',
   },
 };
 

@@ -5,6 +5,9 @@ import {
   createContactRequest,
   createContactSuccess,
   createContactFailure,
+  confirmContactRequest,
+  confirmContactSuccess,
+  confirmContactFailure,
   cancelContactRequest,
   cancelContactSuccess,
   cancelContactFailure,
@@ -42,6 +45,20 @@ export function* createContact(action) {
   );
 }
 
+export function* confirmContact(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/contact/confirm-duo/:contactId',
+      params: [{ name: 'contactId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(confirmContactSuccess(data));
+    },
+    confirmContactFailure,
+  );
+}
+
 export function* cancelContact(action) {
   yield sagaLayoutFunction(
     {
@@ -73,6 +90,7 @@ export function* deleteContact(action) {
 export function* contactWatcher() {
   yield takeEvery(getContactsRequest, getContacts);
   yield takeEvery(createContactRequest, createContact);
+  yield takeEvery(confirmContactRequest, confirmContact);
   yield takeEvery(cancelContactRequest, cancelContact);
   yield takeEvery(deleteContactRequest, deleteContact);
 }

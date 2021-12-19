@@ -14,6 +14,7 @@ import { getUsersByKeywordRequest } from 'reducers/user';
 import SendRequestList from './SendRequestList';
 import ReceiveRequestList from './ReceiveRequestList';
 import {
+  addApprovedContact,
   addReceivingContact,
   getContactsRequest,
   removeReceivingContact,
@@ -22,6 +23,7 @@ import {
 import { PusherContext } from 'pages/Homepage';
 import {
   CANCEL_CONTACT,
+  CONFIRM_CONTACT,
   DELETE_CONTACT,
   RECEIVE_CONTACT,
 } from 'constants/pusherEvents';
@@ -47,6 +49,10 @@ const Management = () => {
         dispatch(addReceivingContact(data));
       });
 
+      channel.bind(CONFIRM_CONTACT, data => {
+        dispatch(addApprovedContact(data));
+      });
+
       channel.bind(CANCEL_CONTACT, data => {
         dispatch(removeReceivingContact(data));
       });
@@ -57,6 +63,7 @@ const Management = () => {
 
       return () => {
         channel.unbind(RECEIVE_CONTACT);
+        channel.unbind(CONFIRM_CONTACT);
         channel.unbind(CANCEL_CONTACT);
         channel.unbind(DELETE_CONTACT);
       };

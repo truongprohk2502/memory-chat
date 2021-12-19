@@ -4,6 +4,7 @@ import { Button } from 'components/Button';
 import { AccountType } from 'reducers/user';
 import {
   cancelContactRequest,
+  confirmContactRequest,
   createContactRequest,
   deleteContactRequest,
 } from 'reducers/contact';
@@ -15,7 +16,7 @@ interface IProps {
   accountType: AccountType;
   phone: string;
   avatar: string;
-  type: 'make-request' | 'send-request' | 'receive-request';
+  type: 'make-request' | 'send-request' | 'receive-request' | 'friend';
 }
 
 export const UserCard = ({
@@ -38,10 +39,16 @@ export const UserCard = ({
     dispatch(cancelContactRequest(contactId));
   };
 
-  const confirmRequest = (email: string, accountType: AccountType) => {};
+  const confirmRequest = (contactId: number) => {
+    dispatch(confirmContactRequest(contactId));
+  };
 
   const deleteRequest = (contactId: number) => {
     dispatch(deleteContactRequest(contactId));
+  };
+
+  const unfriendRequest = (contactId: number) => {
+    // dispatch(deleteContactRequest(contactId));
   };
 
   return (
@@ -77,7 +84,7 @@ export const UserCard = ({
             size="xs"
             onClick={() => cancelRequest(contactId)}
           />
-        ) : (
+        ) : type === 'receive-request' ? (
           <>
             <Button
               text={t('management.buttons.delete_request')}
@@ -90,9 +97,16 @@ export const UserCard = ({
               text={t('management.buttons.confirm_request')}
               color="primary"
               size="xs"
-              onClick={() => confirmRequest(email, accountType)}
+              onClick={() => confirmRequest(contactId)}
             />
           </>
+        ) : (
+          <Button
+            text={t('management.buttons.unfriend')}
+            color="danger"
+            size="xs"
+            onClick={() => unfriendRequest(contactId)}
+          />
         )}
       </div>
     </div>
