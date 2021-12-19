@@ -17,6 +17,7 @@ import {
   addApprovedContact,
   addReceivingContact,
   getContactsRequest,
+  removeActiveContact,
   removeReceivingContact,
   removeSendingContact,
 } from 'reducers/contact';
@@ -26,6 +27,7 @@ import {
   CONFIRM_CONTACT,
   DELETE_CONTACT,
   RECEIVE_CONTACT,
+  UNFRIEND_CONTACT,
 } from 'constants/pusherEvents';
 import { RootState } from 'reducers';
 
@@ -61,11 +63,16 @@ const Management = () => {
         dispatch(removeSendingContact(data));
       });
 
+      channel.bind(UNFRIEND_CONTACT, data => {
+        dispatch(removeActiveContact(data));
+      });
+
       return () => {
         channel.unbind(RECEIVE_CONTACT);
         channel.unbind(CONFIRM_CONTACT);
         channel.unbind(CANCEL_CONTACT);
         channel.unbind(DELETE_CONTACT);
+        channel.unbind(UNFRIEND_CONTACT);
       };
     }
   }, [channel, dispatch]);

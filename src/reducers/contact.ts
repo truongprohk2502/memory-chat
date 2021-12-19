@@ -55,7 +55,6 @@ export const contactSlice = createSlice({
     },
     createContactSuccess: (state, action) => {
       state.sendingContacts = [...state.sendingContacts, action.payload];
-
       state.pending = false;
       state.error = null;
     },
@@ -97,7 +96,6 @@ export const contactSlice = createSlice({
       state.sendingContacts = state.sendingContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
-
       state.pending = false;
       state.error = null;
     },
@@ -113,11 +111,25 @@ export const contactSlice = createSlice({
       state.receivingContacts = state.receivingContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
-
       state.pending = false;
       state.error = null;
     },
     deleteContactFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
+    unfriendContactRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    unfriendContactSuccess: (state, action) => {
+      state.activeContacts = state.activeContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
+      state.pending = false;
+      state.error = null;
+    },
+    unfriendContactFailure: (state, action) => {
       state.pending = false;
       state.error = action.payload;
     },
@@ -148,6 +160,11 @@ export const contactSlice = createSlice({
         );
       }
     },
+    removeActiveContact: (state, action) => {
+      state.activeContacts = state.activeContacts.filter(
+        contact => contact.id !== action.payload.contactId,
+      );
+    },
   },
 });
 
@@ -167,10 +184,14 @@ export const {
   deleteContactRequest,
   deleteContactSuccess,
   deleteContactFailure,
+  unfriendContactRequest,
+  unfriendContactSuccess,
+  unfriendContactFailure,
   addReceivingContact,
   removeReceivingContact,
   removeSendingContact,
   addApprovedContact,
+  removeActiveContact,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

@@ -7,6 +7,7 @@ import {
   confirmContactRequest,
   createContactRequest,
   deleteContactRequest,
+  unfriendContactRequest,
 } from 'reducers/contact';
 
 interface IProps {
@@ -48,7 +49,7 @@ export const UserCard = ({
   };
 
   const unfriendRequest = (contactId: number) => {
-    // dispatch(deleteContactRequest(contactId));
+    dispatch(unfriendContactRequest(contactId));
   };
 
   return (

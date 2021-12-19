@@ -14,6 +14,9 @@ import {
   deleteContactRequest,
   deleteContactSuccess,
   deleteContactFailure,
+  unfriendContactRequest,
+  unfriendContactSuccess,
+  unfriendContactFailure,
 } from 'reducers/contact';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -87,10 +90,25 @@ export function* deleteContact(action) {
   );
 }
 
+export function* unfriendContact(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'delete',
+      urlTemplate: '/contact/unfriend-duo/:contactId',
+      params: [{ name: 'contactId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(unfriendContactSuccess(data));
+    },
+    unfriendContactFailure,
+  );
+}
+
 export function* contactWatcher() {
   yield takeEvery(getContactsRequest, getContacts);
   yield takeEvery(createContactRequest, createContact);
   yield takeEvery(confirmContactRequest, confirmContact);
   yield takeEvery(cancelContactRequest, cancelContact);
   yield takeEvery(deleteContactRequest, deleteContact);
+  yield takeEvery(unfriendContactRequest, unfriendContact);
 }
