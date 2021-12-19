@@ -14,6 +14,7 @@ interface StateProps {
   activeContacts: IContact[];
   sendingContacts: IContact[];
   receivingContacts: IContact[];
+  selectedContact: IContact;
   pending: boolean;
   error: string;
 }
@@ -22,6 +23,7 @@ const initialState: StateProps = {
   activeContacts: [],
   sendingContacts: [],
   receivingContacts: [],
+  selectedContact: null,
   pending: false,
   error: null,
 };
@@ -126,6 +128,11 @@ export const contactSlice = createSlice({
       state.activeContacts = state.activeContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
+
+      if (state.selectedContact?.id === action.payload.contactId) {
+        state.selectedContact = null;
+      }
+
       state.pending = false;
       state.error = null;
     },
@@ -164,6 +171,14 @@ export const contactSlice = createSlice({
       state.activeContacts = state.activeContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
+      if (state.selectedContact?.id === action.payload.contactId) {
+        state.selectedContact = null;
+      }
+    },
+    changeSelectedContact: (state, action) => {
+      state.selectedContact = state.activeContacts.find(
+        contact => contact.id === action.payload,
+      );
     },
   },
 });
@@ -192,6 +207,7 @@ export const {
   removeSendingContact,
   addApprovedContact,
   removeActiveContact,
+  changeSelectedContact,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

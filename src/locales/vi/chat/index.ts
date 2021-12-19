@@ -1,4 +1,5 @@
 const translation = {
+  welcome: 'Chào mừng tới Memory Chat App',
   more_actions: {
     profile: 'Thông tin cá nhân',
     delete: 'Xóa liên hệ',

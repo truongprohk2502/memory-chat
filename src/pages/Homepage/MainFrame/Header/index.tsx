@@ -12,16 +12,31 @@ import { Badge } from 'components/Badge';
 import { Button } from 'components/Button';
 import { Dropdown } from 'components/Dropdown';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import { unfriendContactRequest } from 'reducers/contact';
+import { getFullname } from 'utils/getFullname';
 
 const Header = () => {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { selectedContact } = useSelector((state: RootState) => state.contact);
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const selectedUser = selectedContact.members.find(
+    user =>
+      !(
+        user.email === userInfo?.email &&
+        user.accountType === userInfo?.accountType
+      ),
+  );
 
   return (
     <div className="absolute top-0 inset-x-0 h-20 w-full px-5 xl:px-20 flex justify-between items-center border-b border-gray-150 dark:border-gray-500">
       <div className="flex flex-auto items-center">
         <div className="relative">
           <img
-            src="https://chitchat-react.vercel.app/assets/images/contact/2.jpg"
+            src={selectedUser?.avatar}
             alt="logo"
             className="w-12 h-12 object-cover rounded-full"
           />
@@ -31,7 +46,14 @@ const Header = () => {
           />
         </div>
         <div className="ml-2">
-          <div className="font-bold dark:text-white">Nguyen Dinh Truong</div>
+          <div className="font-bold dark:text-white">
+            {selectedUser &&
+              getFullname(
+                selectedUser.firstName,
+                selectedUser.middleName,
+                selectedUser.lastName,
+              )}
+          </div>
           <Badge text="active" variant="success" />
         </div>
       </div>
@@ -68,7 +90,10 @@ const Header = () => {
               icon: faTrashAlt,
               iconColorTailwind: 'text-red-500',
               i18nLabelPath: 'chat.more_actions.delete',
-              onClick: () => {},
+              onClick: () => {
+                selectedContact &&
+                  dispatch(unfriendContactRequest(selectedContact.id));
+              },
             },
             {
               icon: faBan,

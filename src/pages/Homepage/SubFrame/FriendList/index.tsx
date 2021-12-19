@@ -28,11 +28,12 @@ const FriendList = () => {
           {activeContacts.map(contact => (
             <ContactCard
               key={contact.id}
+              contactId={contact.id}
               userInfo={contact.members.find(
                 user =>
                   !(
-                    user.email === userInfo.email &&
-                    user.accountType === userInfo.accountType
+                    user.email === userInfo?.email &&
+                    user.accountType === userInfo?.accountType
                   ),
               )}
             />
