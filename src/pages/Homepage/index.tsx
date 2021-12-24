@@ -35,6 +35,9 @@ const Homepage = () => {
   const { pending: contactPending } = useSelector(
     (state: RootState) => state.contact,
   );
+  const { pending: messagePending } = useSelector(
+    (state: RootState) => state.message,
+  );
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -72,7 +75,9 @@ const Homepage = () => {
         <Header />
         <SubFrame />
         <MainFrame />
-        {(authPending || userPending || contactPending) && <FullSpinner />}
+        {(authPending || userPending || contactPending || messagePending) && (
+          <FullSpinner />
+        )}
       </SubFrameContext.Provider>
     </PusherContext.Provider>
   );

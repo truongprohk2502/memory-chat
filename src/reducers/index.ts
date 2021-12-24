@@ -5,6 +5,7 @@ import rootSaga from 'sagas';
 import authReducer from './auth';
 import userReducer from './user';
 import contactReducer from './contact';
+import messageReducer from './message';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   contact: contactReducer,
+  message: messageReducer,
 });
 
 const store = configureStore({

@@ -15,6 +15,21 @@ const translation = {
       send: 'Send message',
     },
   },
+  times_ago: {
+    just_finished: 'Just finished',
+    last_minute: 'Last minute',
+    last_hour: 'Last hour',
+    last_day: 'Last day',
+    last_week: 'Last week',
+    last_month: 'Last month',
+    last_year: 'Last year',
+    minutes_ago: 'minutes ago',
+    hours_ago: 'hours ago',
+    days_ago: 'days ago',
+    weeks_ago: 'weeks ago',
+    months_ago: 'months ago',
+    years_ago: 'years ago',
+  },
 };
 
 export default translation;

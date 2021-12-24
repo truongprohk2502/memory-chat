@@ -15,6 +15,21 @@ const translation = {
       send: 'Gửi tin nhắn',
     },
   },
+  times_ago: {
+    just_finished: 'Vừa xong',
+    last_minute: 'Phút trước',
+    last_hour: 'Giờ trước',
+    last_day: 'Ngày trước',
+    last_week: 'Tuần trước',
+    last_month: 'Tháng trước',
+    last_year: 'Năm trước',
+    minutes_ago: 'phút trước',
+    hours_ago: 'giờ trước',
+    days_ago: 'ngày trước',
+    weeks_ago: 'tuần trước',
+    months_ago: 'tháng trước',
+    years_ago: 'năm trước',
+  },
 };
 
 export default translation;

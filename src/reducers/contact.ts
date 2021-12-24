@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IMessage } from './message';
 import { IUser } from './user';
 
 export interface IContact {
@@ -8,6 +9,8 @@ export interface IContact {
   creator: IUser;
   members: IUser[];
   invitingUsers: IUser[];
+  lastMessage: IMessage;
+  unreadMessagesTotal: number;
 }
 
 interface StateProps {

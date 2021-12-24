@@ -36,6 +36,8 @@ const FriendList = () => {
                     user.accountType === userInfo?.accountType
                   ),
               )}
+              lastMessage={contact.lastMessage}
+              unreadMessagesTotal={contact.unreadMessagesTotal}
             />
           ))}
         </div>
