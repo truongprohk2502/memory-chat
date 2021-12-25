@@ -22,13 +22,7 @@ import {
   removeSendingContact,
 } from 'reducers/contact';
 import { PusherContext } from 'pages/Homepage';
-import {
-  CANCEL_CONTACT,
-  CONFIRM_CONTACT,
-  DELETE_CONTACT,
-  RECEIVE_CONTACT,
-  UNFRIEND_CONTACT,
-} from 'constants/pusherEvents';
+import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import { RootState } from 'reducers';
 
 const Management = () => {
@@ -47,32 +41,32 @@ const Management = () => {
 
   useEffect(() => {
     if (channel) {
-      channel.bind(RECEIVE_CONTACT, data => {
+      channel.bind(PUSHER_EVENTS.RECEIVE_CONTACT, data => {
         dispatch(addReceivingContact(data));
       });
 
-      channel.bind(CONFIRM_CONTACT, data => {
+      channel.bind(PUSHER_EVENTS.CONFIRM_CONTACT, data => {
         dispatch(addApprovedContact(data));
       });
 
-      channel.bind(CANCEL_CONTACT, data => {
+      channel.bind(PUSHER_EVENTS.CANCEL_CONTACT, data => {
         dispatch(removeReceivingContact(data));
       });
 
-      channel.bind(DELETE_CONTACT, data => {
+      channel.bind(PUSHER_EVENTS.DELETE_CONTACT, data => {
         dispatch(removeSendingContact(data));
       });
 
-      channel.bind(UNFRIEND_CONTACT, data => {
+      channel.bind(PUSHER_EVENTS.UNFRIEND_CONTACT, data => {
         dispatch(removeActiveContact(data));
       });
 
       return () => {
-        channel.unbind(RECEIVE_CONTACT);
-        channel.unbind(CONFIRM_CONTACT);
-        channel.unbind(CANCEL_CONTACT);
-        channel.unbind(DELETE_CONTACT);
-        channel.unbind(UNFRIEND_CONTACT);
+        channel.unbind(PUSHER_EVENTS.RECEIVE_CONTACT);
+        channel.unbind(PUSHER_EVENTS.CONFIRM_CONTACT);
+        channel.unbind(PUSHER_EVENTS.CANCEL_CONTACT);
+        channel.unbind(PUSHER_EVENTS.DELETE_CONTACT);
+        channel.unbind(PUSHER_EVENTS.UNFRIEND_CONTACT);
       };
     }
   }, [channel, dispatch]);

@@ -183,6 +183,15 @@ export const contactSlice = createSlice({
         contact => contact.id === action.payload,
       );
     },
+    addLastMessage: (state, action) => {
+      const contact = state.activeContacts.find(
+        contact => contact.id === action.payload?.contact?.id,
+      );
+      if (contact) {
+        contact.lastMessage = action.payload;
+        contact.unreadMessagesTotal++;
+      }
+    },
   },
 });
 
@@ -211,6 +220,7 @@ export const {
   addApprovedContact,
   removeActiveContact,
   changeSelectedContact,
+  addLastMessage,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

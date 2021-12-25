@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   faLaugh,
   faMicrophone,
@@ -7,15 +9,24 @@ import {
   faPhotoVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
-import { useTranslation } from 'react-i18next';
+import { postMessageRequest } from 'reducers/message';
+import { RootState } from 'reducers';
 
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
 
+  const { selectedContact } = useSelector((state: RootState) => state.contact);
+
+  const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const handleSubmit = e => {
     e.preventDefault();
+    setMessage('');
+    selectedContact &&
+      dispatch(
+        postMessageRequest({ text: message, contactId: selectedContact.id }),
+      );
   };
 
   const handleChangeMessage = e => {

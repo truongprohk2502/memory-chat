@@ -1,14 +1,14 @@
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
 import { changeSelectedContact } from 'reducers/contact';
 import { getMessagesRequest, IMessage } from 'reducers/message';
 import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 import { getTimeAgo } from 'utils/getTime';
+import { LIMIT_MESSAGES } from 'constants/limitRecords';
 
 interface IProps {
   contactId: number;
@@ -100,7 +100,7 @@ export const ContactCard = ({
           {lastMessage && (
             <div className="text-xs">{getTimeText(lastMessage.createdAt)}</div>
           )}
-          {unreadMessagesTotal && (
+          {!!unreadMessagesTotal && (
             <div className="w-5 h-5 rounded-full mt-1 bg-blue-500 text-white font-bold text-xs flex justify-center items-center">
               {unreadMessagesTotal}
             </div>
