@@ -35,7 +35,7 @@ const Homepage = () => {
   const { pending: contactPending } = useSelector(
     (state: RootState) => state.contact,
   );
-  const { pending: messagePending } = useSelector(
+  const { pendingGetInitMessages: messagePending } = useSelector(
     (state: RootState) => state.message,
   );
 

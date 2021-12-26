@@ -4,7 +4,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
 import { changeSelectedContact } from 'reducers/contact';
-import { getMessagesRequest, IMessage } from 'reducers/message';
+import { getInitMessagesRequest, IMessage } from 'reducers/message';
 import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 import { getTimeAgo } from 'utils/getTime';
@@ -31,7 +31,7 @@ export const ContactCard = ({
     if (selectedContact?.id !== contactId) {
       dispatch(changeSelectedContact(contactId));
       dispatch(
-        getMessagesRequest({ contactId, page: 0, limit: LIMIT_MESSAGES }),
+        getInitMessagesRequest({ contactId, page: 0, limit: LIMIT_MESSAGES }),
       );
     }
   };

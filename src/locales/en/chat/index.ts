@@ -1,5 +1,7 @@
 const translation = {
   welcome: 'Welcome to Memory Chat App',
+  sending_message: 'Sending message',
+  loading_message: 'Loading message',
   more_actions: {
     profile: 'Profile',
     delete: 'Delete',

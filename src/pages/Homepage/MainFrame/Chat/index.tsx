@@ -1,13 +1,17 @@
 import clsx from 'clsx';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
-import { addMessage, IMessage } from 'reducers/message';
+import { addMessage, getMessagesRequest, IMessage } from 'reducers/message';
 import { PusherContext } from 'pages/Homepage';
 import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import { addLastMessage } from 'reducers/contact';
+import { Spinner } from 'components/Spinner';
+import { useTranslation } from 'react-i18next';
+import { TIMEOUT } from 'constants/timeout';
+import { LIMIT_MESSAGES } from 'constants/limitRecords';
 
 type MessageType = 'you' | 'me';
 
@@ -18,12 +22,22 @@ interface IMessageGroup {
 
 const Chat = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const { messages } = useSelector((state: RootState) => state.message);
+  const {
+    messages,
+    page,
+    unavailableMoreMessages,
+    pendingPostMessage,
+    pendingGetInitMessages,
+    pendingGetMessages,
+  } = useSelector((state: RootState) => state.message);
   const { selectedContact } = useSelector((state: RootState) => state.contact);
 
   const [groupMessages, setGroupMessages] = useState<IMessageGroup[]>([]);
   const [lastReadMessage, setLastReadMessage] = useState<IMessage>(null);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const channel = useContext(PusherContext);
 
@@ -39,6 +53,55 @@ const Chat = () => {
       };
     }
   }, [channel, selectedContact, dispatch]);
+
+  useEffect(() => {
+    if (containerRef.current && !pendingGetInitMessages) {
+      setTimeout(() => {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }, TIMEOUT.RENDER_MESSAGES);
+    }
+  }, [pendingGetInitMessages]);
+
+  useEffect(() => {
+    if (containerRef.current && pendingPostMessage) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [pendingPostMessage, pendingGetInitMessages]);
+
+  useEffect(() => {
+    const containerElement = containerRef.current;
+
+    if (
+      containerElement &&
+      selectedContact &&
+      !pendingGetMessages &&
+      !unavailableMoreMessages
+    ) {
+      const handleScrollToTop = () => {
+        if (!containerElement.scrollTop) {
+          dispatch(
+            getMessagesRequest({
+              page: page + 1,
+              limit: LIMIT_MESSAGES,
+              contactId: selectedContact.id,
+            }),
+          );
+        }
+      };
+
+      containerElement.addEventListener('scroll', handleScrollToTop);
+
+      return () => {
+        containerElement.removeEventListener('scroll', handleScrollToTop);
+      };
+    }
+  }, [
+    selectedContact,
+    page,
+    unavailableMoreMessages,
+    pendingGetMessages,
+    dispatch,
+  ]);
 
   useEffect(() => {
     if (!userInfo) return;
@@ -107,7 +170,16 @@ const Chat = () => {
   );
 
   return (
-    <div className="absolute inset-x-0 top-20 bottom-16 flex-auto pt-5 px-5 xl:px-20 overflow-y-auto">
+    <div
+      ref={containerRef}
+      className="absolute inset-x-0 top-20 bottom-16 flex-auto pt-5 px-5 xl:px-20 overflow-y-auto"
+    >
+      {pendingGetMessages && (
+        <div className="flex justify-center items-center my-2 text-black">
+          <Spinner />
+          <span>&nbsp;{t('chat.loading_message')}</span>
+        </div>
+      )}
       {groupMessages.map((group, index) =>
         group.type === 'you' ? (
           <div key={index} className="w-3/4 xl:w-3/5 flex">
@@ -166,6 +238,12 @@ const Chat = () => {
             ))}
           </div>
         ),
+      )}
+      {pendingPostMessage && (
+        <div className="flex justify-end items-center my-2 text-black">
+          <Spinner />
+          <span>&nbsp;{t('chat.sending_message')}</span>
+        </div>
       )}
     </div>
   );

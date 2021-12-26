@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { IUser } from './user';
 
 export interface IMessage {
@@ -12,41 +13,69 @@ export interface IMessage {
 interface StateProps {
   messages: IMessage[];
   page: number;
+  unavailableMoreMessages: boolean;
   pendingPostMessage: boolean;
   errorPostMessage: string;
-  pending: boolean;
-  error: string;
+  pendingGetInitMessages: boolean;
+  errorGetInitMessages: string;
+  pendingGetMessages: boolean;
+  errorGetMessages: string;
 }
 
 const initialState: StateProps = {
   messages: [],
   page: 0,
+  unavailableMoreMessages: false,
   pendingPostMessage: false,
   errorPostMessage: null,
-  pending: false,
-  error: null,
+  pendingGetInitMessages: false,
+  errorGetInitMessages: null,
+  pendingGetMessages: false,
+  errorGetMessages: null,
 };
 
 export const messageSlice = createSlice({
   name: 'message',
   initialState,
   reducers: {
+    getInitMessagesRequest: (state, action) => {
+      state.pendingGetInitMessages = true;
+      state.errorGetInitMessages = null;
+    },
+    getInitMessagesSuccess: (state, action) => {
+      const { messages } = action.payload;
+
+      if (messages.length < LIMIT_MESSAGES) {
+        state.unavailableMoreMessages = true;
+      }
+      state.messages = messages;
+
+      state.pendingGetInitMessages = false;
+      state.errorGetInitMessages = null;
+    },
+    getInitMessagesFailure: (state, action) => {
+      state.pendingGetInitMessages = false;
+      state.errorGetInitMessages = action.payload;
+    },
     getMessagesRequest: (state, action) => {
-      state.pending = true;
-      state.error = null;
+      state.pendingGetMessages = true;
+      state.errorGetMessages = null;
     },
     getMessagesSuccess: (state, action) => {
       const { messages, page } = action.payload;
 
-      state.messages = messages;
+      if (messages.length < LIMIT_MESSAGES) {
+        state.unavailableMoreMessages = true;
+      }
+      state.messages = [...messages, ...state.messages];
       state.page = page;
 
-      state.pending = false;
-      state.error = null;
+      state.pendingGetMessages = false;
+      state.errorGetMessages = null;
     },
     getMessagesFailure: (state, action) => {
-      state.pending = false;
-      state.error = action.payload;
+      state.pendingGetMessages = false;
+      state.errorGetMessages = action.payload;
     },
     postMessageRequest: (state, action) => {
       state.pendingPostMessage = true;
@@ -69,6 +98,9 @@ export const messageSlice = createSlice({
 });
 
 export const {
+  getInitMessagesRequest,
+  getInitMessagesSuccess,
+  getInitMessagesFailure,
   getMessagesRequest,
   getMessagesSuccess,
   getMessagesFailure,
