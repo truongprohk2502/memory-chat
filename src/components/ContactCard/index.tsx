@@ -90,20 +90,28 @@ export const ContactCard = ({
               userInfo.lastName,
             )}
           </div>
-          {lastMessage && (
-            <div className="text-xs text-gray-400">
-              {lastMessage.text ? lastMessage.text : 'file'}
-            </div>
-          )}
+          <div
+            className={`text-xs ${
+              lastMessage ? 'text-gray-400' : 'text-red-400'
+            }`}
+          >
+            {lastMessage
+              ? lastMessage.text
+                ? lastMessage.text
+                : 'file'
+              : t('chat.contact_card.start_chatting_now')}
+          </div>
         </div>
         <div className="w-auto flex flex-col items-end">
           {lastMessage && (
             <div className="text-xs">{getTimeText(lastMessage.createdAt)}</div>
           )}
-          {!!unreadMessagesTotal && (
+          {unreadMessagesTotal ? (
             <div className="w-5 h-5 rounded-full mt-1 bg-blue-500 text-white font-bold text-xs flex justify-center items-center">
               {unreadMessagesTotal}
             </div>
+          ) : (
+            <div className="w-5 h-5 bg-transparent"></div>
           )}
         </div>
       </div>

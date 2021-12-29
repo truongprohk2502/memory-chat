@@ -7,6 +7,9 @@ const translation = {
     delete: 'Delete',
     block: 'Block',
   },
+  contact_card: {
+    start_chatting_now: 'Start chatting now',
+  },
   message: {
     placeholder: 'Write your message...',
     buttons: {

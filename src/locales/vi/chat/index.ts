@@ -7,6 +7,9 @@ const translation = {
     delete: 'Xóa liên hệ',
     block: 'Chặn liên hệ',
   },
+  contact_card: {
+    start_chatting_now: 'Bắt đầu trò chuyện ngay bây giờ',
+  },
   message: {
     placeholder: 'Viết tin nhắn...',
     buttons: {

@@ -1,14 +1,39 @@
+import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'reducers';
+import logo from 'assets/images/logo.png';
+import { PusherContext } from '..';
+import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import Header from './Header';
 import Chat from './Chat';
 import MessageForm from './MessageForm';
-import { useSelector } from 'react-redux';
-import { RootState } from 'reducers';
-import logo from 'assets/images/logo.png';
-import { useTranslation } from 'react-i18next';
+import { addLastMessage } from 'reducers/contact';
+import { addMessage } from 'reducers/message';
 
 const MainFrame = () => {
   const { selectedContact } = useSelector((state: RootState) => state.contact);
+
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const channel = useContext(PusherContext);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.GET_MESSAGE, data => {
+        dispatch(
+          addLastMessage({ message: data, increaseUnreadMessage: true }),
+        );
+        selectedContact &&
+          selectedContact.id === data?.contact?.id &&
+          dispatch(addMessage(data));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.GET_MESSAGE);
+      };
+    }
+  }, [channel, selectedContact, dispatch]);
 
   return (
     <section className="fixed flex flex-col justify-between left-28 lg:left-124 transition-all duration-150 right-0 inset-y-0 border-l border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">

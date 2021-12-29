@@ -184,12 +184,14 @@ export const contactSlice = createSlice({
       );
     },
     addLastMessage: (state, action) => {
+      const { message, increaseUnreadMessage } = action.payload;
+
       const contact = state.activeContacts.find(
-        contact => contact.id === action.payload?.contact?.id,
+        contact => contact.id === message?.contact?.id,
       );
       if (contact) {
-        contact.lastMessage = action.payload;
-        contact.unreadMessagesTotal++;
+        contact.lastMessage = message;
+        increaseUnreadMessage && contact.unreadMessagesTotal++;
       }
     },
   },

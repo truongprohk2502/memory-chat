@@ -25,21 +25,32 @@ const FriendList = () => {
           </div>
         </div>
         <div className="overflow-y-auto flex-auto">
-          {activeContacts.map(contact => (
-            <ContactCard
-              key={contact.id}
-              contactId={contact.id}
-              userInfo={contact.members.find(
-                user =>
-                  !(
-                    user.email === userInfo?.email &&
-                    user.accountType === userInfo?.accountType
-                  ),
-              )}
-              lastMessage={contact.lastMessage}
-              unreadMessagesTotal={contact.unreadMessagesTotal}
-            />
-          ))}
+          {activeContacts
+            .map(contact => ({
+              ...contact,
+              orderId: contact.lastMessage
+                ? new Date(contact.lastMessage.createdAt).getTime()
+                : 0,
+            }))
+            .sort(
+              (firstContact, secondContact) =>
+                secondContact.orderId - firstContact.orderId,
+            )
+            .map(contact => (
+              <ContactCard
+                key={contact.id}
+                contactId={contact.id}
+                userInfo={contact.members.find(
+                  user =>
+                    !(
+                      user.email === userInfo?.email &&
+                      user.accountType === userInfo?.accountType
+                    ),
+                )}
+                lastMessage={contact.lastMessage}
+                unreadMessagesTotal={contact.unreadMessagesTotal}
+              />
+            ))}
         </div>
       </div>
     </SubFrameLayout>

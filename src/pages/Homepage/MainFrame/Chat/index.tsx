@@ -1,13 +1,10 @@
 import clsx from 'clsx';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
-import { addMessage, getMessagesRequest, IMessage } from 'reducers/message';
-import { PusherContext } from 'pages/Homepage';
-import { PUSHER_EVENTS } from 'constants/pusherEvents';
-import { addLastMessage } from 'reducers/contact';
+import { getMessagesRequest, IMessage } from 'reducers/message';
 import { Spinner } from 'components/Spinner';
 import { useTranslation } from 'react-i18next';
 import { TIMEOUT } from 'constants/timeout';
@@ -39,20 +36,6 @@ const Chat = () => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const channel = useContext(PusherContext);
-
-  useEffect(() => {
-    if (channel) {
-      channel.bind(PUSHER_EVENTS.GET_MESSAGE, data => {
-        dispatch(addLastMessage(data));
-        selectedContact.id === data?.contact?.id && dispatch(addMessage(data));
-      });
-
-      return () => {
-        channel.unbind(PUSHER_EVENTS.GET_MESSAGE);
-      };
-    }
-  }, [channel, selectedContact, dispatch]);
 
   useEffect(() => {
     if (containerRef.current && !pendingGetInitMessages) {

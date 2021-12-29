@@ -62,7 +62,9 @@ export function* postMessage(action) {
     },
     function* (data) {
       yield put(postMessageSuccess(data));
-      yield put(addLastMessage(data));
+      yield put(
+        addLastMessage({ message: data, increaseUnreadMessage: false }),
+      );
     },
     postMessageFailure,
   );
