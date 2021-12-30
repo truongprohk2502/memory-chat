@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ImgsViewer from 'react-images-viewer';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
@@ -10,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { TIMEOUT } from 'constants/timeout';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { IUser } from 'reducers/user';
+import { IMAGE_TYPES } from 'constants/file';
 
 type MessageType = 'you' | 'me';
 
@@ -38,6 +40,9 @@ const Chat = ({ selectedUser }: IProps) => {
 
   const [groupMessages, setGroupMessages] = useState<IMessageGroup[]>([]);
   const [lastReadMessage, setLastReadMessage] = useState<IMessage>(null);
+  const [openImagePreview, setOpenImagePreview] = useState<boolean>(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imagePreviewNum, setImagePreviewNum] = useState<number>(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -151,6 +156,21 @@ const Chat = ({ selectedUser }: IProps) => {
     setGroupMessages(groups);
   }, [messages, userInfo]);
 
+  useEffect(() => {
+    setImagePreviews(
+      messages
+        .filter(
+          message => message.file && IMAGE_TYPES.includes(message.file.type),
+        )
+        .map(message => message.file.url),
+    );
+  }, [messages]);
+
+  const handleShowImagePreview = (url: string) => {
+    setImagePreviewNum(imagePreviews.findIndex(imageUrl => imageUrl === url));
+    setOpenImagePreview(true);
+  };
+
   return (
     <div
       ref={containerRef}
@@ -174,13 +194,31 @@ const Chat = ({ selectedUser }: IProps) => {
               {group.messages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={clsx(
-                    { 'rounded-tl-full': index === 0 },
-                    { 'rounded-bl-full': index === group.messages.length - 1 },
-                    'rounded-r-full bg-blue-500 text-white px-3 py-2 my-1',
-                  )}
+                  className={
+                    message.text
+                      ? clsx(
+                          { 'rounded-tl-full': index === 0 },
+                          {
+                            'rounded-bl-full':
+                              index === group.messages.length - 1,
+                          },
+                          'rounded-r-full bg-blue-500 text-white px-3 py-2 my-1',
+                        )
+                      : 'w-32 h-32'
+                  }
                 >
-                  {message.text ? message.text : 'FILE'}
+                  {message.text ? (
+                    message.text
+                  ) : IMAGE_TYPES.includes(message.file.type) ? (
+                    <img
+                      className="w-full h-full object-cover rounded-lg"
+                      src={message.file.url}
+                      alt={message.file.name}
+                      onClick={() => handleShowImagePreview(message.file.url)}
+                    />
+                  ) : (
+                    'FILE'
+                  )}
                 </div>
               ))}
             </div>
@@ -191,15 +229,33 @@ const Chat = ({ selectedUser }: IProps) => {
             className="w-3/4 xl:w-2/5 ml-auto my-2 relative text-black"
           >
             {group.messages.map((message, index) => (
-              <div key={message.id} className="flex items-center">
+              <div key={message.id} className="flex items-center justify-end">
                 <div
-                  className={clsx(
-                    { 'rounded-tr-full': index === 0 },
-                    { 'rounded-br-full': index === group.messages.length - 1 },
-                    'rounded-l-full bg-gray-300 px-3 py-2 mb-2 flex-auto',
-                  )}
+                  className={
+                    message.text
+                      ? clsx(
+                          { 'rounded-tr-full': index === 0 },
+                          {
+                            'rounded-br-full':
+                              index === group.messages.length - 1,
+                          },
+                          'rounded-l-full bg-gray-300 px-3 py-2 mb-2',
+                        )
+                      : 'w-32 h-32'
+                  }
                 >
-                  {message.text ? message.text : 'FILE'}
+                  {message.text ? (
+                    message.text
+                  ) : IMAGE_TYPES.includes(message.file.type) ? (
+                    <img
+                      className="w-full h-full object-cover rounded-lg"
+                      src={message.file.url}
+                      alt={message.file.name}
+                      onClick={() => handleShowImagePreview(message.file.url)}
+                    />
+                  ) : (
+                    'FILE'
+                  )}
                 </div>
                 {message.isRead && lastReadMessage?.id === message.id && (
                   <img
@@ -221,6 +277,15 @@ const Chat = ({ selectedUser }: IProps) => {
           </div>
         ),
       )}
+      <ImgsViewer
+        imgs={imagePreviews.map(url => ({ src: url }))}
+        isOpen={openImagePreview}
+        currImg={imagePreviewNum}
+        backdropCloseable
+        onClickPrev={() => setImagePreviewNum(imagePreviewNum - 1)}
+        onClickNext={() => setImagePreviewNum(imagePreviewNum + 1)}
+        onClose={() => setOpenImagePreview(false)}
+      />
       {pendingPostMessage && (
         <div className="flex justify-end items-center my-2 text-black">
           <Spinner />

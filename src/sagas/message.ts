@@ -55,11 +55,18 @@ export function* getMessages(action) {
 
 export function* postMessage(action) {
   yield sagaLayoutFunction(
-    {
-      method: 'post',
-      urlTemplate: '/message/create',
-      data: action.payload,
-    },
+    action.payload.text
+      ? {
+          method: 'post',
+          urlTemplate: '/message/create',
+          data: action.payload,
+        }
+      : {
+          method: 'post',
+          urlTemplate: '/message/create-image/:contactId',
+          params: [{ name: 'contactId', value: action.payload.contactId }],
+          formData: action.payload.formData,
+        },
     function* (data) {
       yield put(postMessageSuccess(data));
       yield put(

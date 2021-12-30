@@ -50,6 +50,7 @@ export const Button = ({
   containerClassName = '',
   buttonClassName = '',
   onClick,
+  onChange,
   ...props
 }: IProps) => {
   const renderButton = isFileButton ? (
@@ -88,7 +89,7 @@ export const Button = ({
         {icon && <FontAwesomeIcon icon={icon} className={iconColorClassName} />}
         {text && <span className="pl-1">{text}</span>}
       </label>
-      <input type="file" id={id} className="hidden" />
+      <input type="file" id={id} className="hidden" onChange={onChange} />
     </>
   ) : (
     <button

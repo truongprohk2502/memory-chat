@@ -11,6 +11,8 @@ const translation = {
     online: 'Online',
     offline: 'Offline',
     start_chatting_now: 'Start chatting now',
+    sent_image: '{{name}} sent a photo',
+    you: 'You',
   },
   message: {
     placeholder: 'Write your message...',
@@ -30,12 +32,16 @@ const translation = {
     last_week: 'Last week',
     last_month: 'Last month',
     last_year: 'Last year',
-    minutes_ago: 'minutes ago',
-    hours_ago: 'hours ago',
-    days_ago: 'days ago',
-    weeks_ago: 'weeks ago',
-    months_ago: 'months ago',
-    years_ago: 'years ago',
+    minutes_ago: '{{minute}} minutes ago',
+    hours_ago: '{{hour}} hours ago',
+    days_ago: '{{day}} days ago',
+    weeks_ago: '{{week}} weeks ago',
+    months_ago: '{{month}} months ago',
+    years_ago: '{{year}} years ago',
+  },
+  upload_image: {
+    invalid_file_type: 'File must be an image',
+    too_heavy_file_size: 'File size must not greater than 5MB',
   },
 };
 

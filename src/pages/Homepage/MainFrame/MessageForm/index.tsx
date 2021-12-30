@@ -14,6 +14,8 @@ import { RootState } from 'reducers';
 import { EmojiPicker } from 'components/EmojiPicker';
 import clsx from 'clsx';
 import useClickOutside from 'hooks/useClickOutside';
+import { IMAGE_TYPES, LIMIT_IMAGE_SIZE } from 'constants/file';
+import { toast } from 'react-toastify';
 
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
@@ -41,6 +43,27 @@ const MessageForm = () => {
   const handleChangeMessage = e => {
     const message = e.target.value;
     setMessage(message);
+  };
+
+  const handlePostImage = e => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!IMAGE_TYPES.includes(file.type)) {
+      toast.error(t('chat.upload_image.invalid_file_type'));
+      return;
+    }
+
+    if (file.size > LIMIT_IMAGE_SIZE) {
+      toast.error(t('chat.upload_image.too_heavy_file_size'));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    dispatch(postMessageRequest({ contactId: selectedContactId, formData }));
   };
 
   return (
@@ -94,6 +117,7 @@ const MessageForm = () => {
           tooltipName={t('chat.message.buttons.media')}
           tooltipPlacement="top-right"
           onClick={() => {}}
+          onChange={handlePostImage}
         />
       </div>
       <input

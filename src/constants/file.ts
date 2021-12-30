@@ -3,3 +3,4 @@ export const AVATAR_WIDTH_PERCENTAGE = 75;
 export const ZOOM_RANGE_PERCENTAGE = 50;
 export const AVATAR_CONTAINER_SIZE = 400;
 export const AVATAR_CANVAS_SIZE = 100;
+export const LIMIT_IMAGE_SIZE = 5 * 1024 * 1024;

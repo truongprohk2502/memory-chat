@@ -2,10 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { IUser } from './user';
 
+export interface IFile {
+  id: number;
+  name: string;
+  type: string;
+  url: string;
+}
+
 export interface IMessage {
   id: number;
   sender: IUser;
   text: string;
+  file: IFile;
   isRead: boolean;
   createdAt: string;
 }

@@ -44,27 +44,27 @@ export const ContactCard = ({
     if (unit === 'minute')
       return quantity <= 1
         ? t('chat.times_ago.just_finished')
-        : `${quantity} ${t('chat.times_ago.minutes_ago')}`;
+        : t('chat.times_ago.minutes_ago', { minute: quantity });
     else if (unit === 'hour')
       return quantity <= 1
         ? t('chat.times_ago.last_hour')
-        : `${quantity} ${t('chat.times_ago.hours_ago')}`;
+        : t('chat.times_ago.hours_ago', { hour: quantity });
     else if (unit === 'day')
       return quantity <= 1
         ? t('chat.times_ago.last_day')
-        : `${quantity} ${t('chat.times_ago.days_ago')}`;
+        : t('chat.times_ago.days_ago', { day: quantity });
     else if (unit === 'week')
       return quantity <= 1
         ? t('chat.times_ago.last_week')
-        : `${quantity} ${t('chat.times_ago.weeks_ago')}`;
+        : t('chat.times_ago.weeks_ago', { week: quantity });
     else if (unit === 'month')
       return quantity <= 1
         ? t('chat.times_ago.last_month')
-        : `${quantity} ${t('chat.times_ago.months_ago')}`;
+        : t('chat.times_ago.months_ago', { month: quantity });
     else
       return quantity <= 1
         ? t('chat.times_ago.last_year')
-        : `${quantity} ${t('chat.times_ago.years_ago')}`;
+        : t('chat.times_ago.years_ago', { year: quantity });
   };
 
   return (
@@ -102,7 +102,13 @@ export const ContactCard = ({
             {lastMessage
               ? lastMessage.text
                 ? lastMessage.text
-                : 'file'
+                : t('chat.contact_card.sent_image', {
+                    name:
+                      lastMessage.sender.email === userInfo?.email &&
+                      lastMessage.sender.accountType === userInfo?.accountType
+                        ? lastMessage.sender.firstName
+                        : t('chat.contact_card.you'),
+                  })
               : t('chat.contact_card.start_chatting_now')}
           </div>
         </div>

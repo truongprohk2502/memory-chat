@@ -11,6 +11,8 @@ const translation = {
     online: 'Đang online',
     offline: 'Đã offline',
     start_chatting_now: 'Bắt đầu trò chuyện ngay bây giờ',
+    sent_image: '{{name}} đã gửi một ảnh',
+    you: 'Bạn',
   },
   message: {
     placeholder: 'Viết tin nhắn...',
@@ -30,12 +32,16 @@ const translation = {
     last_week: 'Tuần trước',
     last_month: 'Tháng trước',
     last_year: 'Năm trước',
-    minutes_ago: 'phút trước',
-    hours_ago: 'giờ trước',
-    days_ago: 'ngày trước',
-    weeks_ago: 'tuần trước',
-    months_ago: 'tháng trước',
-    years_ago: 'năm trước',
+    minutes_ago: '{{minute}} phút trước',
+    hours_ago: '{{hour}} giờ trước',
+    days_ago: '{{day}} ngày trước',
+    weeks_ago: '{{week}} tuần trước',
+    months_ago: '{{month}} tháng trước',
+    years_ago: '{{year}} năm trước',
+  },
+  upload_image: {
+    invalid_file_type: 'Tệp phải là một hình ảnh',
+    too_heavy_file_size: 'Kích thước tệp không được vượt quá 5MB',
   },
 };
 
