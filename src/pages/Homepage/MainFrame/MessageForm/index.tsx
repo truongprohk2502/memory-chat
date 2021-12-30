@@ -15,7 +15,9 @@ import { RootState } from 'reducers';
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
 
-  const { selectedContact } = useSelector((state: RootState) => state.contact);
+  const { selectedContactId } = useSelector(
+    (state: RootState) => state.contact,
+  );
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -23,9 +25,9 @@ const MessageForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setMessage('');
-    selectedContact &&
+    selectedContactId &&
       dispatch(
-        postMessageRequest({ text: message, contactId: selectedContact.id }),
+        postMessageRequest({ text: message, contactId: selectedContactId }),
       );
   };
 

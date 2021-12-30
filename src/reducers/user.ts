@@ -15,6 +15,7 @@ export interface IUser {
   address: string;
   avatar: string;
   accountType: AccountType;
+  isOnline: boolean;
 }
 
 interface StateProps {

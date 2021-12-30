@@ -15,34 +15,34 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { unfriendContactRequest } from 'reducers/contact';
+import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 
-const Header = () => {
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-  const { selectedContact } = useSelector((state: RootState) => state.contact);
+interface IProps {
+  selectedUser: IUser;
+}
+
+const Header = ({ selectedUser }: IProps) => {
+  const { selectedContactId } = useSelector(
+    (state: RootState) => state.contact,
+  );
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  const selectedUser = selectedContact.members.find(
-    user =>
-      !(
-        user.email === userInfo?.email &&
-        user.accountType === userInfo?.accountType
-      ),
-  );
 
   return (
     <div className="absolute top-0 inset-x-0 h-20 w-full px-5 xl:px-20 flex justify-between items-center border-b border-gray-150 dark:border-gray-500">
       <div className="flex flex-auto items-center">
         <div className="relative">
           <img
-            src={selectedUser?.avatar}
+            src={selectedUser.avatar}
             alt="logo"
             className="w-12 h-12 object-cover rounded-full"
           />
           <FontAwesomeIcon
             icon={faCircle}
-            className="absolute bottom-0 right-0 text-xs text-green-500"
+            className={`absolute bottom-0 right-0 text-xs ${
+              selectedUser.isOnline ? 'text-green-500' : 'text-yellow-500'
+            }`}
           />
         </div>
         <div className="ml-2">
@@ -54,7 +54,14 @@ const Header = () => {
                 selectedUser.lastName,
               )}
           </div>
-          <Badge text="active" variant="success" />
+          <Badge
+            text={
+              selectedUser.isOnline
+                ? t('chat.contact_card.online')
+                : t('chat.contact_card.offline')
+            }
+            variant={selectedUser.isOnline ? 'success' : 'warning'}
+          />
         </div>
       </div>
       <div className="flex items-center">
@@ -91,8 +98,8 @@ const Header = () => {
               iconColorTailwind: 'text-red-500',
               i18nLabelPath: 'chat.more_actions.delete',
               onClick: () => {
-                selectedContact &&
-                  dispatch(unfriendContactRequest(selectedContact.id));
+                selectedContactId &&
+                  dispatch(unfriendContactRequest(selectedContactId));
               },
             },
             {

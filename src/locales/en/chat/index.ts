@@ -8,6 +8,8 @@ const translation = {
     block: 'Block',
   },
   contact_card: {
+    online: 'Online',
+    offline: 'Offline',
     start_chatting_now: 'Start chatting now',
   },
   message: {

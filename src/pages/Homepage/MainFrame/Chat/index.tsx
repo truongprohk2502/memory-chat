@@ -9,6 +9,7 @@ import { Spinner } from 'components/Spinner';
 import { useTranslation } from 'react-i18next';
 import { TIMEOUT } from 'constants/timeout';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
+import { IUser } from 'reducers/user';
 
 type MessageType = 'you' | 'me';
 
@@ -17,7 +18,11 @@ interface IMessageGroup {
   type: MessageType;
 }
 
-const Chat = () => {
+interface IProps {
+  selectedUser: IUser;
+}
+
+const Chat = ({ selectedUser }: IProps) => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const {
     messages,
@@ -27,7 +32,9 @@ const Chat = () => {
     pendingGetInitMessages,
     pendingGetMessages,
   } = useSelector((state: RootState) => state.message);
-  const { selectedContact } = useSelector((state: RootState) => state.contact);
+  const { selectedContactId } = useSelector(
+    (state: RootState) => state.contact,
+  );
 
   const [groupMessages, setGroupMessages] = useState<IMessageGroup[]>([]);
   const [lastReadMessage, setLastReadMessage] = useState<IMessage>(null);
@@ -56,7 +63,7 @@ const Chat = () => {
 
     if (
       containerElement &&
-      selectedContact &&
+      selectedContactId &&
       !pendingGetMessages &&
       !unavailableMoreMessages
     ) {
@@ -66,7 +73,7 @@ const Chat = () => {
             getMessagesRequest({
               page: page + 1,
               limit: LIMIT_MESSAGES,
-              contactId: selectedContact.id,
+              contactId: selectedContactId,
             }),
           );
         }
@@ -79,7 +86,7 @@ const Chat = () => {
       };
     }
   }, [
-    selectedContact,
+    selectedContactId,
     page,
     unavailableMoreMessages,
     pendingGetMessages,
@@ -144,14 +151,6 @@ const Chat = () => {
     setGroupMessages(groups);
   }, [messages, userInfo]);
 
-  const selectedUser = selectedContact.members.find(
-    user =>
-      !(
-        user.email === userInfo?.email &&
-        user.accountType === userInfo?.accountType
-      ),
-  );
-
   return (
     <div
       ref={containerRef}
@@ -167,7 +166,7 @@ const Chat = () => {
         group.type === 'you' ? (
           <div key={index} className="w-3/4 xl:w-3/5 flex">
             <img
-              src={selectedUser?.avatar}
+              src={selectedUser.avatar}
               alt="logo"
               className="w-10 h-10 object-cover rounded-full mr-4"
             />

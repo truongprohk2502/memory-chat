@@ -23,12 +23,14 @@ export const ContactCard = ({
   lastMessage,
   unreadMessagesTotal,
 }: IProps) => {
-  const { selectedContact } = useSelector((state: RootState) => state.contact);
+  const { selectedContactId } = useSelector(
+    (state: RootState) => state.contact,
+  );
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const handleSelectContact = () => {
-    if (selectedContact?.id !== contactId) {
+    if (selectedContactId !== contactId) {
       dispatch(changeSelectedContact(contactId));
       dispatch(
         getInitMessagesRequest({ contactId, page: 0, limit: LIMIT_MESSAGES }),
@@ -78,7 +80,9 @@ export const ContactCard = ({
         />
         <FontAwesomeIcon
           icon={faCircle}
-          className="absolute bottom-0 right-0 text-xs text-green-500"
+          className={`absolute bottom-0 right-0 text-xs ${
+            userInfo.isOnline ? 'text-green-500' : 'text-yellow-500'
+          }`}
         />
       </div>
       <div className="flex-auto flex items-center">

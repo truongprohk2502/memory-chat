@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { FullSpinner } from 'components/FullSpinner';
 import Pusher, { Channel } from 'pusher-js';
+import { io } from 'socket.io-client';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -41,6 +42,20 @@ const Homepage = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    if (userInfo) {
+      const socket = io(`${process.env.REACT_APP_API_ENDPOINT}/events`, {
+        query: {
+          userId: userInfo.id,
+        },
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     if (userInfo) {

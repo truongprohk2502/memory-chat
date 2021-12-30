@@ -17,7 +17,7 @@ interface StateProps {
   activeContacts: IContact[];
   sendingContacts: IContact[];
   receivingContacts: IContact[];
-  selectedContact: IContact;
+  selectedContactId: number;
   pending: boolean;
   error: string;
 }
@@ -26,7 +26,7 @@ const initialState: StateProps = {
   activeContacts: [],
   sendingContacts: [],
   receivingContacts: [],
-  selectedContact: null,
+  selectedContactId: null,
   pending: false,
   error: null,
 };
@@ -132,8 +132,8 @@ export const contactSlice = createSlice({
         contact => contact.id !== action.payload.contactId,
       );
 
-      if (state.selectedContact?.id === action.payload.contactId) {
-        state.selectedContact = null;
+      if (state.selectedContactId === action.payload.contactId) {
+        state.selectedContactId = null;
       }
 
       state.pending = false;
@@ -174,14 +174,14 @@ export const contactSlice = createSlice({
       state.activeContacts = state.activeContacts.filter(
         contact => contact.id !== action.payload.contactId,
       );
-      if (state.selectedContact?.id === action.payload.contactId) {
-        state.selectedContact = null;
+      if (state.selectedContactId === action.payload.contactId) {
+        state.selectedContactId = null;
       }
     },
     changeSelectedContact: (state, action) => {
-      state.selectedContact = state.activeContacts.find(
+      state.selectedContactId = state.activeContacts.find(
         contact => contact.id === action.payload,
-      );
+      )?.id;
     },
     addLastMessage: (state, action) => {
       const { message, increaseUnreadMessage } = action.payload;
@@ -192,6 +192,17 @@ export const contactSlice = createSlice({
       if (contact) {
         contact.lastMessage = message;
         increaseUnreadMessage && contact.unreadMessagesTotal++;
+      }
+    },
+    setContactConnection: (state, action) => {
+      const { userId, isOnline } = action.payload;
+
+      for (let i = 0; i < state.activeContacts.length; i++) {
+        const contact = state.activeContacts[i];
+        const user = contact.members.find(user => user.id === userId);
+        if (user) {
+          user.isOnline = isOnline;
+        }
       }
     },
   },
@@ -223,6 +234,7 @@ export const {
   removeActiveContact,
   changeSelectedContact,
   addLastMessage,
+  setContactConnection,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;

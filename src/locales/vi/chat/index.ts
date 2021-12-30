@@ -8,6 +8,8 @@ const translation = {
     block: 'Chặn liên hệ',
   },
   contact_card: {
+    online: 'Đang online',
+    offline: 'Đã offline',
     start_chatting_now: 'Bắt đầu trò chuyện ngay bây giờ',
   },
   message: {

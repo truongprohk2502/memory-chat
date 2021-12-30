@@ -5,4 +5,6 @@ export const PUSHER_EVENTS = {
   CONFIRM_CONTACT: 'confirm_contact',
   UNFRIEND_CONTACT: 'unfriend_contact',
   GET_MESSAGE: 'get_message',
+  CONNECT_CONTACT: 'connect_contact',
+  DISCONNECT_CONTACT: 'disconnect_contact',
 };

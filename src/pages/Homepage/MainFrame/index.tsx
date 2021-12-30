@@ -8,11 +8,14 @@ import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import Header from './Header';
 import Chat from './Chat';
 import MessageForm from './MessageForm';
-import { addLastMessage } from 'reducers/contact';
+import { addLastMessage, setContactConnection } from 'reducers/contact';
 import { addMessage } from 'reducers/message';
 
 const MainFrame = () => {
-  const { selectedContact } = useSelector((state: RootState) => state.contact);
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { selectedContactId, activeContacts } = useSelector(
+    (state: RootState) => state.contact,
+  );
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -24,8 +27,8 @@ const MainFrame = () => {
         dispatch(
           addLastMessage({ message: data, increaseUnreadMessage: true }),
         );
-        selectedContact &&
-          selectedContact.id === data?.contact?.id &&
+        selectedContactId &&
+          selectedContactId === data?.contact?.id &&
           dispatch(addMessage(data));
       });
 
@@ -33,14 +36,48 @@ const MainFrame = () => {
         channel.unbind(PUSHER_EVENTS.GET_MESSAGE);
       };
     }
-  }, [channel, selectedContact, dispatch]);
+  }, [channel, selectedContactId, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.CONNECT_CONTACT, data => {
+        dispatch(setContactConnection({ userId: data, isOnline: true }));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.CONNECT_CONTACT);
+      };
+    }
+  }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.DISCONNECT_CONTACT, data => {
+        dispatch(setContactConnection({ userId: data, isOnline: false }));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.DISCONNECT_CONTACT);
+      };
+    }
+  }, [channel, dispatch]);
+
+  const selectedUser = activeContacts
+    .find(contact => contact.id === selectedContactId)
+    ?.members.find(
+      user =>
+        !(
+          user.email === userInfo?.email &&
+          user.accountType === userInfo?.accountType
+        ),
+    );
 
   return (
     <section className="fixed flex flex-col justify-between left-28 lg:left-124 transition-all duration-150 right-0 inset-y-0 border-l border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
-      {selectedContact ? (
+      {selectedUser ? (
         <div className="w-full h-full relative">
-          <Header />
-          <Chat />
+          <Header selectedUser={selectedUser} />
+          <Chat selectedUser={selectedUser} />
           <MessageForm />
         </div>
       ) : (
