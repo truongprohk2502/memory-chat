@@ -1,8 +1,9 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef } from 'react';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
+import useClickOutside from 'hooks/useClickOutside';
 
 interface IOption {
   icon: IconDefinition;
@@ -17,23 +18,10 @@ interface IProps {
 }
 
 export const Dropdown = ({ children, options }: IProps) => {
-  const [showSelectBox, setShowSelectBox] = useState<boolean>(false);
-
   const { t } = useTranslation();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = e => {
-      if (wrapperRef && !wrapperRef.current.contains(e.target)) {
-        setShowSelectBox(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const [showSelectBox, setShowSelectBox] = useClickOutside(wrapperRef);
 
   const handleClick = () => {
     !showSelectBox && setShowSelectBox(true);

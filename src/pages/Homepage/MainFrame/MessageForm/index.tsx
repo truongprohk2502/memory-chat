@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,9 +11,14 @@ import {
 import { Button } from 'components/Button';
 import { postMessageRequest } from 'reducers/message';
 import { RootState } from 'reducers';
+import { EmojiPicker } from 'components/EmojiPicker';
+import clsx from 'clsx';
+import useClickOutside from 'hooks/useClickOutside';
 
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { selectedContactId } = useSelector(
     (state: RootState) => state.contact,
@@ -21,6 +26,8 @@ const MessageForm = () => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  const [openEmojiModal, setOpenEmojiModal] = useClickOutside(wrapperRef);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -41,7 +48,16 @@ const MessageForm = () => {
       onSubmit={handleSubmit}
       className="absolute inset-x-0 bottom-0 h-16 py-4 px-5 xl:px-20 flex justify-between items-center border-t border-gray-150 dark:border-gray-500 bg-white dark:bg-gray-900"
     >
-      <div className="flex">
+      <div className="flex relative">
+        <div
+          ref={wrapperRef}
+          className={clsx(
+            { hidden: !openEmojiModal },
+            'absolute bottom-16 left-0',
+          )}
+        >
+          <EmojiPicker onSelect={emoji => setMessage(message + emoji)} />
+        </div>
         <Button
           containerClassName="mr-4"
           variant="circle"
@@ -51,7 +67,7 @@ const MessageForm = () => {
           hasTooltip
           tooltipName={t('chat.message.buttons.sticker')}
           tooltipPlacement="top-right"
-          onClick={() => {}}
+          onClick={() => !openEmojiModal && setOpenEmojiModal(true)}
         />
         <Button
           id="attach-file"

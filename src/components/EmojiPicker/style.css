@@ -1,0 +1,8 @@
+ul.emoji-mart-category-list > li {
+  transition: transform 0.2s;
+}
+
+ul.emoji-mart-category-list > li:hover {
+  cursor: default;
+  transform: scale(1.2);
+}

@@ -21,6 +21,7 @@
     "axios": "^0.22.0",
     "clsx": "^1.1.1",
     "crypto-js": "^4.1.1",
+    "emoji-mart": "^3.0.1",
     "formik": "^2.2.9",
     "i18next": "^20.6.0",
     "postcss": "^7",
