@@ -214,7 +214,9 @@ export const contactSlice = createSlice({
 
       if (contact) {
         contact.unreadMessagesTotal = 0;
-        contact.lastMessage.isRead = true;
+        if (contact.lastMessage) {
+          contact.lastMessage.isRead = true;
+        }
       }
     },
   },

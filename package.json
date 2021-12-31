@@ -24,6 +24,7 @@
     "emoji-mart": "^3.0.1",
     "formik": "^2.2.9",
     "i18next": "^20.6.0",
+    "js-file-download": "^0.4.12",
     "postcss": "^7",
     "pusher-js": "^7.0.3",
     "query-string": "^7.0.1",

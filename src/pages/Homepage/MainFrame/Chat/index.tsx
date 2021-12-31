@@ -2,7 +2,18 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ImgsViewer from 'react-images-viewer';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheckCircle,
+  faDownload,
+  faFile,
+  faFileCode,
+  faFileContract,
+  faFileExcel,
+  faFilePdf,
+  faFilePowerpoint,
+  faFileWord,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
 import { getMessagesRequest, IMessage } from 'reducers/message';
@@ -11,7 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { TIMEOUT } from 'constants/timeout';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { IUser } from 'reducers/user';
-import { IMAGE_TYPES } from 'constants/file';
+import { FILE_TYPES } from 'constants/file';
+import { faHtml5 } from '@fortawesome/free-brands-svg-icons';
+import { downloadFile } from 'utils/downloadFile';
 
 type MessageType = 'you' | 'me';
 
@@ -160,7 +173,8 @@ const Chat = ({ selectedUser }: IProps) => {
     setImagePreviews(
       messages
         .filter(
-          message => message.file && IMAGE_TYPES.includes(message.file.type),
+          message =>
+            message.file && FILE_TYPES.IMAGE_TYPES.includes(message.file.type),
         )
         .map(message => message.file.url),
     );
@@ -169,6 +183,116 @@ const Chat = ({ selectedUser }: IProps) => {
   const handleShowImagePreview = (url: string) => {
     setImagePreviewNum(imagePreviews.findIndex(imageUrl => imageUrl === url));
     setOpenImagePreview(true);
+  };
+
+  const handleDownload = (url: string, originalName: string) => {
+    const fileName = url.substring(url.lastIndexOf('/') + 1);
+    downloadFile(fileName, originalName);
+  };
+
+  const renderMessage = (message: IMessage, index: number, total: number) => {
+    let icon: IconDefinition;
+    let sizeText: string;
+
+    if (message.file) {
+      const { type, size } = message.file;
+
+      if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'word',
+        ).data.includes(type)
+      ) {
+        icon = faFileWord;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'excel',
+        ).data.includes(type)
+      ) {
+        icon = faFileExcel;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'powerpoint',
+        ).data.includes(type)
+      ) {
+        icon = faFilePowerpoint;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'html',
+        ).data.includes(type)
+      ) {
+        icon = faHtml5;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'json',
+        ).data.includes(type)
+      ) {
+        icon = faFileCode;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'pdf',
+        ).data.includes(type)
+      ) {
+        icon = faFilePdf;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'txt',
+        ).data.includes(type)
+      ) {
+        icon = faFileContract;
+      } else {
+        icon = faFile;
+      }
+
+      const kilobyte = 1024;
+      const megabyte = 1024 * kilobyte;
+      const gigabyte = 1024 * megabyte;
+
+      if (size < kilobyte) {
+        sizeText = `${size} B`;
+      } else if (size < megabyte) {
+        sizeText = `${Math.round(10 * (size / kilobyte)) / 10} KB`;
+      } else if (size < gigabyte) {
+        sizeText = `${Math.round(10 * (size / megabyte)) / 10} MB`;
+      } else {
+        sizeText = `${Math.round(10 * (size / gigabyte)) / 10} GB`;
+      }
+    }
+
+    return message.text ? (
+      message.text
+    ) : FILE_TYPES.IMAGE_TYPES.includes(message.file.type) ? (
+      <img
+        className={clsx(
+          { 'rounded-tr-lg': index === 0 },
+          {
+            'rounded-br-lg': index === total - 1,
+          },
+          'w-full h-full object-cover rounded-l-lg',
+        )}
+        src={message.file.url}
+        alt={message.file.name}
+        onClick={() => handleShowImagePreview(message.file.url)}
+      />
+    ) : (
+      <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
+        <div className="w-1/6 pl-1">
+          <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
+            <FontAwesomeIcon icon={icon} className="text-blue-500" />
+          </div>
+        </div>
+        <div className="w-2/3">
+          <div className="font-semibold text-gray-600">{message.file.name}</div>
+          <div className="text-gray-500 text-sm">{sizeText}</div>
+        </div>
+        <div className="w-1/6 flex justify-end pr-2">
+          <button
+            onClick={() => handleDownload(message.file.url, message.file.name)}
+          >
+            <FontAwesomeIcon icon={faDownload} className="text-blue-500" />
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -194,31 +318,30 @@ const Chat = ({ selectedUser }: IProps) => {
               {group.messages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={
-                    message.text
-                      ? clsx(
-                          { 'rounded-tl-lg': index === 0 },
-                          {
-                            'rounded-bl-lg':
-                              index === group.messages.length - 1,
-                          },
-                          'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1',
-                        )
-                      : 'w-32 h-32'
-                  }
+                  className={`mb-2 
+                    ${
+                      message.text
+                        ? clsx(
+                            { 'rounded-tl-lg': index === 0 },
+                            {
+                              'rounded-bl-lg':
+                                index === group.messages.length - 1,
+                            },
+                            'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1',
+                          )
+                        : FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
+                        ? 'w-32 h-32 my-1'
+                        : clsx(
+                            { 'rounded-tl-lg': index === 0 },
+                            {
+                              'rounded-bl-lg':
+                                index === group.messages.length - 1,
+                            },
+                            'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1 w-100 h-20',
+                          )
+                    }`}
                 >
-                  {message.text ? (
-                    message.text
-                  ) : IMAGE_TYPES.includes(message.file.type) ? (
-                    <img
-                      className="w-full h-full object-cover rounded-lg"
-                      src={message.file.url}
-                      alt={message.file.name}
-                      onClick={() => handleShowImagePreview(message.file.url)}
-                    />
-                  ) : (
-                    'FILE'
-                  )}
+                  {renderMessage(message, index, group.messages.length)}
                 </div>
               ))}
             </div>
@@ -226,10 +349,13 @@ const Chat = ({ selectedUser }: IProps) => {
         ) : (
           <div
             key={index}
-            className="w-3/4 xl:w-2/5 ml-auto my-2 relative text-black"
+            className="w-3/4 xl:w-2/5 ml-auto relative text-black"
           >
             {group.messages.map((message, index) => (
-              <div key={message.id} className="flex items-center justify-end">
+              <div
+                key={message.id}
+                className="flex items-center justify-end mb-2"
+              >
                 <div
                   className={
                     message.text
@@ -239,23 +365,21 @@ const Chat = ({ selectedUser }: IProps) => {
                             'rounded-br-lg':
                               index === group.messages.length - 1,
                           },
-                          'rounded-l-lg bg-gray-300 px-3 py-2 mb-2',
+                          'rounded-l-lg bg-gray-300 px-3 py-2',
                         )
-                      : 'w-32 h-32'
+                      : FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
+                      ? 'w-32 h-32'
+                      : clsx(
+                          { 'rounded-tr-lg': index === 0 },
+                          {
+                            'rounded-br-lg':
+                              index === group.messages.length - 1,
+                          },
+                          'rounded-l-lg bg-gray-300 px-3 py-2 w-100 h-20',
+                        )
                   }
                 >
-                  {message.text ? (
-                    message.text
-                  ) : IMAGE_TYPES.includes(message.file.type) ? (
-                    <img
-                      className="w-full h-full object-cover rounded-lg"
-                      src={message.file.url}
-                      alt={message.file.name}
-                      onClick={() => handleShowImagePreview(message.file.url)}
-                    />
-                  ) : (
-                    'FILE'
-                  )}
+                  {renderMessage(message, index, group.messages.length)}
                 </div>
                 <div className="w-4 h-4 ml-2">
                   {message.isRead && lastReadMessage?.id === message.id && (

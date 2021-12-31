@@ -66,7 +66,7 @@ export function* postMessage(action) {
         }
       : {
           method: 'post',
-          urlTemplate: '/message/create-image/:contactId',
+          urlTemplate: `/message/create-${action.payload.dataType}/:contactId`,
           params: [{ name: 'contactId', value: action.payload.contactId }],
           formData: action.payload.formData,
         },

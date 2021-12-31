@@ -12,6 +12,7 @@ const translation = {
     offline: 'Đã offline',
     start_chatting_now: 'Bắt đầu trò chuyện ngay bây giờ',
     sent_image: '{{name}} đã gửi một ảnh',
+    sent_file: '{{name}} đã gửi một tệp',
     you: 'Bạn',
   },
   message: {
@@ -40,6 +41,7 @@ const translation = {
     years_ago: '{{year}} năm trước',
   },
   upload_image: {
+    unsupported_file_type: 'Không hỗ trợ kiểu tệp này',
     invalid_file_type: 'Tệp phải là một hình ảnh',
     too_heavy_file_size: 'Kích thước tệp không được vượt quá 5MB',
   },

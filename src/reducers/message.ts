@@ -7,6 +7,7 @@ export interface IFile {
   name: string;
   type: string;
   url: string;
+  size: number;
 }
 
 export interface IMessage {

@@ -19,7 +19,7 @@ import { RootState } from 'reducers';
 import { EmojiPicker } from 'components/EmojiPicker';
 import clsx from 'clsx';
 import useClickOutside from 'hooks/useClickOutside';
-import { IMAGE_TYPES, LIMIT_IMAGE_SIZE } from 'constants/file';
+import { FILE_TYPES, LIMIT_SIZE } from 'constants/file';
 import { toast } from 'react-toastify';
 import { useVisibleWebsite } from 'hooks/useVisibleWebsite';
 
@@ -77,12 +77,12 @@ const MessageForm = () => {
 
     if (!file) return;
 
-    if (!IMAGE_TYPES.includes(file.type)) {
+    if (!FILE_TYPES.IMAGE_TYPES.includes(file.type)) {
       toast.error(t('chat.upload_image.invalid_file_type'));
       return;
     }
 
-    if (file.size > LIMIT_IMAGE_SIZE) {
+    if (file.size > LIMIT_SIZE.IMAGE_SIZE) {
       toast.error(t('chat.upload_image.too_heavy_file_size'));
       return;
     }
@@ -90,7 +90,45 @@ const MessageForm = () => {
     const formData = new FormData();
     formData.append('file', file);
 
-    dispatch(postMessageRequest({ contactId: selectedContactId, formData }));
+    dispatch(
+      postMessageRequest({
+        contactId: selectedContactId,
+        formData,
+        dataType: 'image',
+      }),
+    );
+  };
+
+  const handlePostFile = e => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (
+      !FILE_TYPES.UPLOAD_TYPES.reduce(
+        (arr, type) => [...arr, ...type.data],
+        [],
+      ).includes(file.type)
+    ) {
+      toast.error(t('chat.upload_image.unsupported_file_type'));
+      return;
+    }
+
+    if (file.size > LIMIT_SIZE.FILE_SIZE) {
+      toast.error(t('chat.upload_image.too_heavy_file_size'));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    dispatch(
+      postMessageRequest({
+        contactId: selectedContactId,
+        formData,
+        dataType: 'file',
+      }),
+    );
   };
 
   const handleReadMessages = () => {
@@ -140,7 +178,7 @@ const MessageForm = () => {
           hasTooltip
           tooltipName={t('chat.message.buttons.file')}
           tooltipPlacement="top-right"
-          onClick={() => {}}
+          onChange={handlePostFile}
         />
         <Button
           id="attach-media"

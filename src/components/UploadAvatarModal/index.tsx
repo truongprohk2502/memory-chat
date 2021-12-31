@@ -6,7 +6,7 @@ import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   AVATAR_CONTAINER_SIZE,
   AVATAR_WIDTH_PERCENTAGE,
-  IMAGE_TYPES,
+  FILE_TYPES,
   ZOOM_RANGE_PERCENTAGE,
 } from 'constants/file';
 import { toast } from 'react-toastify';
@@ -83,7 +83,7 @@ export const UploadAvatarModal = ({ isOpen, onClose }: IProps) => {
       const reader = new FileReader();
       reader.addEventListener('load', getImageRatio);
 
-      if (!IMAGE_TYPES.includes(file.type)) {
+      if (!FILE_TYPES.IMAGE_TYPES.includes(file.type)) {
         toast.error(t('setting.avatar_setting.toasts.invalid_file_type'));
       } else {
         reader.readAsDataURL(file);

@@ -13,6 +13,7 @@ import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 import { getTimeAgo } from 'utils/getTime';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
+import { FILE_TYPES } from 'constants/file';
 
 interface IProps {
   contactId: number;
@@ -107,17 +108,24 @@ export const ContactCard = ({
             {lastMessage
               ? lastMessage.text
                 ? lastMessage.text
-                : t('chat.contact_card.sent_image', {
-                    name:
-                      lastMessage.sender.email === userInfo?.email &&
-                      lastMessage.sender.accountType === userInfo?.accountType
-                        ? lastMessage.sender.firstName
-                        : t('chat.contact_card.you'),
-                  })
+                : t(
+                    `chat.contact_card.sent_${
+                      FILE_TYPES.IMAGE_TYPES.includes(lastMessage.file.type)
+                        ? 'image'
+                        : 'file'
+                    }`,
+                    {
+                      name:
+                        lastMessage.sender.email === userInfo?.email &&
+                        lastMessage.sender.accountType === userInfo?.accountType
+                          ? lastMessage.sender.firstName
+                          : t('chat.contact_card.you'),
+                    },
+                  )
               : t('chat.contact_card.start_chatting_now')}
           </div>
         </div>
-        <div className="w-1/3 flex flex-col items-end">
+        <div className="w-1/3 flex flex-col items-end whitespace-nowrap overflow-hidden overflow-ellipsis">
           {lastMessage && (
             <div className="text-xs">{getTimeText(lastMessage.createdAt)}</div>
           )}

@@ -12,6 +12,7 @@ const translation = {
     offline: 'Offline',
     start_chatting_now: 'Start chatting now',
     sent_image: '{{name}} sent a photo',
+    sent_file: '{{name}} sent a file',
     you: 'You',
   },
   message: {
@@ -40,6 +41,7 @@ const translation = {
     years_ago: '{{year}} years ago',
   },
   upload_image: {
+    unsupported_file_type: 'Unsupported this file type',
     invalid_file_type: 'File must be an image',
     too_heavy_file_size: 'File size must not greater than 5MB',
   },
