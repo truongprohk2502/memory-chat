@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -9,27 +9,54 @@ import {
   faPhotoVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
-import { postMessageRequest } from 'reducers/message';
+import {
+  postMessageRequest,
+  putReadMessagesRequest,
+  resetReadMessages,
+  setReadMessages,
+} from 'reducers/message';
 import { RootState } from 'reducers';
 import { EmojiPicker } from 'components/EmojiPicker';
 import clsx from 'clsx';
 import useClickOutside from 'hooks/useClickOutside';
 import { IMAGE_TYPES, LIMIT_IMAGE_SIZE } from 'constants/file';
 import { toast } from 'react-toastify';
+import { useVisibleWebsite } from 'hooks/useVisibleWebsite';
 
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   const { selectedContactId } = useSelector(
     (state: RootState) => state.contact,
+  );
+  const { messages, alreadyReadMessageData } = useSelector(
+    (state: RootState) => state.message,
   );
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const visibleWebsite = useVisibleWebsite();
 
   const [openEmojiModal, setOpenEmojiModal] = useClickOutside(wrapperRef);
+
+  useEffect(() => {
+    if (alreadyReadMessageData) {
+      selectedContactId === alreadyReadMessageData.contactId &&
+        dispatch(setReadMessages(alreadyReadMessageData.messageIds));
+
+      dispatch(resetReadMessages());
+    }
+  }, [alreadyReadMessageData, selectedContactId, dispatch]);
+
+  useEffect(() => {
+    if (inputRef.current && !visibleWebsite) {
+      inputRef.current.blur();
+    }
+  }, [visibleWebsite]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -66,11 +93,21 @@ const MessageForm = () => {
     dispatch(postMessageRequest({ contactId: selectedContactId, formData }));
   };
 
+  const handleReadMessages = () => {
+    selectedContactId &&
+      messages.some(
+        message =>
+          !message.isRead &&
+          !(
+            message.sender.email === userInfo.email &&
+            message.sender.accountType === userInfo.accountType
+          ),
+      ) &&
+      dispatch(putReadMessagesRequest(selectedContactId));
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="absolute inset-x-0 bottom-0 h-16 py-4 px-5 xl:px-20 flex justify-between items-center border-t border-gray-150 dark:border-gray-500 bg-white dark:bg-gray-900"
-    >
+    <div className="absolute inset-x-0 bottom-0 h-16 py-4 px-5 xl:px-20 flex justify-between items-center border-t border-gray-150 dark:border-gray-500 bg-white dark:bg-gray-900">
       <div className="flex relative">
         <div
           ref={wrapperRef}
@@ -120,13 +157,17 @@ const MessageForm = () => {
           onChange={handlePostImage}
         />
       </div>
-      <input
-        type="text"
-        className="flex-auto focus:outline-none dark:bg-gray-900"
-        placeholder={t('chat.message.placeholder')}
-        value={message}
-        onChange={handleChangeMessage}
-      />
+      <form onSubmit={handleSubmit} className="flex-auto">
+        <input
+          ref={inputRef}
+          type="text"
+          className="w-full focus:outline-none dark:bg-gray-900"
+          placeholder={t('chat.message.placeholder')}
+          value={message}
+          onChange={handleChangeMessage}
+          onFocus={handleReadMessages}
+        />
+      </form>
       <div className="flex">
         <Button
           containerClassName="ml-4"
@@ -150,10 +191,10 @@ const MessageForm = () => {
           hasTooltip
           tooltipName={t('chat.message.buttons.send')}
           tooltipPlacement="top-left"
-          onClick={() => {}}
+          onClick={handleSubmit}
         />
       </div>
-    </form>
+    </div>
   );
 };
 

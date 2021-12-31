@@ -1,10 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
 import { changeSelectedContact } from 'reducers/contact';
-import { getInitMessagesRequest, IMessage } from 'reducers/message';
+import {
+  getInitMessagesRequest,
+  IMessage,
+  putReadMessagesRequest,
+} from 'reducers/message';
 import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 import { getTimeAgo } from 'utils/getTime';
@@ -35,6 +39,7 @@ export const ContactCard = ({
       dispatch(
         getInitMessagesRequest({ contactId, page: 0, limit: LIMIT_MESSAGES }),
       );
+      dispatch(putReadMessagesRequest(contactId));
     }
   };
 
@@ -72,7 +77,7 @@ export const ContactCard = ({
       onClick={handleSelectContact}
       className="rounded-md px-2 py-2 mb-3 last:mb-0 shadow-md bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 flex justify-between items-center cursor-pointer transition duration-150 hover:bg-gray-300"
     >
-      <div className="relative">
+      <div className="relative w-1/6">
         <img
           className="w-10 h-10 rounded-full"
           src={userInfo.avatar}
@@ -85,8 +90,8 @@ export const ContactCard = ({
           }`}
         />
       </div>
-      <div className="flex-auto flex items-center">
-        <div className="flex-auto px-2">
+      <div className=" w-5/6 flex items-center">
+        <div className="w-2/3 px-2">
           <div className="font-semibold text-sm">
             {getFullname(
               userInfo.firstName,
@@ -95,7 +100,7 @@ export const ContactCard = ({
             )}
           </div>
           <div
-            className={`text-xs ${
+            className={`text-xs whitespace-nowrap overflow-hidden overflow-ellipsis ${
               lastMessage ? 'text-gray-400' : 'text-red-400'
             }`}
           >
@@ -112,7 +117,7 @@ export const ContactCard = ({
               : t('chat.contact_card.start_chatting_now')}
           </div>
         </div>
-        <div className="w-auto flex flex-col items-end">
+        <div className="w-1/3 flex flex-col items-end">
           {lastMessage && (
             <div className="text-xs">{getTimeText(lastMessage.createdAt)}</div>
           )}
@@ -120,6 +125,19 @@ export const ContactCard = ({
             <div className="w-5 h-5 rounded-full mt-1 bg-blue-500 text-white font-bold text-xs flex justify-center items-center">
               {unreadMessagesTotal}
             </div>
+          ) : lastMessage ? (
+            lastMessage.isRead ? (
+              <img
+                src={userInfo.avatar}
+                alt="avatar"
+                className="w-4 h-4 m-1 rounded-full"
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                className="text-gray-400 m-1"
+              />
+            )
           ) : (
             <div className="w-5 h-5 bg-transparent"></div>
           )}

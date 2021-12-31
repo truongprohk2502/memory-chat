@@ -197,12 +197,12 @@ const Chat = ({ selectedUser }: IProps) => {
                   className={
                     message.text
                       ? clsx(
-                          { 'rounded-tl-full': index === 0 },
+                          { 'rounded-tl-lg': index === 0 },
                           {
-                            'rounded-bl-full':
+                            'rounded-bl-lg':
                               index === group.messages.length - 1,
                           },
-                          'rounded-r-full bg-blue-500 text-white px-3 py-2 my-1',
+                          'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1',
                         )
                       : 'w-32 h-32'
                   }
@@ -234,12 +234,12 @@ const Chat = ({ selectedUser }: IProps) => {
                   className={
                     message.text
                       ? clsx(
-                          { 'rounded-tr-full': index === 0 },
+                          { 'rounded-tr-lg': index === 0 },
                           {
-                            'rounded-br-full':
+                            'rounded-br-lg':
                               index === group.messages.length - 1,
                           },
-                          'rounded-l-full bg-gray-300 px-3 py-2 mb-2',
+                          'rounded-l-lg bg-gray-300 px-3 py-2 mb-2',
                         )
                       : 'w-32 h-32'
                   }
@@ -257,21 +257,23 @@ const Chat = ({ selectedUser }: IProps) => {
                     'FILE'
                   )}
                 </div>
-                {message.isRead && lastReadMessage?.id === message.id && (
-                  <img
-                    src={selectedUser?.avatar}
-                    alt="logo"
-                    className="w-4 h-4 object-cover rounded-full"
-                  />
-                )}
-                {!message.isRead && (
-                  <div className="ml-1">
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      className="text-gray-400"
+                <div className="w-4 h-4 ml-2">
+                  {message.isRead && lastReadMessage?.id === message.id && (
+                    <img
+                      src={selectedUser?.avatar}
+                      alt="logo"
+                      className="w-full h-full object-cover rounded-full"
                     />
-                  </div>
-                )}
+                  )}
+                  {!message.isRead && (
+                    <div className="ml-1">
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        className="text-gray-400"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>

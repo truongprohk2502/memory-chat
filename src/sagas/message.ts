@@ -1,4 +1,4 @@
-import { addLastMessage } from 'reducers/contact';
+import { addLastMessage, setReadMessageContact } from 'reducers/contact';
 import {
   getInitMessagesRequest,
   getInitMessagesSuccess,
@@ -9,6 +9,9 @@ import {
   postMessageRequest,
   postMessageSuccess,
   postMessageFailure,
+  putReadMessagesRequest,
+  putReadMessagesSuccess,
+  putReadMessagesFailure,
 } from 'reducers/message';
 import { put, takeEvery } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -77,8 +80,24 @@ export function* postMessage(action) {
   );
 }
 
+export function* putReadMessages(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/message/read-messages/:contactId',
+      params: [{ name: 'contactId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(putReadMessagesSuccess(data));
+      yield put(setReadMessageContact(data));
+    },
+    putReadMessagesFailure,
+  );
+}
+
 export function* messageWatcher() {
   yield takeEvery(getInitMessagesRequest, getInitMessages);
   yield takeEvery(getMessagesRequest, getMessages);
   yield takeEvery(postMessageRequest, postMessage);
+  yield takeEvery(putReadMessagesRequest, putReadMessages);
 }

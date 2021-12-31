@@ -8,8 +8,12 @@ import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import Header from './Header';
 import Chat from './Chat';
 import MessageForm from './MessageForm';
-import { addLastMessage, setContactConnection } from 'reducers/contact';
-import { addMessage } from 'reducers/message';
+import {
+  addLastMessage,
+  setContactConnection,
+  setReadMessageContact,
+} from 'reducers/contact';
+import { addMessage, setReadMessages } from 'reducers/message';
 
 const MainFrame = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -61,6 +65,23 @@ const MainFrame = () => {
       };
     }
   }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.READ_MESSAGES, data => {
+        const { contactId, messageIds } = data;
+
+        dispatch(setReadMessageContact(data));
+
+        selectedContactId === contactId &&
+          dispatch(setReadMessages(messageIds));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.READ_MESSAGES);
+      };
+    }
+  }, [channel, selectedContactId, dispatch]);
 
   const selectedUser = activeContacts
     .find(contact => contact.id === selectedContactId)

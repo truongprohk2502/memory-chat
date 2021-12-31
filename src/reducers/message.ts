@@ -18,9 +18,15 @@ export interface IMessage {
   createdAt: string;
 }
 
+interface IReadMessage {
+  contactId: number;
+  messageIds: number[];
+}
+
 interface StateProps {
   messages: IMessage[];
   page: number;
+  alreadyReadMessageData: IReadMessage;
   unavailableMoreMessages: boolean;
   pendingPostMessage: boolean;
   errorPostMessage: string;
@@ -28,11 +34,14 @@ interface StateProps {
   errorGetInitMessages: string;
   pendingGetMessages: boolean;
   errorGetMessages: string;
+  pending: boolean;
+  error: string;
 }
 
 const initialState: StateProps = {
   messages: [],
   page: 0,
+  alreadyReadMessageData: null,
   unavailableMoreMessages: false,
   pendingPostMessage: false,
   errorPostMessage: null,
@@ -40,6 +49,8 @@ const initialState: StateProps = {
   errorGetInitMessages: null,
   pendingGetMessages: false,
   errorGetMessages: null,
+  pending: false,
+  error: null,
 };
 
 export const messageSlice = createSlice({
@@ -47,6 +58,8 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     getInitMessagesRequest: (state, action) => {
+      state.messages = [];
+      state.unavailableMoreMessages = false;
       state.pendingGetInitMessages = true;
       state.errorGetInitMessages = null;
     },
@@ -99,6 +112,43 @@ export const messageSlice = createSlice({
       state.pendingPostMessage = false;
       state.errorPostMessage = action.payload;
     },
+    putReadMessagesRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putReadMessagesSuccess: (state, action) => {
+      state.alreadyReadMessageData = action.payload;
+
+      state.pending = false;
+      state.error = null;
+    },
+    putReadMessagesFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
+    resetReadMessages: state => {
+      state.alreadyReadMessageData = null;
+    },
+    setReadMessages: (state, action) => {
+      const messageIds = action.payload;
+
+      for (let i = 0; i < messageIds.length; i++) {
+        const messageId = messageIds[i];
+
+        const message = state.messages.find(
+          message => message.id === messageId && !message.isRead,
+        );
+
+        if (message) {
+          message.isRead = true;
+        }
+      }
+
+      state.alreadyReadMessageData = null;
+
+      state.pending = false;
+      state.error = action.payload;
+    },
     addMessage: (state, action) => {
       state.messages = [...state.messages, action.payload];
     },
@@ -115,6 +165,11 @@ export const {
   postMessageRequest,
   postMessageSuccess,
   postMessageFailure,
+  putReadMessagesRequest,
+  putReadMessagesSuccess,
+  putReadMessagesFailure,
+  resetReadMessages,
+  setReadMessages,
   addMessage,
 } = messageSlice.actions;
 
