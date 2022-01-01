@@ -12,16 +12,21 @@ import { ROUTES } from 'constants/routes';
 import { FullSpinner } from 'components/FullSpinner';
 import Pusher, { Channel } from 'pusher-js';
 import { io } from 'socket.io-client';
+import { SettingDeviceModal } from 'components/SettingDeviceModal';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
   setSubFrame: (subFrame: ISubFrameType) => void;
+  isOpenSettingDeviceModal: boolean;
+  setIsOpenSettingDeviceModal: (isOpen: boolean) => void;
 };
 
 export const SubFrameContext = createContext<SubFrameContextType>(null);
 export const PusherContext = createContext<Channel>(null);
 
 const Homepage = () => {
+  const [isOpenSettingDeviceModal, setIsOpenSettingDeviceModal] =
+    useState<boolean>(false);
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
   const [channel, setChannel] = useState<Channel>(null);
 
@@ -86,10 +91,21 @@ const Homepage = () => {
 
   return (
     <PusherContext.Provider value={channel}>
-      <SubFrameContext.Provider value={{ subFrame, setSubFrame }}>
+      <SubFrameContext.Provider
+        value={{
+          subFrame,
+          setSubFrame,
+          isOpenSettingDeviceModal,
+          setIsOpenSettingDeviceModal,
+        }}
+      >
         <Header />
         <SubFrame />
         <MainFrame />
+        <SettingDeviceModal
+          isOpen={isOpenSettingDeviceModal}
+          onClose={() => setIsOpenSettingDeviceModal(false)}
+        />
         {(authPending || userPending || contactPending || messagePending) && (
           <FullSpinner />
         )}

@@ -40,8 +40,8 @@ interface IProps {
   isOpen: boolean;
   hideFooter?: boolean;
   disabledConfirmButton?: boolean;
-  confirmText: string;
-  cancelText: string;
+  confirmText?: string;
+  cancelText?: string;
   onClose: () => void;
   onCancel?: () => void;
   onConfirm?: () => void;

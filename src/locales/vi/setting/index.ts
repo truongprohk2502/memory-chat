@@ -61,6 +61,15 @@ const translation = {
           denied: 'Quyền thông báo bị từ chối',
         },
       },
+      setting_devices: {
+        title: 'Cài đặt thiết bị',
+        buttons: {
+          open_modal: 'Mở cửa sổ cài đặt',
+          microphone: 'Mic thu',
+          speaker: 'Loa',
+          camera: 'Máy quay',
+        },
+      },
     },
   },
   avatar_setting: {

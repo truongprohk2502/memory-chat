@@ -61,6 +61,15 @@ const translation = {
           denied: 'Notification is denied',
         },
       },
+      setting_devices: {
+        title: 'Setting devices',
+        buttons: {
+          open_modal: 'Open setting modal',
+          microphone: 'Microphone',
+          speaker: 'Speaker',
+          camera: 'Camera',
+        },
+      },
     },
   },
   avatar_setting: {
