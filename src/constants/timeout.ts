@@ -1,3 +1,4 @@
 export const TIMEOUT = {
   RENDER_MESSAGES: 200,
+  DELAY_UPDATE_DEVICE: 1000,
 };
