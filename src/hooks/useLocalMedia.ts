@@ -28,7 +28,9 @@ export interface ICamAndMic {
 
 export type PageType = 'preview' | 'talk' | 'homepage';
 
-interface IReturnProps {
+export interface ILocalMedia {
+  initializedLocalStream: boolean;
+  isOnBackground: boolean;
   isGettingStream: boolean;
   cameraPermissionGranted: boolean;
   microphonePermissionGranted: boolean;
@@ -63,9 +65,10 @@ interface IReturnProps {
 export const useLocalMedia = (
   pageType: PageType,
   requireCamera: boolean,
-): IReturnProps => {
+): ILocalMedia => {
   const [initializedLocalStream, setInitializedLocalStream] =
     useState<boolean>(false);
+  const [isOnBackground, setIsOnBackground] = useState<boolean>(true);
   const [isGettingStream, setIsGettingStream] = useState<boolean>(false);
 
   const [cameraPermissionGranted, setCameraPermissionGranted] =
@@ -97,8 +100,6 @@ export const useLocalMedia = (
 
   const [mirrorVideo, setMirrorVideo] = useState<boolean>(true);
   const [highFrameRate, setHighFrameRate] = useState<boolean>(true);
-
-  const [isOnBackground, setIsOnBackground] = useState<boolean>(true);
 
   useEffect(() => {
     const advanceMediaSetting = getAdvanceMediaSetting();
@@ -546,11 +547,11 @@ export const useLocalMedia = (
       localStream,
       audioTrack,
       videoTrack,
-      microphonePermissionDenied: initMicrophonePermissionDenied,
-      cameraPermissionDenied: initCameraPermissionDenied,
+      microphonePermissionDenied,
+      cameraPermissionDenied,
     } = await getMediaData({
-      attemptMicrophonePermission: !microphonePermissionDenied,
-      attemptCameraPermission: !cameraPermissionDenied,
+      attemptMicrophonePermission: !microphonePermissionGranted,
+      attemptCameraPermission: !cameraPermissionGranted,
       pageType,
       requireCamera,
       setIsLoading: setIsGettingStream,
@@ -580,8 +581,8 @@ export const useLocalMedia = (
     }
 
     setLocalStream(localStream);
-    setCameraPermissionDenied(initCameraPermissionDenied);
-    setMicrophonePermissionDenied(initMicrophonePermissionDenied);
+    setCameraPermissionDenied(cameraPermissionDenied);
+    setMicrophonePermissionDenied(microphonePermissionDenied);
     setCameras(cameras);
     setSelectedCamera(selectedCamera);
     setMicrophones(microphones);
@@ -593,8 +594,8 @@ export const useLocalMedia = (
   }, [
     pageType,
     requireCamera,
-    microphonePermissionDenied,
-    cameraPermissionDenied,
+    microphonePermissionGranted,
+    cameraPermissionGranted,
   ]);
 
   const handleUpdateMicrophone = async (
@@ -818,12 +819,7 @@ export const useLocalMedia = (
 
   const startMediaStream = async () => {
     setIsOnBackground(false);
-    if (
-      !cameraPermissionGranted &&
-      !microphonePermissionGranted &&
-      !cameraPermissionDenied &&
-      !microphonePermissionDenied
-    ) {
+    if (!initializedLocalStream) {
       onPermission();
     } else {
       if (cameraPermissionDenied && microphonePermissionDenied) return;
@@ -852,6 +848,8 @@ export const useLocalMedia = (
   };
 
   return {
+    initializedLocalStream,
+    isOnBackground,
     isGettingStream,
     cameraPermissionGranted,
     microphonePermissionGranted,

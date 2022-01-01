@@ -13,6 +13,7 @@ import { FullSpinner } from 'components/FullSpinner';
 import Pusher, { Channel } from 'pusher-js';
 import { io } from 'socket.io-client';
 import { SettingDeviceModal } from 'components/SettingDeviceModal';
+import { ILocalMedia, PageType, useLocalMedia } from 'hooks/useLocalMedia';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -21,7 +22,13 @@ type SubFrameContextType = {
   setIsOpenSettingDeviceModal: (isOpen: boolean) => void;
 };
 
+interface LocalMediaType extends ILocalMedia {
+  setPageType: (pageType: PageType) => void;
+  setRequireCamera: (requireCamera: boolean) => void;
+}
+
 export const SubFrameContext = createContext<SubFrameContextType>(null);
+export const LocalMediaContext = createContext<LocalMediaType>(null);
 export const PusherContext = createContext<Channel>(null);
 
 const Homepage = () => {
@@ -29,6 +36,10 @@ const Homepage = () => {
     useState<boolean>(false);
   const [subFrame, setSubFrame] = useState<ISubFrameType>('dashboard');
   const [channel, setChannel] = useState<Channel>(null);
+  const [pageType, setPageType] = useState<PageType>('homepage');
+  const [requireCamera, setRequireCamera] = useState<boolean>(true);
+
+  const localMediaData = useLocalMedia(pageType, requireCamera);
 
   const {
     initializedToken,
@@ -89,6 +100,11 @@ const Homepage = () => {
     initializedToken && !userInfo && history.replace(ROUTES.LOGIN);
   }, [initializedToken, userInfo, history]);
 
+  const handleCloseSettingDeviceModal = () => {
+    localMediaData.stopMediaStream();
+    setIsOpenSettingDeviceModal(false);
+  };
+
   return (
     <PusherContext.Provider value={channel}>
       <SubFrameContext.Provider
@@ -99,16 +115,20 @@ const Homepage = () => {
           setIsOpenSettingDeviceModal,
         }}
       >
-        <Header />
-        <SubFrame />
-        <MainFrame />
-        <SettingDeviceModal
-          isOpen={isOpenSettingDeviceModal}
-          onClose={() => setIsOpenSettingDeviceModal(false)}
-        />
-        {(authPending || userPending || contactPending || messagePending) && (
-          <FullSpinner />
-        )}
+        <LocalMediaContext.Provider
+          value={{ ...localMediaData, setPageType, setRequireCamera }}
+        >
+          <Header />
+          <SubFrame />
+          <MainFrame />
+          <SettingDeviceModal
+            isOpen={isOpenSettingDeviceModal}
+            onClose={handleCloseSettingDeviceModal}
+          />
+          {(authPending || userPending || contactPending || messagePending) && (
+            <FullSpinner />
+          )}
+        </LocalMediaContext.Provider>
       </SubFrameContext.Provider>
     </PusherContext.Provider>
   );

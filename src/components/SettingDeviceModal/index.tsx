@@ -4,11 +4,12 @@ import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHeadphones,
-  faMicrophone,
   faVideo,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'components/Modal';
+import { AudioSetting } from './AudioSetting';
+import { VideoSetting } from './VideoSetting';
 
 interface ISettingCardProps {
   icon: IconDefinition;
@@ -69,10 +70,10 @@ interface IProps {
   onClose: () => void;
 }
 
-type SettingPage = 'microphone' | 'speaker' | 'camera';
+type SettingPage = 'audio' | 'video';
 
 export const SettingDeviceModal = ({ isOpen, onClose }: IProps) => {
-  const [settingPage, setSettingPage] = useState<SettingPage>('microphone');
+  const [settingPage, setSettingPage] = useState<SettingPage>('audio');
 
   const { t } = useTranslation();
 
@@ -88,28 +89,27 @@ export const SettingDeviceModal = ({ isOpen, onClose }: IProps) => {
       <div className="flex">
         <div className="w-1/3">
           <SettingCard
-            icon={faMicrophone}
-            text={t(
-              'setting.system.options.setting_devices.buttons.microphone',
-            )}
-            isSelected={settingPage === 'microphone'}
-            onClick={() => setSettingPage('microphone')}
-          />
-          <SettingCard
             icon={faHeadphones}
-            text={t('setting.system.options.setting_devices.buttons.speaker')}
-            isSelected={settingPage === 'speaker'}
-            onClick={() => setSettingPage('speaker')}
+            text={t(
+              'setting.system.options.setting_devices.buttons.audio_setting',
+            )}
+            isSelected={settingPage === 'audio'}
+            onClick={() => setSettingPage('audio')}
             className="my-2"
           />
           <SettingCard
             icon={faVideo}
-            text={t('setting.system.options.setting_devices.buttons.camera')}
-            isSelected={settingPage === 'camera'}
-            onClick={() => setSettingPage('camera')}
+            text={t(
+              'setting.system.options.setting_devices.buttons.video_setting',
+            )}
+            isSelected={settingPage === 'video'}
+            onClick={() => setSettingPage('video')}
           />
         </div>
-        <div className="w-2/3 pl-2">b</div>
+        <div className="w-2/3 pl-5 min-h-100">
+          <AudioSetting isSelected={settingPage === 'audio'} />
+          <VideoSetting isSelected={settingPage === 'video'} />
+        </div>
       </div>
     </Modal>
   );

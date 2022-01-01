@@ -6,16 +6,27 @@ import clsx from 'clsx';
 
 interface IOption {
   value: string;
-  i18nLabelPath: string;
+  i18nLabelPath?: string;
+  label?: string;
 }
 
 interface IProps {
   value: string;
   options: IOption[];
+  usingI18n?: boolean;
+  isFullWidth?: boolean;
+  hasBorder?: boolean;
   onChange: (value: string) => void;
 }
 
-export const Select = ({ value, options, onChange }: IProps) => {
+export const Select = ({
+  value,
+  options,
+  usingI18n,
+  isFullWidth,
+  hasBorder,
+  onChange,
+}: IProps) => {
   const [showSelectBox, setShowSelectBox] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -51,9 +62,17 @@ export const Select = ({ value, options, onChange }: IProps) => {
     <div className="relative">
       <button
         onClick={handleClick}
-        className="py-1 pl-2 pr-6 bg-gray-200 rounded-md dark:bg-gray-700"
+        className={clsx(
+          { 'w-full text-left pl-4': isFullWidth },
+          { 'border border-gray-400': hasBorder },
+          'whitespace-nowrap overflow-hidden overflow-ellipsis py-1 pl-2 pr-6 bg-gray-200 rounded-md dark:bg-gray-700',
+        )}
       >
-        {selectedOption ? t(selectedOption.i18nLabelPath) : ''}
+        {selectedOption
+          ? usingI18n
+            ? t(selectedOption.i18nLabelPath)
+            : selectedOption.label
+          : ''}
       </button>
       <div className="absolute inset-y-0 right-2 flex items-center text-xs">
         <FontAwesomeIcon icon={faChevronDown} />
@@ -62,16 +81,17 @@ export const Select = ({ value, options, onChange }: IProps) => {
         ref={wrapperRef}
         className={clsx(
           { hidden: !showSelectBox },
+          { 'w-full': isFullWidth },
           'absolute right-0 top-beyond-full bg-white shadow-lg z-10 rounded-md dark:bg-gray-700',
         )}
       >
         {options.map(option => (
           <div
             key={option.value}
-            className="whitespace-nowrap py-1 px-4 cursor-pointer transition duration-150 hover:bg-gray-200 first:rounded-t-md last:rounded-b-md dark:bg-gray-700 dark:hover:bg-gray-500"
+            className="whitespace-nowrap overflow-hidden overflow-ellipsis py-1 px-4 cursor-pointer transition duration-150 hover:bg-gray-200 first:rounded-t-md last:rounded-b-md dark:bg-gray-700 dark:hover:bg-gray-500"
             onClick={() => handleChange(option.value)}
           >
-            {t(option.i18nLabelPath)}
+            {usingI18n ? t(option.i18nLabelPath) : option.label}
           </div>
         ))}
       </div>

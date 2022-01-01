@@ -15,7 +15,7 @@ import {
 } from 'utils/storage';
 import { Toggle } from 'components/Toggle';
 import { SettingLabelType } from 'interfaces/stringLiterals';
-import { SubFrameContext } from 'pages/Homepage';
+import { LocalMediaContext, SubFrameContext } from 'pages/Homepage';
 
 interface IProps {
   expandingSettingType: SettingLabelType;
@@ -35,6 +35,8 @@ const SystemSetting = ({
   const [supportNotification, setSupportNotification] =
     useState<boolean>(false);
   const [deniedNotification, setDeniedNotification] = useState<boolean>(false);
+
+  const { startMediaStream } = useContext(LocalMediaContext);
 
   const { t, i18n } = useTranslation();
 
@@ -96,6 +98,11 @@ const SystemSetting = ({
     setExpanding(!expanding);
   };
 
+  const handleOpenSettingDeviceModal = () => {
+    startMediaStream();
+    setIsOpenSettingDeviceModal(true);
+  };
+
   return (
     <Accordion
       title={t('setting.system.title')}
@@ -109,6 +116,7 @@ const SystemSetting = ({
         <Select
           value={language}
           options={LANGUAGES}
+          usingI18n
           onChange={handleChangeLanguage}
         />
       </div>
@@ -148,7 +156,7 @@ const SystemSetting = ({
           {t('setting.system.options.setting_devices.title')}
         </div>
         <button
-          onClick={() => setIsOpenSettingDeviceModal(true)}
+          onClick={handleOpenSettingDeviceModal}
           className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 transition duration-150 rounded-md"
         >
           {t('setting.system.options.setting_devices.buttons.open_modal')}

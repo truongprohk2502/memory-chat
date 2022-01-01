@@ -88,9 +88,9 @@ export const getMediaData = async ({
 
     const device = await getDevices();
 
-    const cameras = device.cameras;
-    const microphones = device.microphones;
-    const speakers = device.speakers;
+    cameras = device.cameras;
+    microphones = device.microphones;
+    speakers = device.speakers;
 
     const { cameraDeviceId, microphoneDeviceId, speakerDeviceId } =
       getMediaDeviceSetting() || {};

@@ -22,6 +22,7 @@ module.exports = {
       },
       minHeight: {
         'screen-3/4': '75vh',
+        100: '25rem',
       },
       backgroundImage: {
         signing: "url('assets/images/signing.webp')",
