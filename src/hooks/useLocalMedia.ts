@@ -14,6 +14,7 @@ import {
   setMediaDeviceSetting,
 } from 'utils/storage';
 import { TIMEOUT } from 'constants/timeout';
+import { useCanvasStream } from './useCanvasStream';
 
 interface IAbortController {
   aborted: boolean;
@@ -41,6 +42,7 @@ export interface ILocalMedia {
   cameraOn: boolean;
   microphoneOn: boolean;
   localStream: MediaStream;
+  canvasStreamTrack: MediaStreamTrack;
   videoStreamTrack: MediaStreamTrack;
   audioStreamTrack: MediaStreamTrack;
   cameras: MediaDeviceInfo[];
@@ -100,6 +102,8 @@ export const useLocalMedia = (
 
   const [mirrorVideo, setMirrorVideo] = useState<boolean>(true);
   const [highFrameRate, setHighFrameRate] = useState<boolean>(true);
+
+  const canvasStreamTrack = useCanvasStream(videoStreamTrack);
 
   useEffect(() => {
     const advanceMediaSetting = getAdvanceMediaSetting();
@@ -506,7 +510,7 @@ export const useLocalMedia = (
       }, TIMEOUT.DELAY_UPDATE_DEVICE);
     };
 
-    if (navigator.mediaDevices.ondevicechange) {
+    if (navigator.mediaDevices.ondevicechange !== undefined) {
       navigator.mediaDevices.addEventListener(
         'devicechange',
         autoUpdateDevices,
@@ -860,8 +864,9 @@ export const useLocalMedia = (
     cameraOn,
     microphoneOn,
     localStream,
-    audioStreamTrack,
+    canvasStreamTrack,
     videoStreamTrack,
+    audioStreamTrack,
     cameras,
     microphones,
     speakers,

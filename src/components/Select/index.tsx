@@ -16,6 +16,7 @@ interface IProps {
   usingI18n?: boolean;
   isFullWidth?: boolean;
   hasBorder?: boolean;
+  className?: string;
   onChange: (value: string) => void;
 }
 
@@ -25,6 +26,7 @@ export const Select = ({
   usingI18n,
   isFullWidth,
   hasBorder,
+  className = '',
   onChange,
 }: IProps) => {
   const [showSelectBox, setShowSelectBox] = useState<boolean>(false);
@@ -59,7 +61,7 @@ export const Select = ({
   };
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <button
         onClick={handleClick}
         className={clsx(

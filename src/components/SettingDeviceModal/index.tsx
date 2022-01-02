@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +10,8 @@ import {
 import { Modal } from 'components/Modal';
 import { AudioSetting } from './AudioSetting';
 import { VideoSetting } from './VideoSetting';
+import { Spinner } from 'components/Spinner';
+import { LocalMediaContext } from 'pages/Homepage';
 
 interface ISettingCardProps {
   icon: IconDefinition;
@@ -75,6 +77,9 @@ type SettingPage = 'audio' | 'video';
 export const SettingDeviceModal = ({ isOpen, onClose }: IProps) => {
   const [settingPage, setSettingPage] = useState<SettingPage>('audio');
 
+  const { initializedLocalStream, isGettingStream } =
+    useContext(LocalMediaContext);
+
   const { t } = useTranslation();
 
   return (
@@ -86,7 +91,7 @@ export const SettingDeviceModal = ({ isOpen, onClose }: IProps) => {
       hideFooter
       className="select-none"
     >
-      <div className="flex">
+      <div className="flex relative">
         <div className="w-1/3">
           <SettingCard
             icon={faHeadphones}
@@ -110,6 +115,11 @@ export const SettingDeviceModal = ({ isOpen, onClose }: IProps) => {
           <AudioSetting isSelected={settingPage === 'audio'} />
           <VideoSetting isSelected={settingPage === 'video'} />
         </div>
+        {!initializedLocalStream && isGettingStream && (
+          <div className="absolute inset-0 bg-white flex justify-center items-center">
+            <Spinner />
+          </div>
+        )}
       </div>
     </Modal>
   );

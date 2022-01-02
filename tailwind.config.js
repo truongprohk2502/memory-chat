@@ -24,6 +24,9 @@ module.exports = {
         'screen-3/4': '75vh',
         100: '25rem',
       },
+      scale: {
+        flip: '-1',
+      },
       backgroundImage: {
         signing: "url('assets/images/signing.webp')",
       },
@@ -55,5 +58,5 @@ module.exports = {
       backgroundImage: ['hover'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/aspect-ratio')],
 };
