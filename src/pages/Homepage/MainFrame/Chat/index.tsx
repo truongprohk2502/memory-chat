@@ -281,8 +281,12 @@ const Chat = ({ selectedUser }: IProps) => {
           </div>
         </div>
         <div className="w-2/3">
-          <div className="font-semibold text-gray-600">{message.file.name}</div>
-          <div className="text-gray-500 text-sm">{sizeText}</div>
+          <div className="font-semibold text-gray-600 dark:text-white">
+            {message.file.name}
+          </div>
+          <div className="text-gray-500 text-sm dark:text-gray-400">
+            {sizeText}
+          </div>
         </div>
         <div className="w-1/6 flex justify-end pr-2">
           <button
@@ -301,14 +305,14 @@ const Chat = ({ selectedUser }: IProps) => {
       className="absolute inset-x-0 top-20 bottom-16 flex-auto pt-5 px-5 xl:px-20 overflow-y-auto"
     >
       {pendingGetMessages && (
-        <div className="flex justify-center items-center my-2 text-black">
+        <div className="flex justify-center items-center my-2 text-black dark:text-white">
           <Spinner />
           <span>&nbsp;{t('chat.loading_message')}</span>
         </div>
       )}
       {groupMessages.map((group, index) =>
         group.type === 'you' ? (
-          <div key={index} className="w-3/4 xl:w-3/5 flex">
+          <div key={index} className="w-3/4 lg:w-3/5 xl:w-3/4 flex">
             <img
               src={selectedUser.avatar}
               alt="logo"
@@ -349,7 +353,7 @@ const Chat = ({ selectedUser }: IProps) => {
         ) : (
           <div
             key={index}
-            className="w-3/4 xl:w-2/5 ml-auto relative text-black"
+            className="w-3/4 lg:w-3/5 xl:w-3/4 ml-auto relative text-black"
           >
             {group.messages.map((message, index) => (
               <div
@@ -357,7 +361,7 @@ const Chat = ({ selectedUser }: IProps) => {
                 className="flex items-center justify-end mb-2"
               >
                 <div
-                  className={
+                  className={`dark:bg-gray-700 dark:text-white ${
                     message.text
                       ? clsx(
                           { 'rounded-tr-lg': index === 0 },
@@ -377,7 +381,7 @@ const Chat = ({ selectedUser }: IProps) => {
                           },
                           'rounded-l-lg bg-gray-300 px-3 py-2 w-100 h-20',
                         )
-                  }
+                  }`}
                 >
                   {renderMessage(message, index, group.messages.length)}
                 </div>
@@ -413,7 +417,7 @@ const Chat = ({ selectedUser }: IProps) => {
         onClose={() => setOpenImagePreview(false)}
       />
       {pendingPostMessage && (
-        <div className="flex justify-end items-center my-2 text-black">
+        <div className="flex justify-end items-center my-2 text-black dark:te">
           <Spinner />
           <span>&nbsp;{t('chat.sending_message')}</span>
         </div>

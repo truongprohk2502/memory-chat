@@ -203,7 +203,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
         </div>
         {isOpenClosePopup && (
           <div className="absolute inset-0 flex justify-center items-center">
-            <div className="bg-blue-200 rounded-md shadow-md">
+            <div className="bg-blue-200 rounded-md shadow-md dark:text-black">
               <div className="p-2">{t('chat.call.confirm_end_call')}</div>
               <div className="flex">
                 <button
@@ -223,7 +223,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
           </div>
         )}
         {isOpenSettingPage && (
-          <div className="absolute inset-0 rounded-md bg-white">
+          <div className="absolute inset-0 rounded-md bg-white dark:bg-gray-900">
             <div className="absolute top-0 right-0 p-2">
               <Button
                 variant="circle"

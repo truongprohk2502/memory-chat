@@ -211,7 +211,12 @@ export const AudioSetting = ({ isSelected }: IProps) => {
             ? t('setting.system.options.setting_devices.buttons.playing')
             : t('setting.system.options.setting_devices.buttons.recording')
         }
-        disabled={notSupportMediaRecorder || !audioStreamTrack}
+        disabled={
+          notSupportMediaRecorder ||
+          microphonePermissionDenied ||
+          !microphones.length ||
+          !microphoneOn
+        }
         onClick={handleTestMicrophone}
       />
       <div className="font-semibold mt-6 mb-2">

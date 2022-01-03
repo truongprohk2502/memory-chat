@@ -43,7 +43,7 @@ export const SettingDevice = () => {
         <VideoSetting isSelected={settingPage === 'video'} />
       </div>
       {!initializedLocalStream && isGettingStream && (
-        <div className="absolute inset-0 bg-white flex justify-center items-center">
+        <div className="absolute inset-0 bg-white dark:bg-gray-900 flex justify-center items-center">
           <Spinner />
         </div>
       )}

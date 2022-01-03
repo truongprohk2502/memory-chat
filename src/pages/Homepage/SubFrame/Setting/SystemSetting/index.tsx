@@ -157,7 +157,7 @@ const SystemSetting = ({
         </div>
         <button
           onClick={handleOpenSettingDeviceModal}
-          className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 transition duration-150 rounded-md"
+          className="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 hover:bg-gray-300 transition duration-150 rounded-md"
         >
           {t('setting.system.options.setting_devices.buttons.open_modal')}
         </button>
