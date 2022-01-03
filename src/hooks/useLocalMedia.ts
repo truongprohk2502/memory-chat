@@ -106,6 +106,18 @@ export const useLocalMedia = (
   const canvasStreamTrack = useCanvasStream(videoStreamTrack);
 
   useEffect(() => {
+    const getInitDevices = async () => {
+      const { microphones, cameras, speakers } = await getDevices();
+
+      setMicrophones(microphones);
+      setCameras(cameras);
+      setSpeakers(speakers);
+    };
+
+    getInitDevices();
+  }, []);
+
+  useEffect(() => {
     const advanceMediaSetting = getAdvanceMediaSetting();
     if (advanceMediaSetting) {
       const { highFrameRate, mirrorVideo } = advanceMediaSetting;
@@ -402,8 +414,6 @@ export const useLocalMedia = (
           cameraDeviceId: selectedNewCamera?.deviceId,
         });
 
-        if (!selectedNewCamera && !selectedNewMicrophone) return;
-
         const videoConstraints: MediaTrackConstraints | boolean =
           !cameraPermissionDenied && getVideoConstraints(selectedNewCamera);
 
@@ -419,6 +429,8 @@ export const useLocalMedia = (
           cameraChanged && setSelectedCamera(selectedNewCamera);
           microphoneChanged && setSelectedMicrophone(selectedNewMicrophone);
         } else {
+          if (!selectedNewCamera && !selectedNewMicrophone) return;
+
           if (videoConstraints || audioConstraints) {
             try {
               let cameraOn: boolean;

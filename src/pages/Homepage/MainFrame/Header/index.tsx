@@ -1,3 +1,6 @@
+import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   faBan,
   faCircle,
@@ -11,23 +14,43 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Badge } from 'components/Badge';
 import { Button } from 'components/Button';
 import { Dropdown } from 'components/Dropdown';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { LocalMediaContext } from 'pages/Homepage';
 import { RootState } from 'reducers';
 import { unfriendContactRequest } from 'reducers/contact';
 import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
+import { toast } from 'react-toastify';
+import { CallModal } from 'components/CallModal';
 
 interface IProps {
   selectedUser: IUser;
 }
 
 const Header = ({ selectedUser }: IProps) => {
+  const [isOpenCallModal, setIsOpenCallModal] = useState<boolean>(false);
+
   const { selectedContactId } = useSelector(
     (state: RootState) => state.contact,
   );
+
+  const { cameras, microphones, startMediaStream } =
+    useContext(LocalMediaContext);
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const handleCallVideo = () => {
+    if (!microphones.length) {
+      toast.error(t('chat.call.no_microphone'));
+      return;
+    } else if (!cameras.length) {
+      toast.error(t('chat.call.no_camera'));
+      return;
+    } else {
+      setIsOpenCallModal(true);
+      startMediaStream();
+    }
+  };
 
   return (
     <div className="absolute top-0 inset-x-0 h-20 w-full px-5 xl:px-20 flex justify-between items-center border-b border-gray-150 dark:border-gray-500">
@@ -47,12 +70,11 @@ const Header = ({ selectedUser }: IProps) => {
         </div>
         <div className="ml-2">
           <div className="font-bold dark:text-white">
-            {selectedUser &&
-              getFullname(
-                selectedUser.firstName,
-                selectedUser.middleName,
-                selectedUser.lastName,
-              )}
+            {getFullname(
+              selectedUser.firstName,
+              selectedUser.middleName,
+              selectedUser.lastName,
+            )}
           </div>
           <Badge
             text={
@@ -83,7 +105,7 @@ const Header = ({ selectedUser }: IProps) => {
           hasTooltip
           tooltipName={t('header.video_call')}
           tooltipPlacement="bottom-left"
-          onClick={() => {}}
+          onClick={handleCallVideo}
         />
         <Dropdown
           options={[
@@ -118,6 +140,10 @@ const Header = ({ selectedUser }: IProps) => {
           />
         </Dropdown>
       </div>
+      <CallModal
+        isOpen={isOpenCallModal}
+        onClose={() => setIsOpenCallModal(false)}
+      />
     </div>
   );
 };

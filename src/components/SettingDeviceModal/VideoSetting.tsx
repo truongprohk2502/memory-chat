@@ -30,7 +30,7 @@ export const VideoSetting = ({ isSelected }: IProps) => {
 
   const { t } = useTranslation();
 
-  const handleVideoRef = useCallback(
+  const localVideoRef = useCallback(
     (video: HTMLVideoElement) => {
       if (video && videoStreamTrack && canvasStreamTrack) {
         video.srcObject = new MediaStream([
@@ -78,10 +78,10 @@ export const VideoSetting = ({ isSelected }: IProps) => {
             { 'transform scale-x-flip': mirrorVideo },
             'w-full h-full rounded-md',
           )}
-          ref={handleVideoRef}
+          ref={localVideoRef}
         />
         {(isGettingStream || !videoStreamTrack) && (
-          <div className="absolute inset-0 rounded-md bg-blue-100 flex justify-center items-center">
+          <div className="absolute inset-0 rounded-md bg-blue-100 flex justify-center items-center text-blue-500 text-2xl">
             {isGettingStream ? (
               <Spinner />
             ) : (

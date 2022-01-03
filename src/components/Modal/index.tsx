@@ -36,8 +36,10 @@ interface IProps {
   children: ReactNode;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'auto';
   className?: string;
-  title: string;
+  title?: string;
   isOpen: boolean;
+  notPadding?: boolean;
+  hideHeader?: boolean;
   hideFooter?: boolean;
   disabledConfirmButton?: boolean;
   confirmText?: string;
@@ -51,8 +53,10 @@ export const Modal = ({
   children,
   size = 'auto',
   className = '',
-  title,
+  title = '',
   isOpen,
+  notPadding,
+  hideHeader,
   hideFooter,
   disabledConfirmButton = false,
   confirmText,
@@ -82,7 +86,11 @@ export const Modal = ({
           `min-h-96 dark:bg-gray-900 dark:text-white bg-white rounded-lg 0 z-50 fixed left-1/2 transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2 ${className}`,
         )}
       >
-        <div className="flex justify-center px-4 py-2 relative border-b border-gray-300 dark:border-gray-600">
+        <div
+          className={`${
+            hideHeader ? 'hidden' : 'flex'
+          } justify-center px-4 py-2 relative border-b border-gray-300 dark:border-gray-600`}
+        >
           <div className="font-bold text-lg px-10">{title}</div>
           <button
             onClick={onClose}
@@ -91,7 +99,9 @@ export const Modal = ({
             <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>
-        <div className="flex flex-col px-5 py-2">{children}</div>
+        <div className={`flex flex-col ${!notPadding && 'px-5 py-2'}`}>
+          {children}
+        </div>
         {!hideFooter && (
           <div className="flex justify-end border-t border-gray-300 dark:border-gray-600 px-4 py-2">
             <button

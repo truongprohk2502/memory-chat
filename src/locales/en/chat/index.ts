@@ -45,6 +45,13 @@ const translation = {
     invalid_file_type: 'File must be an image',
     too_heavy_file_size: 'File size must not greater than 5MB',
   },
+  call: {
+    no_microphone: 'No microphone available',
+    no_camera: 'No camera available',
+    confirm_end_call: 'Are you sure to hang up phone call?',
+    confirm: 'OK',
+    cancel: 'Cancel',
+  },
 };
 
 export default translation;

@@ -45,6 +45,13 @@ const translation = {
     invalid_file_type: 'Tệp phải là một hình ảnh',
     too_heavy_file_size: 'Kích thước tệp không được vượt quá 5MB',
   },
+  call: {
+    no_microphone: 'Không có mic thu nào',
+    no_camera: 'Không có máy quay nào',
+    confirm_end_call: 'Bạn có chắc chắn muốn kết thúc cuộc gọi?',
+    confirm: 'OK',
+    cancel: 'Thoát',
+  },
 };
 
 export default translation;
