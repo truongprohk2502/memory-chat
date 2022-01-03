@@ -28,6 +28,7 @@ export const AudioSetting = ({ isSelected }: IProps) => {
     speakers,
     selectedSpeaker,
     selectedMicrophone,
+    microphoneOn,
     microphonePermissionGranted,
     microphonePermissionDenied,
     onChangeMicrophone,
@@ -194,6 +195,9 @@ export const AudioSetting = ({ isSelected }: IProps) => {
           onChangeMicrophone(
             microphones.find(device => device.deviceId === selectedDeviceId),
           )
+        }
+        disabled={
+          microphonePermissionDenied || !microphones.length || !microphoneOn
         }
       />
       <MicrophoneProgressBar audioTrack={audioStreamTrack} className="my-2" />

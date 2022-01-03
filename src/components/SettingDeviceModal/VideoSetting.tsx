@@ -20,6 +20,7 @@ export const VideoSetting = ({ isSelected }: IProps) => {
     highFrameRate,
     cameras,
     selectedCamera,
+    cameraOn,
     cameraPermissionGranted,
     cameraPermissionDenied,
     isGettingStream,
@@ -80,7 +81,7 @@ export const VideoSetting = ({ isSelected }: IProps) => {
           )}
           ref={localVideoRef}
         />
-        {(isGettingStream || !videoStreamTrack) && (
+        {(isGettingStream || !videoStreamTrack || !cameraOn) && (
           <div className="absolute inset-0 rounded-md bg-blue-100 flex justify-center items-center text-blue-500 text-2xl">
             {isGettingStream ? (
               <Spinner />
@@ -101,6 +102,7 @@ export const VideoSetting = ({ isSelected }: IProps) => {
           )
         }
         className="my-2"
+        disabled={cameraPermissionDenied || !cameras.length || !cameraOn}
       />
       <Checkbox
         id="mirror_video"

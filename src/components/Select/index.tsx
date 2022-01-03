@@ -16,6 +16,7 @@ interface IProps {
   usingI18n?: boolean;
   isFullWidth?: boolean;
   hasBorder?: boolean;
+  disabled?: boolean;
   className?: string;
   onChange: (value: string) => void;
 }
@@ -26,6 +27,7 @@ export const Select = ({
   usingI18n,
   isFullWidth,
   hasBorder,
+  disabled,
   className = '',
   onChange,
 }: IProps) => {
@@ -67,8 +69,9 @@ export const Select = ({
         className={clsx(
           { 'w-full text-left pl-4': isFullWidth },
           { 'border border-gray-400': hasBorder },
-          'whitespace-nowrap overflow-hidden overflow-ellipsis py-1 pl-2 pr-6 bg-gray-200 rounded-md dark:bg-gray-700',
+          'whitespace-nowrap overflow-hidden overflow-ellipsis py-1 pl-2 pr-6 disabled:bg-gray-100 disabled:text-gray-300 bg-gray-200 rounded-md dark:bg-gray-700',
         )}
+        disabled={disabled}
       >
         {selectedOption
           ? usingI18n

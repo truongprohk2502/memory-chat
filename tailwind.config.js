@@ -55,6 +55,7 @@ module.exports = {
       fontSize: ['disabled'],
       fontWeight: ['disabled'],
       backgroundColor: ['disabled'],
+      textColor: ['disabled'],
       backgroundImage: ['hover'],
     },
   },

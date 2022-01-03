@@ -7,6 +7,7 @@ import {
   faMicrophone,
   faMicrophoneSlash,
   faPhone,
+  faTimes,
   faVideo,
   faVideoSlash,
   faWrench,
@@ -18,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { useTranslation } from 'react-i18next';
+import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 
 interface IProps {
   isOpen: boolean;
@@ -30,6 +32,7 @@ const CALL_MODAL_HEIGHT = 600;
 export const CallModal = ({ isOpen, onClose }: IProps) => {
   const [remoteCameraOn] = useState<boolean>(false);
   const [isOpenClosePopup, setIsOpenClosePopup] = useState<boolean>(false);
+  const [isOpenSettingPage, setIsOpenSettingPage] = useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const { selectedContactId, activeContacts } = useSelector(
@@ -58,8 +61,6 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     stopMediaStream();
     onClose();
   };
-
-  const handleOpenSettingDeviceModal = () => {};
 
   const getModalSize = useCallback(
     (ratio: number = 1) => {
@@ -197,7 +198,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
             variant="circle"
             icon={faWrench}
             hasOnlyButton={false}
-            onClick={handleOpenSettingDeviceModal}
+            onClick={() => setIsOpenSettingPage(true)}
           />
         </div>
         {isOpenClosePopup && (
@@ -218,6 +219,21 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
                   {t('chat.call.cancel')}
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+        {isOpenSettingPage && (
+          <div className="absolute inset-0 rounded-md bg-white">
+            <div className="absolute top-0 right-0 p-2">
+              <Button
+                variant="circle"
+                icon={faTimes}
+                hasOnlyButton={false}
+                onClick={() => setIsOpenSettingPage(false)}
+              />
+            </div>
+            <div className="absolute inset-x-16 inset-y-20">
+              <SettingDevice />
             </div>
           </div>
         )}
