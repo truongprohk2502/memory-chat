@@ -51,6 +51,8 @@ const translation = {
     confirm_end_call: 'Are you sure to hang up phone call?',
     confirm: 'OK',
     cancel: 'Cancel',
+    call: 'Call',
+    stop_call: 'Stop call',
   },
 };
 

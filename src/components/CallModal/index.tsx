@@ -6,25 +6,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMicrophone,
   faMicrophoneSlash,
-  faPhone,
+  faPhoneAlt,
+  faPhoneSlash,
   faTimes,
   faVideo,
   faVideoSlash,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
+import 'react-circular-progressbar/dist/styles.css';
 import { Button } from 'components/Button';
 import { Spinner } from 'components/Spinner';
-import { useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { useTranslation } from 'react-i18next';
 import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
+import CallingProgressBar from './components/CallingProgressBar';
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+export type CallStatus = 'ready' | 'calling' | 'talking' | 'ended';
 
 const CALL_MODAL_WIDTH = 800;
 const CALL_MODAL_HEIGHT = 600;
@@ -33,6 +38,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const [remoteCameraOn] = useState<boolean>(false);
   const [isOpenClosePopup, setIsOpenClosePopup] = useState<boolean>(false);
   const [isOpenSettingPage, setIsOpenSettingPage] = useState<boolean>(false);
+  const [callStatus, setCallStatus] = useState<CallStatus>('ready');
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const { selectedContactId, activeContacts } = useSelector(
@@ -60,6 +66,18 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     setIsOpenClosePopup(false);
     stopMediaStream();
     onClose();
+  };
+
+  const handleEndedDialog = () => {
+    setCallStatus('ready');
+  };
+
+  const handleStartDialog = () => {
+    setCallStatus('calling');
+  };
+
+  const handleStopDialog = () => {
+    setCallStatus('ready');
   };
 
   const getModalSize = useCallback(
@@ -127,11 +145,43 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
             'w-full h-full rounded-md',
           )}
         />
-        {!remoteCameraOn && (
+        {callStatus === 'talking' && !remoteCameraOn && (
           <div className="absolute inset-0 rounded-md flex justify-center items-center text-2xl text-blue-500">
             <FontAwesomeIcon icon={faVideoSlash} />
           </div>
         )}
+        <div
+          className={clsx(
+            { hidden: callStatus !== 'ready' && callStatus !== 'calling' },
+            'absolute inset-0 flex flex-col justify-center items-center',
+          )}
+        >
+          <div className="w-40 h-40 mb-5">
+            <CallingProgressBar
+              callStatus={callStatus}
+              onEndedDialog={handleEndedDialog}
+            >
+              <img
+                src={selectedUser.avatar}
+                alt="logo"
+                className="w-36 h-36 rounded-full"
+              />
+            </CallingProgressBar>
+          </div>
+          <Button
+            icon={callStatus === 'calling' ? faPhoneSlash : faPhoneAlt}
+            text={
+              callStatus === 'calling'
+                ? t('chat.call.stop_call')
+                : t('chat.call.call')
+            }
+            color={callStatus === 'calling' ? 'danger' : 'primary'}
+            disabled={!microphoneOn}
+            onClick={
+              callStatus === 'calling' ? handleStopDialog : handleStartDialog
+            }
+          />
+        </div>
         <div style={getModalSize(1 / 4)} className="absolute bottom-2 right-2">
           <video
             ref={localVideoRef}
@@ -153,7 +203,12 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
             </div>
           )}
         </div>
-        <div className="absolute bottom-5 inset-x-0 flex justify-center">
+        <div
+          className={clsx(
+            { hidden: callStatus === 'calling' },
+            'absolute bottom-5 inset-x-0 flex justify-center',
+          )}
+        >
           <div className="flex justify-evenly w-80">
             <Button
               variant="circle"
@@ -169,7 +224,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
             />
             <Button
               variant="circle"
-              icon={faPhone}
+              icon={faPhoneSlash}
               hasOnlyButton={false}
               color="danger"
               onClick={() => setIsOpenClosePopup(true)}

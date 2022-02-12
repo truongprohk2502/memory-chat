@@ -51,6 +51,8 @@ const translation = {
     confirm_end_call: 'Bạn có chắc chắn muốn kết thúc cuộc gọi?',
     confirm: 'OK',
     cancel: 'Thoát',
+    call: 'Bắt đầu gọi',
+    stop_call: 'Dừng cuộc gọi',
   },
 };
 

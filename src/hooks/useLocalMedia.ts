@@ -830,6 +830,8 @@ export const useLocalMedia = (
     videoStreamTrack && videoStreamTrack.stop();
     setAudioStreamTrack(null);
     setVideoStreamTrack(null);
+    setMicrophoneOn(false);
+    setCameraOn(false);
     setLocalStream(null);
   };
 
@@ -853,8 +855,14 @@ export const useLocalMedia = (
 
         setLocalStream(getMediaStreamFromTracks(videoTrack, audioTrack));
 
-        audioTrack && setAudioStreamTrack(audioTrack);
-        videoTrack && setVideoStreamTrack(videoTrack);
+        if (audioTrack) {
+          setAudioStreamTrack(audioTrack);
+          setMicrophoneOn(true);
+        }
+        if (videoTrack) {
+          setVideoStreamTrack(videoTrack);
+          setCameraOn(true);
+        }
       } catch {
         onError();
       } finally {
