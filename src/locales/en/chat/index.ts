@@ -53,6 +53,13 @@ const translation = {
     cancel: 'Cancel',
     call: 'Call',
     stop_call: 'Stop call',
+    missed_a_call: 'Missed a call',
+    media_call: 'Media call',
+    time_units: {
+      hour: 'hour',
+      minute: 'minute',
+      second: 'second',
+    },
   },
 };
 

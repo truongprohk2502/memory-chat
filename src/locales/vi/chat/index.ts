@@ -53,6 +53,13 @@ const translation = {
     cancel: 'Thoát',
     call: 'Bắt đầu gọi',
     stop_call: 'Dừng cuộc gọi',
+    missed_a_call: 'Đã bỏ lỡ cuộc gọi',
+    media_call: 'Cuộc gọi thoại',
+    time_units: {
+      hour: 'giờ',
+      minute: 'phút',
+      second: 'giây',
+    },
   },
 };
 

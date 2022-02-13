@@ -12,6 +12,8 @@ import {
   faFilePdf,
   faFilePowerpoint,
   faFileWord,
+  faPhoneAlt,
+  faPhoneSlash,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,6 +27,7 @@ import { IUser } from 'reducers/user';
 import { FILE_TYPES } from 'constants/file';
 import { faHtml5 } from '@fortawesome/free-brands-svg-icons';
 import { downloadFile } from 'utils/downloadFile';
+import { getLanguage } from 'utils/storage';
 
 type MessageType = 'you' | 'me';
 
@@ -63,9 +66,12 @@ const Chat = ({ selectedUser }: IProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(containerRef.current);
     if (containerRef.current && !pendingGetInitMessages) {
+      console.log('containerRef.current');
       setTimeout(() => {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        console.log(containerRef.current);
+        // containerRef.current.scrollTop = containerRef.current.scrollHeight;
       }, TIMEOUT.RENDER_MESSAGES);
     }
   }, [pendingGetInitMessages]);
@@ -190,11 +196,37 @@ const Chat = ({ selectedUser }: IProps) => {
     downloadFile(fileName, originalName);
   };
 
+  const getCallTime = (secondsTime: number) => {
+    const seconds = secondsTime % 60;
+    const minutes = Math.floor(secondsTime / 60);
+    const hours = Math.floor(secondsTime / 3600);
+
+    const storageLanguage = getLanguage();
+
+    const secondText = `${t('chat.call.time_units.second')}${
+      storageLanguage !== 'vi' && seconds > 1 ? 's' : ''
+    }`;
+    const minuteText = `${t('chat.call.time_units.minute')}${
+      storageLanguage !== 'vi' && minutes > 1 ? 's' : ''
+    }`;
+    const hourText = `${t('chat.call.time_units.hour')}${
+      storageLanguage !== 'vi' && hours > 1 ? 's' : ''
+    }`;
+
+    if (hours) {
+      return `${hours} ${hourText} ${minutes} ${minuteText} ${seconds} ${secondText}`;
+    } else if (minutes) {
+      return `${minutes} ${minuteText} ${seconds} ${secondText}`;
+    } else {
+      return `${seconds} ${secondText}`;
+    }
+  };
+
   const renderMessage = (message: IMessage, index: number, total: number) => {
     let icon: IconDefinition;
     let sizeText: string;
 
-    if (message.file) {
+    if (message.messageType === 'file' && message.file) {
       const { type, size } = message.file;
 
       if (
@@ -258,42 +290,69 @@ const Chat = ({ selectedUser }: IProps) => {
       }
     }
 
-    return message.text ? (
+    return message.messageType === 'text' ? (
       message.text
-    ) : FILE_TYPES.IMAGE_TYPES.includes(message.file.type) ? (
-      <img
-        className={clsx(
-          { 'rounded-tr-lg': index === 0 },
-          {
-            'rounded-br-lg': index === total - 1,
-          },
-          'w-full h-full object-cover rounded-l-lg',
-        )}
-        src={message.file.url}
-        alt={message.file.name}
-        onClick={() => handleShowImagePreview(message.file.url)}
-      />
+    ) : message.messageType === 'file' ? (
+      FILE_TYPES.IMAGE_TYPES.includes(message.file.type) ? (
+        <img
+          className={clsx(
+            { 'rounded-tr-lg': index === 0 },
+            {
+              'rounded-br-lg': index === total - 1,
+            },
+            'w-full h-full object-cover rounded-l-lg',
+          )}
+          src={message.file.url}
+          alt={message.file.name}
+          onClick={() => handleShowImagePreview(message.file.url)}
+        />
+      ) : (
+        <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
+          <div className="w-1/6 pl-1">
+            <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
+              <FontAwesomeIcon icon={icon} className="text-blue-500" />
+            </div>
+          </div>
+          <div className="w-2/3">
+            <div className="font-semibold text-gray-600 dark:text-white">
+              {message.file.name}
+            </div>
+            <div className="text-gray-500 text-sm dark:text-gray-400">
+              {sizeText}
+            </div>
+          </div>
+          <div className="w-1/6 flex justify-end pr-2">
+            <button
+              onClick={() =>
+                handleDownload(message.file.url, message.file.name)
+              }
+            >
+              <FontAwesomeIcon icon={faDownload} className="text-blue-500" />
+            </button>
+          </div>
+        </div>
+      )
     ) : (
       <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
         <div className="w-1/6 pl-1">
           <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
-            <FontAwesomeIcon icon={icon} className="text-blue-500" />
+            <FontAwesomeIcon
+              icon={message.callTime ? faPhoneAlt : faPhoneSlash}
+              className={message.callTime ? 'text-blue-500' : 'text-red-500'}
+            />
           </div>
         </div>
         <div className="w-2/3">
           <div className="font-semibold text-gray-600 dark:text-white">
-            {message.file.name}
+            {message.callTime
+              ? t('chat.call.media_call')
+              : t('chat.call.missed_a_call')}
           </div>
-          <div className="text-gray-500 text-sm dark:text-gray-400">
-            {sizeText}
-          </div>
-        </div>
-        <div className="w-1/6 flex justify-end pr-2">
-          <button
-            onClick={() => handleDownload(message.file.url, message.file.name)}
-          >
-            <FontAwesomeIcon icon={faDownload} className="text-blue-500" />
-          </button>
+          {!!message.callTime && (
+            <div className="text-gray-500 text-sm dark:text-gray-400">
+              {getCallTime(message.callTime)}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -324,7 +383,7 @@ const Chat = ({ selectedUser }: IProps) => {
                   key={message.id}
                   className={`mb-2 
                     ${
-                      message.text
+                      message.messageType === 'text'
                         ? clsx(
                             { 'rounded-tl-lg': index === 0 },
                             {
@@ -333,7 +392,8 @@ const Chat = ({ selectedUser }: IProps) => {
                             },
                             'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1',
                           )
-                        : FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
+                        : message.messageType === 'file' &&
+                          FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
                         ? 'w-32 h-32 my-1'
                         : clsx(
                             { 'rounded-tl-lg': index === 0 },
@@ -362,7 +422,7 @@ const Chat = ({ selectedUser }: IProps) => {
               >
                 <div
                   className={`dark:bg-gray-700 dark:text-white ${
-                    message.text
+                    message.messageType === 'text'
                       ? clsx(
                           { 'rounded-tr-lg': index === 0 },
                           {
@@ -371,7 +431,8 @@ const Chat = ({ selectedUser }: IProps) => {
                           },
                           'rounded-l-lg bg-gray-300 px-3 py-2',
                         )
-                      : FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
+                      : message.messageType === 'file' &&
+                        FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
                       ? 'w-32 h-32'
                       : clsx(
                           { 'rounded-tr-lg': index === 0 },

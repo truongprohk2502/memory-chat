@@ -106,9 +106,10 @@ export const ContactCard = ({
             }`}
           >
             {lastMessage
-              ? lastMessage.text
+              ? lastMessage.messageType === 'text'
                 ? lastMessage.text
-                : t(
+                : lastMessage.messageType === 'file'
+                ? t(
                     `chat.contact_card.sent_${
                       FILE_TYPES.IMAGE_TYPES.includes(lastMessage.file.type)
                         ? 'image'
@@ -122,6 +123,9 @@ export const ContactCard = ({
                           : t('chat.contact_card.you'),
                     },
                   )
+                : lastMessage.callTime
+                ? t('chat.call.media_call')
+                : t('chat.call.missed_a_call')
               : t('chat.contact_card.start_chatting_now')}
           </div>
         </div>

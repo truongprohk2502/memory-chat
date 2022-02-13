@@ -15,6 +15,8 @@ export interface IMessage {
   sender: IUser;
   text: string;
   file: IFile;
+  callTime: number;
+  messageType: 'text' | 'file' | 'call';
   isRead: boolean;
   createdAt: string;
 }
