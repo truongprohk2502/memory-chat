@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Modal } from 'components/Modal';
 import { useWindowDimension } from 'hooks/useWindowDimension';
 import { LocalMediaContext } from 'pages/Homepage';
@@ -14,7 +14,7 @@ import {
   faWrench,
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import 'react-circular-progressbar/dist/styles.css';
 import { Button } from 'components/Button';
 import { Spinner } from 'components/Spinner';
@@ -23,6 +23,7 @@ import { getFullname } from 'utils/getFullname';
 import { useTranslation } from 'react-i18next';
 import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 import CallingProgressBar from './components/CallingProgressBar';
+import { postDialogMessageRequest } from 'reducers/message';
 
 interface IProps {
   isOpen: boolean;
@@ -39,12 +40,18 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const [isOpenClosePopup, setIsOpenClosePopup] = useState<boolean>(false);
   const [isOpenSettingPage, setIsOpenSettingPage] = useState<boolean>(false);
   const [callStatus, setCallStatus] = useState<CallStatus>('ready');
+  const [postingDialogMessage, setPostingDialogMessage] =
+    useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const { selectedContactId, activeContacts } = useSelector(
     (state: RootState) => state.contact,
   );
+  const { pendingPostDialogMessage, errorPostDialogMessage } = useSelector(
+    (state: RootState) => state.message,
+  );
 
+  const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const {
@@ -62,6 +69,17 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
 
   const { width: windowWidth, height: windowHeight } = useWindowDimension();
 
+  useEffect(() => {
+    if (
+      postingDialogMessage &&
+      !pendingPostDialogMessage &&
+      !errorPostDialogMessage
+    ) {
+      setPostingDialogMessage(false);
+      setCallStatus('calling');
+    }
+  }, [postingDialogMessage, pendingPostDialogMessage, errorPostDialogMessage]);
+
   const handleEndCall = () => {
     setIsOpenClosePopup(false);
     stopMediaStream();
@@ -73,7 +91,8 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   };
 
   const handleStartDialog = () => {
-    setCallStatus('calling');
+    dispatch(postDialogMessageRequest({ contactId: selectedContactId }));
+    setPostingDialogMessage(true);
   };
 
   const handleStopDialog = () => {
@@ -162,7 +181,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
               onEndedDialog={handleEndedDialog}
             >
               <img
-                src={selectedUser.avatar}
+                src={selectedUser?.avatar}
                 alt="logo"
                 className="w-36 h-36 rounded-full"
               />
@@ -234,16 +253,16 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
         <div className="absolute inset-x-0 top-0 p-2 flex justify-between">
           <div className={clsx({ 'text-white': remoteCameraOn }, 'flex h-9')}>
             <img
-              src={selectedUser.avatar}
+              src={selectedUser?.avatar}
               alt="logo"
               className="w-9 h-9 rounded-full"
             />
             <div className="flex flex-col justify-between ml-2">
               <div className="font-semibold text-xs">
                 {getFullname(
-                  selectedUser.firstName,
-                  selectedUser.middleName,
-                  selectedUser.lastName,
+                  selectedUser?.firstName,
+                  selectedUser?.middleName,
+                  selectedUser?.lastName,
                 )}
               </div>
               <div className="text-gray-400 text-xs">00:00:00</div>

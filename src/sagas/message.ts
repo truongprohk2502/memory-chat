@@ -9,6 +9,9 @@ import {
   postMessageRequest,
   postMessageSuccess,
   postMessageFailure,
+  postDialogMessageRequest,
+  postDialogMessageSuccess,
+  postDialogMessageFailure,
   putReadMessagesRequest,
   putReadMessagesSuccess,
   putReadMessagesFailure,
@@ -80,6 +83,20 @@ export function* postMessage(action) {
   );
 }
 
+export function* postDialogMessage(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'post',
+      urlTemplate: '/message/create-dialog-call',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(postDialogMessageSuccess(data));
+    },
+    postDialogMessageFailure,
+  );
+}
+
 export function* putReadMessages(action) {
   yield sagaLayoutFunction(
     {
@@ -99,5 +116,6 @@ export function* messageWatcher() {
   yield takeEvery(getInitMessagesRequest, getInitMessages);
   yield takeEvery(getMessagesRequest, getMessages);
   yield takeEvery(postMessageRequest, postMessage);
+  yield takeEvery(postDialogMessageRequest, postDialogMessage);
   yield takeEvery(putReadMessagesRequest, putReadMessages);
 }

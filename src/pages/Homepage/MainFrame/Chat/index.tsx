@@ -66,12 +66,9 @@ const Chat = ({ selectedUser }: IProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(containerRef.current);
     if (containerRef.current && !pendingGetInitMessages) {
-      console.log('containerRef.current');
       setTimeout(() => {
-        console.log(containerRef.current);
-        // containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
       }, TIMEOUT.RENDER_MESSAGES);
     }
   }, [pendingGetInitMessages]);
@@ -222,7 +219,12 @@ const Chat = ({ selectedUser }: IProps) => {
     }
   };
 
-  const renderMessage = (message: IMessage, index: number, total: number) => {
+  const renderMessage = (
+    message: IMessage,
+    index: number,
+    total: number,
+    isOwnMessage: boolean,
+  ) => {
     let icon: IconDefinition;
     let sizeText: string;
 
@@ -288,39 +290,67 @@ const Chat = ({ selectedUser }: IProps) => {
       } else {
         sizeText = `${Math.round(10 * (size / gigabyte)) / 10} GB`;
       }
+    } else if (message.messageType === 'call') {
+      icon = message.callTime ? faPhoneAlt : faPhoneSlash;
     }
 
     return message.messageType === 'text' ? (
       message.text
-    ) : message.messageType === 'file' ? (
+    ) : message.messageType === 'file' &&
       FILE_TYPES.IMAGE_TYPES.includes(message.file.type) ? (
-        <img
-          className={clsx(
-            { 'rounded-tr-lg': index === 0 },
-            {
-              'rounded-br-lg': index === total - 1,
-            },
-            'w-full h-full object-cover rounded-l-lg',
+      <img
+        className={clsx(
+          { 'rounded-tr-lg': index === 0 },
+          {
+            'rounded-br-lg': index === total - 1,
+          },
+          'w-full h-full object-cover rounded-l-lg',
+        )}
+        src={message.file.url}
+        alt={message.file.name}
+        onClick={() => handleShowImagePreview(message.file.url)}
+      />
+    ) : (
+      <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
+        <div className="w-1/6 pl-1">
+          <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
+            <FontAwesomeIcon
+              icon={icon}
+              className={
+                message.messageType === 'file' || message.callTime
+                  ? 'text-blue-500'
+                  : 'text-red-500'
+              }
+            />
+          </div>
+        </div>
+        <div className="w-2/3">
+          <div
+            className={`font-semibold ${
+              isOwnMessage ? 'text-gray-600 dark:text-white' : 'text-white'
+            }`}
+          >
+            {message.messageType === 'file'
+              ? message.file.name
+              : message.callTime
+              ? t('chat.call.media_call')
+              : t('chat.call.missed_a_call')}
+          </div>
+          {(message.messageType === 'file' || !!message.callTime) && (
+            <div
+              className={`text-sm ${
+                isOwnMessage
+                  ? 'text-gray-500 dark:text-gray-400'
+                  : 'text-gray-300'
+              }`}
+            >
+              {message.messageType === 'file'
+                ? sizeText
+                : getCallTime(message.callTime)}
+            </div>
           )}
-          src={message.file.url}
-          alt={message.file.name}
-          onClick={() => handleShowImagePreview(message.file.url)}
-        />
-      ) : (
-        <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
-          <div className="w-1/6 pl-1">
-            <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
-              <FontAwesomeIcon icon={icon} className="text-blue-500" />
-            </div>
-          </div>
-          <div className="w-2/3">
-            <div className="font-semibold text-gray-600 dark:text-white">
-              {message.file.name}
-            </div>
-            <div className="text-gray-500 text-sm dark:text-gray-400">
-              {sizeText}
-            </div>
-          </div>
+        </div>
+        {message.messageType === 'file' && (
           <div className="w-1/6 flex justify-end pr-2">
             <button
               onClick={() =>
@@ -330,30 +360,7 @@ const Chat = ({ selectedUser }: IProps) => {
               <FontAwesomeIcon icon={faDownload} className="text-blue-500" />
             </button>
           </div>
-        </div>
-      )
-    ) : (
-      <div className="w-full h-full p-2 border border-gray-400 rounded-lg flex items-center">
-        <div className="w-1/6 pl-1">
-          <div className="w-10 h-10 rounded-full bg-blue-300 flex justify-center items-center">
-            <FontAwesomeIcon
-              icon={message.callTime ? faPhoneAlt : faPhoneSlash}
-              className={message.callTime ? 'text-blue-500' : 'text-red-500'}
-            />
-          </div>
-        </div>
-        <div className="w-2/3">
-          <div className="font-semibold text-gray-600 dark:text-white">
-            {message.callTime
-              ? t('chat.call.media_call')
-              : t('chat.call.missed_a_call')}
-          </div>
-          {!!message.callTime && (
-            <div className="text-gray-500 text-sm dark:text-gray-400">
-              {getCallTime(message.callTime)}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     );
   };
@@ -405,7 +412,7 @@ const Chat = ({ selectedUser }: IProps) => {
                           )
                     }`}
                 >
-                  {renderMessage(message, index, group.messages.length)}
+                  {renderMessage(message, index, group.messages.length, false)}
                 </div>
               ))}
             </div>
@@ -444,7 +451,7 @@ const Chat = ({ selectedUser }: IProps) => {
                         )
                   }`}
                 >
-                  {renderMessage(message, index, group.messages.length)}
+                  {renderMessage(message, index, group.messages.length, true)}
                 </div>
                 <div className="w-4 h-4 ml-2">
                   {message.isRead && lastReadMessage?.id === message.id && (

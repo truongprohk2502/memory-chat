@@ -55,6 +55,7 @@ const translation = {
     stop_call: 'Stop call',
     missed_a_call: 'Missed a call',
     media_call: 'Media call',
+    is_calling: 'is calling',
     time_units: {
       hour: 'hour',
       minute: 'minute',

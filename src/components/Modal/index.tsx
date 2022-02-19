@@ -44,7 +44,7 @@ interface IProps {
   disabledConfirmButton?: boolean;
   confirmText?: string;
   cancelText?: string;
-  onClose: () => void;
+  onClose?: () => void;
   onCancel?: () => void;
   onConfirm?: () => void;
 }
@@ -61,7 +61,7 @@ export const Modal = ({
   disabledConfirmButton = false,
   confirmText,
   cancelText,
-  onClose,
+  onClose = () => {},
   onCancel = () => {},
   onConfirm = () => {},
 }: IProps) => {

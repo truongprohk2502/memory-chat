@@ -31,8 +31,11 @@ interface StateProps {
   page: number;
   alreadyReadMessageData: IReadMessage;
   unavailableMoreMessages: boolean;
+  callingUser: IUser;
   pendingPostMessage: boolean;
   errorPostMessage: string;
+  pendingPostDialogMessage: boolean;
+  errorPostDialogMessage: string;
   pendingGetInitMessages: boolean;
   errorGetInitMessages: string;
   pendingGetMessages: boolean;
@@ -46,8 +49,11 @@ const initialState: StateProps = {
   page: 0,
   alreadyReadMessageData: null,
   unavailableMoreMessages: false,
+  callingUser: null,
   pendingPostMessage: false,
   errorPostMessage: null,
+  pendingPostDialogMessage: false,
+  errorPostDialogMessage: null,
   pendingGetInitMessages: false,
   errorGetInitMessages: null,
   pendingGetMessages: false,
@@ -115,6 +121,18 @@ export const messageSlice = createSlice({
       state.pendingPostMessage = false;
       state.errorPostMessage = action.payload;
     },
+    postDialogMessageRequest: (state, action) => {
+      state.pendingPostDialogMessage = true;
+      state.errorPostDialogMessage = null;
+    },
+    postDialogMessageSuccess: (state, action) => {
+      state.pendingPostDialogMessage = false;
+      state.errorPostDialogMessage = null;
+    },
+    postDialogMessageFailure: (state, action) => {
+      state.pendingPostDialogMessage = false;
+      state.errorPostDialogMessage = action.payload;
+    },
     putReadMessagesRequest: (state, action) => {
       state.pending = true;
       state.error = null;
@@ -155,6 +173,9 @@ export const messageSlice = createSlice({
     addMessage: (state, action) => {
       state.messages = [...state.messages, action.payload];
     },
+    setCallingUser: (state, action) => {
+      state.callingUser = action.payload;
+    },
   },
 });
 
@@ -168,12 +189,16 @@ export const {
   postMessageRequest,
   postMessageSuccess,
   postMessageFailure,
+  postDialogMessageRequest,
+  postDialogMessageSuccess,
+  postDialogMessageFailure,
   putReadMessagesRequest,
   putReadMessagesSuccess,
   putReadMessagesFailure,
   resetReadMessages,
   setReadMessages,
   addMessage,
+  setCallingUser,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

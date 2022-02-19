@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
@@ -8,14 +8,18 @@ import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import Header from './Header';
 import Chat from './Chat';
 import MessageForm from './MessageForm';
+import { CallModal } from 'components/CallModal';
+import { DialogModal } from 'components/DialogModal';
 import {
   addLastMessage,
   setContactConnection,
   setReadMessageContact,
 } from 'reducers/contact';
-import { addMessage, setReadMessages } from 'reducers/message';
+import { addMessage, setCallingUser, setReadMessages } from 'reducers/message';
 
 const MainFrame = () => {
+  const [isOpenCallModal, setIsOpenCallModal] = useState<boolean>(false);
+
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const { selectedContactId, activeContacts } = useSelector(
     (state: RootState) => state.contact,
@@ -83,6 +87,18 @@ const MainFrame = () => {
     }
   }, [channel, selectedContactId, dispatch]);
 
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.RECEIVE_CALL, data => {
+        dispatch(setCallingUser(data));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.RECEIVE_CALL);
+      };
+    }
+  }, [channel, selectedContactId, dispatch]);
+
   const selectedUser = activeContacts
     .find(contact => contact.id === selectedContactId)
     ?.members.find(
@@ -97,7 +113,10 @@ const MainFrame = () => {
     <section className="fixed flex flex-col justify-between left-28 lg:left-124 transition-all duration-150 right-0 inset-y-0 border-l border-gray-150 bg-white dark:bg-gray-900 dark:border-gray-500">
       {selectedUser ? (
         <div className="w-full h-full relative">
-          <Header selectedUser={selectedUser} />
+          <Header
+            selectedUser={selectedUser}
+            setOpenCallModal={() => setIsOpenCallModal(true)}
+          />
           <Chat selectedUser={selectedUser} />
           <MessageForm />
         </div>
@@ -111,6 +130,11 @@ const MainFrame = () => {
           </div>
         </div>
       )}
+      <CallModal
+        isOpen={isOpenCallModal}
+        onClose={() => setIsOpenCallModal(false)}
+      />
+      <DialogModal />
     </section>
   );
 };

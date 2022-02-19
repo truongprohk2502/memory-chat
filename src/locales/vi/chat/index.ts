@@ -55,6 +55,7 @@ const translation = {
     stop_call: 'Dừng cuộc gọi',
     missed_a_call: 'Đã bỏ lỡ cuộc gọi',
     media_call: 'Cuộc gọi thoại',
+    is_calling: 'đang gọi',
     time_units: {
       hour: 'giờ',
       minute: 'phút',

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -20,15 +20,13 @@ import { unfriendContactRequest } from 'reducers/contact';
 import { IUser } from 'reducers/user';
 import { getFullname } from 'utils/getFullname';
 import { toast } from 'react-toastify';
-import { CallModal } from 'components/CallModal';
 
 interface IProps {
   selectedUser: IUser;
+  setOpenCallModal: () => void;
 }
 
-const Header = ({ selectedUser }: IProps) => {
-  const [isOpenCallModal, setIsOpenCallModal] = useState<boolean>(false);
-
+const Header = ({ selectedUser, setOpenCallModal }: IProps) => {
   const { selectedContactId } = useSelector(
     (state: RootState) => state.contact,
   );
@@ -47,7 +45,7 @@ const Header = ({ selectedUser }: IProps) => {
       toast.error(t('chat.call.no_camera'));
       return;
     } else {
-      setIsOpenCallModal(true);
+      setOpenCallModal();
       startMediaStream();
     }
   };
@@ -140,10 +138,6 @@ const Header = ({ selectedUser }: IProps) => {
           />
         </Dropdown>
       </div>
-      <CallModal
-        isOpen={isOpenCallModal}
-        onClose={() => setIsOpenCallModal(false)}
-      />
     </div>
   );
 };
