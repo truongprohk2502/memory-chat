@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { faPhoneAlt, faPhoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
 import { Modal } from 'components/Modal';
@@ -9,26 +9,26 @@ import { getFullname } from 'utils/getFullname';
 import { DIALOG_TIME } from 'constants/call';
 import { putStopCallRequest } from 'reducers/message';
 
-var stopCallTimeout;
-
 export const DialogModal = () => {
   const { callingData } = useSelector((state: RootState) => state.message);
+
+  const stopCallTimeoutRef = useRef<any>(null);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (callingData) {
-      stopCallTimeout = setTimeout(() => {
+      stopCallTimeoutRef.current = setTimeout(() => {
         dispatch(putStopCallRequest({ messageId: callingData.dialogId }));
       }, DIALOG_TIME * 1000);
     } else {
-      clearTimeout(stopCallTimeout);
+      clearTimeout(stopCallTimeoutRef.current);
     }
   }, [callingData, dispatch]);
 
   const handleStopCall = () => {
-    clearTimeout(stopCallTimeout);
+    clearTimeout(stopCallTimeoutRef.current);
     dispatch(putStopCallRequest({ messageId: callingData?.dialogId }));
   };
 

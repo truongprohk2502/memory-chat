@@ -21,15 +21,15 @@ const CallingProgressBar = ({
 }: IProps) => {
   const [callPercentage, setCallPercentage] = useState<number>(0);
 
-  const callInterval = useRef<any>(null);
+  const callIntervalRef = useRef<any>(null);
 
   useEffect(() => {
     if (callStatus === 'calling') {
-      callInterval.current = setInterval(() => {
+      callIntervalRef.current = setInterval(() => {
         setCallPercentage(callPercentage => {
           if (callPercentage === 100) {
             onEndedDialog();
-            clearInterval(callInterval.current);
+            clearInterval(callIntervalRef.current);
             return 0;
           }
           return callPercentage + 1;
@@ -43,7 +43,7 @@ const CallingProgressBar = ({
   useEffect(() => {
     if (!hasDialogId) {
       setCallPercentage(0);
-      clearInterval(callInterval.current);
+      clearInterval(callIntervalRef.current);
     }
   }, [hasDialogId]);
 
