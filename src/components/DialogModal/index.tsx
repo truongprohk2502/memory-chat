@@ -7,25 +7,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { DIALOG_TIME } from 'constants/call';
-import { setCallingUser } from 'reducers/message';
+import { putStopCallRequest } from 'reducers/message';
+
+var stopCallTimeout;
 
 export const DialogModal = () => {
-  const { callingUser } = useSelector((state: RootState) => state.message);
+  const { callingData } = useSelector((state: RootState) => state.message);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (callingUser) {
-      setTimeout(() => {
-        dispatch(setCallingUser(null));
+    if (callingData) {
+      stopCallTimeout = setTimeout(() => {
+        dispatch(putStopCallRequest({ messageId: callingData.dialogId }));
       }, DIALOG_TIME * 1000);
+    } else {
+      clearTimeout(stopCallTimeout);
     }
-  }, [callingUser, dispatch]);
+  }, [callingData, dispatch]);
+
+  const handleStopCall = () => {
+    clearTimeout(stopCallTimeout);
+    dispatch(putStopCallRequest({ messageId: callingData?.dialogId }));
+  };
 
   return (
     <Modal
-      isOpen={!!callingUser}
+      isOpen={!!callingData}
       size="sm"
       hideHeader
       hideFooter
@@ -34,15 +43,15 @@ export const DialogModal = () => {
       <div className="flex justify-center">
         <img
           className="w-40 h-40 rounded-full"
-          src={callingUser?.avatar}
+          src={callingData?.sender?.avatar}
           alt="user"
         />
       </div>
       <div className="text-center text-lg font-bold my-5">
         {`${getFullname(
-          callingUser?.firstName,
-          callingUser?.middleName,
-          callingUser?.lastName,
+          callingData?.sender?.firstName,
+          callingData?.sender?.middleName,
+          callingData?.sender?.lastName,
         )} ${t('chat.call.is_calling')}`}
       </div>
       <div className="flex justify-center">
@@ -57,7 +66,7 @@ export const DialogModal = () => {
             buttonClassName="text-white bg-red-500 hover:bg-red-400"
             variant="circle"
             icon={faPhoneSlash}
-            onClick={() => {}}
+            onClick={handleStopCall}
           />
         </div>
       </div>

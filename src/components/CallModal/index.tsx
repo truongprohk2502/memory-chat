@@ -23,7 +23,7 @@ import { getFullname } from 'utils/getFullname';
 import { useTranslation } from 'react-i18next';
 import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 import CallingProgressBar from './components/CallingProgressBar';
-import { postDialogMessageRequest } from 'reducers/message';
+import { postDialogMessageRequest, putStopCallRequest } from 'reducers/message';
 
 interface IProps {
   isOpen: boolean;
@@ -47,9 +47,11 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const { selectedContactId, activeContacts } = useSelector(
     (state: RootState) => state.contact,
   );
-  const { pendingPostDialogMessage, errorPostDialogMessage } = useSelector(
-    (state: RootState) => state.message,
-  );
+  const {
+    dialogingMessageId,
+    pendingPostDialogMessage,
+    errorPostDialogMessage,
+  } = useSelector((state: RootState) => state.message);
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -70,6 +72,12 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimension();
 
   useEffect(() => {
+    if (!dialogingMessageId && callStatus === 'calling') {
+      setCallStatus('ready');
+    }
+  }, [dialogingMessageId, callStatus]);
+
+  useEffect(() => {
     if (
       postingDialogMessage &&
       !pendingPostDialogMessage &&
@@ -86,18 +94,15 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     onClose();
   };
 
-  const handleEndedDialog = () => {
-    setCallStatus('ready');
-  };
-
   const handleStartDialog = () => {
     dispatch(postDialogMessageRequest({ contactId: selectedContactId }));
     setPostingDialogMessage(true);
   };
 
-  const handleStopDialog = () => {
+  const handleStopDialog = useCallback(() => {
     setCallStatus('ready');
-  };
+    dispatch(putStopCallRequest({ messageId: dialogingMessageId }));
+  }, [dialogingMessageId, dispatch]);
 
   const getModalSize = useCallback(
     (ratio: number = 1) => {
@@ -178,7 +183,8 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
           <div className="w-40 h-40 mb-5">
             <CallingProgressBar
               callStatus={callStatus}
-              onEndedDialog={handleEndedDialog}
+              hasDialogId={!!dialogingMessageId}
+              onEndedDialog={handleStopDialog}
             >
               <img
                 src={selectedUser?.avatar}

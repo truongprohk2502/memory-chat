@@ -9,4 +9,5 @@ export const PUSHER_EVENTS = {
   DISCONNECT_CONTACT: 'disconnect_contact',
   READ_MESSAGES: 'read_messages',
   RECEIVE_CALL: 'receive_call',
+  STOP_CALL: 'stop_call',
 };

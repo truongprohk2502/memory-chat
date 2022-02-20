@@ -15,7 +15,12 @@ import {
   setContactConnection,
   setReadMessageContact,
 } from 'reducers/contact';
-import { addMessage, setCallingUser, setReadMessages } from 'reducers/message';
+import {
+  addMessage,
+  addStopCallMessage,
+  setCallingData,
+  setReadMessages,
+} from 'reducers/message';
 
 const MainFrame = () => {
   const [isOpenCallModal, setIsOpenCallModal] = useState<boolean>(false);
@@ -90,14 +95,29 @@ const MainFrame = () => {
   useEffect(() => {
     if (channel) {
       channel.bind(PUSHER_EVENTS.RECEIVE_CALL, data => {
-        dispatch(setCallingUser(data));
+        dispatch(setCallingData(data));
       });
 
       return () => {
         channel.unbind(PUSHER_EVENTS.RECEIVE_CALL);
       };
     }
-  }, [channel, selectedContactId, dispatch]);
+  }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.STOP_CALL, data => {
+        dispatch(addStopCallMessage(data));
+        dispatch(
+          addLastMessage({ message: data, increaseUnreadMessage: false }),
+        );
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.STOP_CALL);
+      };
+    }
+  }, [channel, dispatch]);
 
   const selectedUser = activeContacts
     .find(contact => contact.id === selectedContactId)

@@ -1,48 +1,51 @@
-import { DIALOG_TIME } from 'constants/call';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import {
   buildStyles,
   CircularProgressbarWithChildren,
 } from 'react-circular-progressbar';
+import { DIALOG_TIME } from 'constants/call';
 import { CallStatus } from '..';
 
 interface IProps {
   children: ReactNode;
   callStatus: CallStatus;
+  hasDialogId: boolean;
   onEndedDialog: () => void;
 }
-
-let callInterval;
 
 const CallingProgressBar = ({
   children,
   callStatus,
+  hasDialogId,
   onEndedDialog,
 }: IProps) => {
   const [callPercentage, setCallPercentage] = useState<number>(0);
 
+  const callInterval = useRef<any>(null);
+
   useEffect(() => {
     if (callStatus === 'calling') {
-      callInterval = setInterval(
-        () =>
-          setCallPercentage(callPercentage => {
-            if (callPercentage === 100) {
-              onEndedDialog();
-              clearInterval(callInterval);
-              return 0;
-            }
-            return callPercentage + 1;
-          }),
-        DIALOG_TIME * 10,
-      );
-    } else {
-      setCallPercentage(0);
-      if (callInterval) {
-        clearInterval(callInterval);
-        callInterval = null;
-      }
+      callInterval.current = setInterval(() => {
+        setCallPercentage(callPercentage => {
+          if (callPercentage === 100) {
+            onEndedDialog();
+            clearInterval(callInterval.current);
+            return 0;
+          }
+          return callPercentage + 1;
+        });
+      }, DIALOG_TIME * 10);
     }
-  }, [callStatus, onEndedDialog]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callStatus]);
+
+  useEffect(() => {
+    if (!hasDialogId) {
+      setCallPercentage(0);
+      clearInterval(callInterval.current);
+    }
+  }, [hasDialogId]);
 
   return (
     <CircularProgressbarWithChildren

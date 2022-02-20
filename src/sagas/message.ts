@@ -15,6 +15,9 @@ import {
   putReadMessagesRequest,
   putReadMessagesSuccess,
   putReadMessagesFailure,
+  putStopCallRequest,
+  putStopCallSuccess,
+  putStopCallFailure,
 } from 'reducers/message';
 import { put, takeEvery } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -112,10 +115,28 @@ export function* putReadMessages(action) {
   );
 }
 
+export function* putStopCall(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/message/stop-dialog-call',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(putStopCallSuccess(data));
+      yield put(
+        addLastMessage({ message: data, increaseUnreadMessage: false }),
+      );
+    },
+    putStopCallFailure,
+  );
+}
+
 export function* messageWatcher() {
   yield takeEvery(getInitMessagesRequest, getInitMessages);
   yield takeEvery(getMessagesRequest, getMessages);
   yield takeEvery(postMessageRequest, postMessage);
   yield takeEvery(postDialogMessageRequest, postDialogMessage);
   yield takeEvery(putReadMessagesRequest, putReadMessages);
+  yield takeEvery(putStopCallRequest, putStopCall);
 }
