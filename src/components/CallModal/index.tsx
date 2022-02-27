@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 import CallingProgressBar from './components/CallingProgressBar';
 import { postDialogMessageRequest, putStopCallRequest } from 'reducers/message';
+import { useSkyway } from 'hooks/useSkyway';
 
 interface IProps {
   isOpen: boolean;
@@ -36,17 +37,16 @@ const CALL_MODAL_WIDTH = 800;
 const CALL_MODAL_HEIGHT = 600;
 
 export const CallModal = ({ isOpen, onClose }: IProps) => {
-  const [remoteCameraOn] = useState<boolean>(false);
   const [isOpenClosePopup, setIsOpenClosePopup] = useState<boolean>(false);
   const [isOpenSettingPage, setIsOpenSettingPage] = useState<boolean>(false);
   const [callStatus, setCallStatus] = useState<CallStatus>('ready');
   const [postingDialogMessage, setPostingDialogMessage] =
     useState<boolean>(false);
+  const [isDialogingCall, setIsDialogingCall] = useState<boolean>(false);
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const { selectedContactId, activeContacts } = useSelector(
-    (state: RootState) => state.contact,
-  );
+  const { selectedContactId, isAnsweringCall, isTalkingCall, activeContacts } =
+    useSelector((state: RootState) => state.contact);
   const {
     dialogingMessageId,
     pendingPostDialogMessage,
@@ -57,25 +57,58 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const { t } = useTranslation();
 
   const {
+    initializedLocalStream,
     isGettingStream,
     mirrorVideo,
     videoStreamTrack,
     canvasStreamTrack,
+    audioStreamTrack,
+    selectedSpeaker,
     highFrameRate,
     cameraOn,
     microphoneOn,
     onToggleCamera,
     onToggleMicrophone,
+    startMediaStream,
     stopMediaStream,
   } = useContext(LocalMediaContext);
 
   const { width: windowWidth, height: windowHeight } = useWindowDimension();
+
+  const { remoteStream, remoteCameraOn } = useSkyway({
+    canJoinRoom:
+      selectedContactId &&
+      initializedLocalStream &&
+      audioStreamTrack &&
+      (isAnsweringCall || isDialogingCall),
+    highFrameRate,
+    cameraOn,
+    roomName: `room-${selectedContactId}`,
+    videoStreamTrack,
+    canvasStreamTrack,
+    audioStreamTrack,
+  });
 
   useEffect(() => {
     if (!dialogingMessageId && callStatus === 'calling') {
       setCallStatus('ready');
     }
   }, [dialogingMessageId, callStatus]);
+
+  useEffect(() => {
+    if (isAnsweringCall) {
+      startMediaStream();
+      setCallStatus('talking');
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnsweringCall]);
+
+  useEffect(() => {
+    if (isTalkingCall) {
+      setCallStatus('talking');
+    }
+  }, [isTalkingCall]);
 
   useEffect(() => {
     if (
@@ -97,11 +130,15 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   const handleStartDialog = () => {
     dispatch(postDialogMessageRequest({ contactId: selectedContactId }));
     setPostingDialogMessage(true);
+    if (selectedContactId && audioStreamTrack) {
+      setIsDialogingCall(true);
+    }
   };
 
   const handleStopDialog = useCallback(() => {
     setCallStatus('ready');
     dispatch(putStopCallRequest({ messageId: dialogingMessageId }));
+    setIsDialogingCall(false);
   }, [dialogingMessageId, dispatch]);
 
   const getModalSize = useCallback(
@@ -141,6 +178,21 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     [videoStreamTrack, canvasStreamTrack, highFrameRate],
   );
 
+  const remoteVideoRef = useCallback(
+    (video: HTMLVideoElement) => {
+      if (video && remoteStream) {
+        if ('sinkId' in HTMLMediaElement.prototype && selectedSpeaker) {
+          // @ts-ignore
+          video.setSinkId(selectedSpeaker.deviceId);
+        }
+
+        video.srcObject = remoteStream;
+        video.play();
+      }
+    },
+    [remoteStream, selectedSpeaker],
+  );
+
   const selectedUser = activeContacts
     .find(contact => contact.id === selectedContactId)
     ?.members.find(
@@ -163,13 +215,14 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     >
       <div style={getModalSize()} className="relative w-full h-full rounded-md">
         <video
+          ref={remoteVideoRef}
           playsInline
           className={clsx(
             { hidden: !remoteCameraOn },
             'w-full h-full rounded-md',
           )}
         />
-        {callStatus === 'talking' && !remoteCameraOn && (
+        {callStatus === 'talking' && (!remoteStream || !remoteCameraOn) && (
           <div className="absolute inset-0 rounded-md flex justify-center items-center text-2xl text-blue-500">
             <FontAwesomeIcon icon={faVideoSlash} />
           </div>

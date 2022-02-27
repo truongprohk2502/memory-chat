@@ -10,4 +10,6 @@ export const PUSHER_EVENTS = {
   READ_MESSAGES: 'read_messages',
   RECEIVE_CALL: 'receive_call',
   STOP_CALL: 'stop_call',
+  START_CALL: 'start_call',
+  END_CALL: 'end_call',
 };

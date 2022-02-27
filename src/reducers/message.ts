@@ -16,7 +16,7 @@ export interface IMessage {
   text: string;
   file: IFile;
   callTime: number;
-  messageType: 'text' | 'file' | 'call';
+  messageType: 'text' | 'file' | 'call' | 'dialog';
   isRead: boolean;
   createdAt: string;
 }
@@ -32,6 +32,7 @@ interface StateProps {
   alreadyReadMessageData: IReadMessage;
   unavailableMoreMessages: boolean;
   dialogingMessageId: number;
+  callingMessageId: number;
   callingData: { sender: IUser; dialogId: number };
   pendingPostMessage: boolean;
   errorPostMessage: string;
@@ -51,6 +52,7 @@ const initialState: StateProps = {
   alreadyReadMessageData: null,
   unavailableMoreMessages: false,
   dialogingMessageId: 0,
+  callingMessageId: 0,
   callingData: null,
   pendingPostMessage: false,
   errorPostMessage: null,
@@ -166,6 +168,30 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    putStartCallRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putStartCallSuccess: (state, action) => {
+      const dialogMessage = state.messages.find(
+        message => message.id === action.payload.id,
+      );
+      if (dialogMessage) {
+        dialogMessage.messageType = 'call';
+      }
+      state.callingMessageId = state.callingData
+        ? state.callingData.dialogId
+        : state.dialogingMessageId;
+      state.dialogingMessageId = 0;
+      state.callingData = null;
+
+      state.pending = false;
+      state.error = null;
+    },
+    putStartCallFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     resetReadMessages: state => {
       state.alreadyReadMessageData = null;
     },
@@ -195,11 +221,6 @@ export const messageSlice = createSlice({
     setCallingData: (state, action) => {
       state.callingData = action.payload;
     },
-    addStopCallMessage: (state, action) => {
-      state.messages = [...state.messages, action.payload];
-      state.dialogingMessageId = 0;
-      state.callingData = null;
-    },
   },
 });
 
@@ -222,11 +243,13 @@ export const {
   putStopCallRequest,
   putStopCallSuccess,
   putStopCallFailure,
+  putStartCallRequest,
+  putStartCallSuccess,
+  putStartCallFailure,
   resetReadMessages,
   setReadMessages,
   addMessage,
   setCallingData,
-  addStopCallMessage,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

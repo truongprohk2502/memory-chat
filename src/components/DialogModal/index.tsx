@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { DIALOG_TIME } from 'constants/call';
-import { putStopCallRequest } from 'reducers/message';
+import { putStartCallRequest, putStopCallRequest } from 'reducers/message';
 
 export const DialogModal = () => {
   const { callingData } = useSelector((state: RootState) => state.message);
@@ -26,6 +26,11 @@ export const DialogModal = () => {
       clearTimeout(stopCallTimeoutRef.current);
     }
   }, [callingData, dispatch]);
+
+  const handleStartCall = () => {
+    clearTimeout(stopCallTimeoutRef.current);
+    dispatch(putStartCallRequest({ messageId: callingData?.dialogId }));
+  };
 
   const handleStopCall = () => {
     clearTimeout(stopCallTimeoutRef.current);
@@ -60,7 +65,7 @@ export const DialogModal = () => {
             buttonClassName="mr-5 text-white bg-green-500 hover:bg-green-400"
             variant="circle"
             icon={faPhoneAlt}
-            onClick={() => {}}
+            onClick={handleStartCall}
           />
           <Button
             buttonClassName="text-white bg-red-500 hover:bg-red-400"

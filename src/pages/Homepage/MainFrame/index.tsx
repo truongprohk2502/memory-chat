@@ -12,12 +12,15 @@ import { CallModal } from 'components/CallModal';
 import { DialogModal } from 'components/DialogModal';
 import {
   addLastMessage,
+  changeSelectedContact,
   setContactConnection,
+  setIsTalkingCall,
   setReadMessageContact,
 } from 'reducers/contact';
 import {
   addMessage,
-  addStopCallMessage,
+  putStartCallSuccess,
+  putStopCallRequest,
   setCallingData,
   setReadMessages,
 } from 'reducers/message';
@@ -29,6 +32,7 @@ const MainFrame = () => {
   const { selectedContactId, activeContacts } = useSelector(
     (state: RootState) => state.contact,
   );
+  const { callingMessageId } = useSelector((state: RootState) => state.message);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -107,7 +111,7 @@ const MainFrame = () => {
   useEffect(() => {
     if (channel) {
       channel.bind(PUSHER_EVENTS.STOP_CALL, data => {
-        dispatch(addStopCallMessage(data));
+        dispatch(putStopCallRequest(data));
         dispatch(
           addLastMessage({ message: data, increaseUnreadMessage: false }),
         );
@@ -115,6 +119,23 @@ const MainFrame = () => {
 
       return () => {
         channel.unbind(PUSHER_EVENTS.STOP_CALL);
+      };
+    }
+  }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.START_CALL, data => {
+        dispatch(putStartCallSuccess(data));
+        dispatch(changeSelectedContact(data.contact.id));
+        dispatch(setIsTalkingCall(true));
+        dispatch(
+          addLastMessage({ message: data, increaseUnreadMessage: false }),
+        );
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.START_CALL);
       };
     }
   }, [channel, dispatch]);
@@ -151,7 +172,7 @@ const MainFrame = () => {
         </div>
       )}
       <CallModal
-        isOpen={isOpenCallModal}
+        isOpen={isOpenCallModal || !!callingMessageId}
         onClose={() => setIsOpenCallModal(false)}
       />
       <DialogModal />

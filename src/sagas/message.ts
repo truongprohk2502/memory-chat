@@ -1,4 +1,9 @@
-import { addLastMessage, setReadMessageContact } from 'reducers/contact';
+import {
+  addLastMessage,
+  changeSelectedContact,
+  setIsAnsweringCall,
+  setReadMessageContact,
+} from 'reducers/contact';
 import {
   getInitMessagesRequest,
   getInitMessagesSuccess,
@@ -18,6 +23,9 @@ import {
   putStopCallRequest,
   putStopCallSuccess,
   putStopCallFailure,
+  putStartCallRequest,
+  putStartCallSuccess,
+  putStartCallFailure,
 } from 'reducers/message';
 import { put, takeEvery } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -132,6 +140,26 @@ export function* putStopCall(action) {
   );
 }
 
+export function* putStartCall(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/message/start-dialog-call',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(putStartCallSuccess(data));
+      // @ts-ignore
+      yield put(changeSelectedContact(data.contact.id));
+      yield put(setIsAnsweringCall(true));
+      yield put(
+        addLastMessage({ message: data, increaseUnreadMessage: false }),
+      );
+    },
+    putStartCallFailure,
+  );
+}
+
 export function* messageWatcher() {
   yield takeEvery(getInitMessagesRequest, getInitMessages);
   yield takeEvery(getMessagesRequest, getMessages);
@@ -139,4 +167,5 @@ export function* messageWatcher() {
   yield takeEvery(postDialogMessageRequest, postDialogMessage);
   yield takeEvery(putReadMessagesRequest, putReadMessages);
   yield takeEvery(putStopCallRequest, putStopCall);
+  yield takeEvery(putStartCallRequest, putStartCall);
 }

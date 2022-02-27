@@ -18,6 +18,8 @@ interface StateProps {
   sendingContacts: IContact[];
   receivingContacts: IContact[];
   selectedContactId: number;
+  isAnsweringCall: boolean;
+  isTalkingCall: boolean;
   pending: boolean;
   error: string;
 }
@@ -27,6 +29,8 @@ const initialState: StateProps = {
   sendingContacts: [],
   receivingContacts: [],
   selectedContactId: null,
+  isAnsweringCall: false,
+  isTalkingCall: false,
   pending: false,
   error: null,
 };
@@ -219,6 +223,12 @@ export const contactSlice = createSlice({
         }
       }
     },
+    setIsAnsweringCall: (state, action) => {
+      state.isAnsweringCall = action.payload;
+    },
+    setIsTalkingCall: (state, action) => {
+      state.isTalkingCall = action.payload;
+    },
   },
 });
 
@@ -250,6 +260,8 @@ export const {
   addLastMessage,
   setContactConnection,
   setReadMessageContact,
+  setIsAnsweringCall,
+  setIsTalkingCall,
 } = contactSlice.actions;
 
 export default contactSlice.reducer;
