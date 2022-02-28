@@ -31,6 +31,7 @@ interface StateProps {
   page: number;
   alreadyReadMessageData: IReadMessage;
   unavailableMoreMessages: boolean;
+  callTime: number;
   dialogingMessageId: number;
   callingMessageId: number;
   callingData: { sender: IUser; dialogId: number };
@@ -51,6 +52,7 @@ const initialState: StateProps = {
   page: 0,
   alreadyReadMessageData: null,
   unavailableMoreMessages: false,
+  callTime: 0,
   dialogingMessageId: 0,
   callingMessageId: 0,
   callingData: null,
@@ -221,6 +223,12 @@ export const messageSlice = createSlice({
     setCallingData: (state, action) => {
       state.callingData = action.payload;
     },
+    increaseCallTime: state => {
+      state.callTime = state.callTime + 1;
+    },
+    resetCallTime: state => {
+      state.callTime = 0;
+    },
   },
 });
 
@@ -250,6 +258,8 @@ export const {
   setReadMessages,
   addMessage,
   setCallingData,
+  increaseCallTime,
+  resetCallTime,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

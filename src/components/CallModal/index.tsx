@@ -25,6 +25,7 @@ import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 import CallingProgressBar from './components/CallingProgressBar';
 import { postDialogMessageRequest, putStopCallRequest } from 'reducers/message';
 import { useSkyway } from 'hooks/useSkyway';
+import Timer from './components/Timer';
 
 interface IProps {
   isOpen: boolean;
@@ -324,7 +325,9 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
                   selectedUser?.lastName,
                 )}
               </div>
-              <div className="text-gray-400 text-xs">00:00:00</div>
+              <div className="text-gray-400 text-xs">
+                <Timer />
+              </div>
             </div>
           </div>
           <Button
