@@ -14,6 +14,7 @@ import Pusher, { Channel } from 'pusher-js';
 import { io } from 'socket.io-client';
 import { SettingDeviceModal } from 'components/SettingDeviceModal';
 import { ILocalMedia, PageType, useLocalMedia } from 'hooks/useLocalMedia';
+import ManageUser from 'pages/ManageUser';
 
 type SubFrameContextType = {
   subFrame: ISubFrameType;
@@ -44,6 +45,7 @@ const Homepage = () => {
   const {
     initializedToken,
     userInfo,
+    role,
     pending: authPending,
   } = useSelector((state: RootState) => state.auth);
   const { pending: userPending } = useSelector(
@@ -105,7 +107,9 @@ const Homepage = () => {
     setIsOpenSettingDeviceModal(false);
   };
 
-  return (
+  return role === 'admin' ? (
+    <ManageUser />
+  ) : (
     <PusherContext.Provider value={channel}>
       <SubFrameContext.Provider
         value={{

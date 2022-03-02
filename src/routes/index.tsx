@@ -21,7 +21,7 @@ const Router = () => {
         }
       >
         <Switch>
-          <PrivateRoute roles={['user']} exact path={ROUTES.HOMEPAGE}>
+          <PrivateRoute roles={['user', 'admin']} exact path={ROUTES.HOMEPAGE}>
             <Homepage />
           </PrivateRoute>
           <SigningRoute exact path={ROUTES.LOGIN}>
