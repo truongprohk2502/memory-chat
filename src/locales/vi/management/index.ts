@@ -16,6 +16,7 @@ const translation = {
   },
   manage_user: {
     label: 'Quản lý người dùng',
+    modal_title: 'Thông tin chi tiết người dùng',
     exit: 'Thoát',
     search_email_label: 'Tìm kiếm người dùng với email',
     search_placeholder: 'Nhập email',
@@ -27,6 +28,8 @@ const translation = {
       action: 'Hành động',
       block: 'Khóa',
       unblock: 'Mở khóa',
+      account_type: 'Kiểu tài khoản',
+      not_available: 'Không có',
     },
   },
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
 import { useHistory } from 'react-router-dom';
@@ -14,8 +14,12 @@ import { LIMIT_USERS } from 'constants/limitRecords';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { FullSpinner } from 'components/FullSpinner';
+import { Modal } from 'components/Modal';
 
 const ManageUser = () => {
+  const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+
   const { users, pageCount, pending } = useSelector(
     (state: RootState) => state.user,
   );
@@ -39,6 +43,13 @@ const ManageUser = () => {
         : getUsersRequest({ page: 0, size: LIMIT_USERS }),
     );
   };
+
+  const handleSelectDetail = (userId: number) => {
+    setOpenDetailModal(true);
+    setSelectedUserId(userId);
+  };
+
+  const selectedUser = users.find(user => user.id === selectedUserId);
 
   return (
     <div className="flex flex-col items-center">
@@ -90,7 +101,10 @@ const ManageUser = () => {
               </td>
               <td className="border border-gray-400">{user.email}</td>
               <td className="border border-gray-400">
-                <span className="text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150">
+                <span
+                  onClick={() => handleSelectDetail(user.id)}
+                  className="text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150"
+                >
                   {t('management.manage_user.table.detail')}
                 </span>
               </td>
@@ -133,6 +147,69 @@ const ManageUser = () => {
         breakClassName="mx-2"
       />
       {pending && <FullSpinner />}
+      <Modal
+        isOpen={openDetailModal}
+        onClose={() => setOpenDetailModal(false)}
+        hideFooter
+        title={t('management.manage_user.modal_title')}
+      >
+        <div>
+          <span className="font-bold">
+            {t('management.manage_user.table.fullname')}:{' '}
+          </span>
+          <span>
+            {getFullname(
+              selectedUser?.firstName,
+              selectedUser?.middleName,
+              selectedUser?.lastName,
+            )}
+          </span>
+        </div>
+        <div>
+          <span className="font-bold">{t('registration.email.title')}: </span>
+          <span>{selectedUser?.email}</span>
+        </div>
+        <div>
+          <span className="font-bold">
+            {t('management.manage_user.table.account_type')}:{' '}
+          </span>
+          <span>{selectedUser?.accountType}</span>
+        </div>
+        <div>
+          <span className="font-bold">{t('registration.gender.title')}: </span>
+          <span>
+            {selectedUser?.gender === 'male'
+              ? t('registration.gender.options.male')
+              : selectedUser?.gender === 'female'
+              ? t('registration.gender.options.female')
+              : t('management.manage_user.table.not_available')}
+          </span>
+        </div>
+        <div>
+          <span className="font-bold">{t('registration.dob.title')}: </span>
+          <span>
+            {selectedUser?.dob
+              ? selectedUser?.dob
+              : t('management.manage_user.table.not_available')}
+          </span>
+        </div>
+        <div>
+          <span className="font-bold">{t('registration.address.title')}: </span>
+          <span>
+            {selectedUser?.address
+              ? selectedUser?.address
+              : t('management.manage_user.table.not_available')}
+          </span>
+        </div>
+        <div>
+          <span className="font-bold">{t('registration.phone.title')}: </span>
+          <span>
+            {selectedUser?.phone
+              ? selectedUser?.phone
+              : t('management.manage_user.table.not_available')}
+          </span>
+        </div>
+      </Modal>
     </div>
   );
 };

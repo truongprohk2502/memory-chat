@@ -16,6 +16,7 @@ const translation = {
   },
   manage_user: {
     label: 'Manage user',
+    modal_title: 'User detail information',
     exit: 'Exit',
     search_email_label: 'Search user with email',
     search_placeholder: 'Input email',
@@ -27,6 +28,8 @@ const translation = {
       action: 'Action',
       block: 'Block',
       unblock: 'Unblock',
+      account_type: 'Account type',
+      not_available: 'Not available',
     },
   },
 };
