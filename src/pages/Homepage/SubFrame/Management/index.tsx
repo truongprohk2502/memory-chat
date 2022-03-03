@@ -24,6 +24,9 @@ import {
 import { PusherContext } from 'pages/Homepage';
 import { PUSHER_EVENTS } from 'constants/pusherEvents';
 import { RootState } from 'reducers';
+import { Button } from 'components/Button';
+import { useHistory } from 'react-router-dom';
+import { ROUTES } from 'constants/routes';
 
 const Management = () => {
   const [managePage, setManagePage] = useState<
@@ -34,7 +37,9 @@ const Management = () => {
   const { sendingContacts, receivingContacts } = useSelector(
     (state: RootState) => state.contact,
   );
+  const { role } = useSelector((state: RootState) => state.auth);
 
+  const history = useHistory();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const channel = useContext(PusherContext);
@@ -89,6 +94,13 @@ const Management = () => {
   return (
     <SubFrameLayout title={t('header.management')} subFrameType="dashboard">
       <div className="flex flex-col w-full h-full">
+        {role === 'admin' && (
+          <Button
+            text={t('management.manage_user_button')}
+            buttonClassName="mb-4"
+            onClick={() => history.push(ROUTES.MANAGE_USER)}
+          />
+        )}
         <RadioOption
           icon={faUserPlus}
           label={t('management.make_friends')}

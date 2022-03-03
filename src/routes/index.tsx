@@ -8,6 +8,7 @@ import SigningRoute from './SigningRoute';
 const LoginPage = lazy(() => import('pages/Login'));
 const RegistrationPage = lazy(() => import('pages/Registration'));
 const Homepage = lazy(() => import('pages/Homepage'));
+const ManageUser = lazy(() => import('pages/ManageUser'));
 const ErrorPage = lazy(() => import('pages/Error'));
 
 const Router = () => {
@@ -23,6 +24,9 @@ const Router = () => {
         <Switch>
           <PrivateRoute roles={['user', 'admin']} exact path={ROUTES.HOMEPAGE}>
             <Homepage />
+          </PrivateRoute>
+          <PrivateRoute roles={['admin']} exact path={ROUTES.MANAGE_USER}>
+            <ManageUser />
           </PrivateRoute>
           <SigningRoute exact path={ROUTES.LOGIN}>
             <LoginPage />
