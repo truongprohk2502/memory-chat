@@ -5,6 +5,9 @@ import {
   getUsersRequest,
   getUsersSuccess,
   getUsersFailure,
+  getUsersByEmailRequest,
+  getUsersByEmailSuccess,
+  getUsersByEmailFailure,
 } from 'reducers/user';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -41,7 +44,24 @@ export function* getUsers(action) {
   );
 }
 
+export function* getUsersByEmail(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'get',
+      urlTemplate: '/user/search_by_email',
+      queries: [{ name: 'email', value: action.payload }],
+    },
+    function* (data) {
+      console.log(data);
+
+      yield put(getUsersByEmailSuccess(data));
+    },
+    getUsersByEmailFailure,
+  );
+}
+
 export function* userWatcher() {
   yield takeEvery(getUsersByKeywordRequest, getUsersByKeyword);
   yield takeEvery(getUsersRequest, getUsers);
+  yield takeEvery(getUsersByEmailRequest, getUsersByEmail);
 }

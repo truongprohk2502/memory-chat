@@ -67,6 +67,20 @@ export const userSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    getUsersByEmailRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    getUsersByEmailSuccess: (state, action) => {
+      state.users = action.payload;
+      state.pageCount = 0;
+      state.pending = false;
+      state.error = null;
+    },
+    getUsersByEmailFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -77,6 +91,9 @@ export const {
   getUsersRequest,
   getUsersSuccess,
   getUsersFailure,
+  getUsersByEmailRequest,
+  getUsersByEmailSuccess,
+  getUsersByEmailFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

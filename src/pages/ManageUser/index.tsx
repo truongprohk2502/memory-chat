@@ -4,13 +4,16 @@ import ReactPaginate from 'react-paginate';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsersRequest } from 'reducers/user';
+import { getUsersByEmailRequest, getUsersRequest } from 'reducers/user';
 import { LIMIT_USERS } from 'constants/limitRecords';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
+import { FullSpinner } from 'components/FullSpinner';
 
 const ManageUser = () => {
-  const { users, pageCount } = useSelector((state: RootState) => state.user);
+  const { users, pageCount, pending } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const { t } = useTranslation();
   const history = useHistory();
@@ -22,6 +25,14 @@ const ManageUser = () => {
 
   const handlePageClick = ({ selected }) => {
     dispatch(getUsersRequest({ page: selected, size: LIMIT_USERS }));
+  };
+
+  const handleSearchUsers = (email: string) => {
+    dispatch(
+      email.trim().length
+        ? getUsersByEmailRequest(email.trim())
+        : getUsersRequest({ page: 0, size: LIMIT_USERS }),
+    );
   };
 
   return (
@@ -41,6 +52,8 @@ const ManageUser = () => {
           className="border border-gray-500 px-1 r
           ounded-md"
           placeholder={t('management.manage_user.search_placeholder')}
+          // @ts-ignore
+          onKeyUp={e => e.key === 'Enter' && handleSearchUsers(e.target.value)}
         />
       </div>
       <table className="w-full lg:w-3/4 my-5 border-collapse border border-gray-400">
@@ -101,6 +114,7 @@ const ManageUser = () => {
         activeClassName="bg-blue-400"
         breakClassName="mx-2"
       />
+      {pending && <FullSpinner />}
     </div>
   );
 };
