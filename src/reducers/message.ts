@@ -170,6 +170,24 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    putEndCallRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putEndCallSuccess: (state, action) => {
+      state.messages = [...state.messages, action.payload];
+      state.callTime = 0;
+      state.dialogingMessageId = 0;
+      state.callingMessageId = 0;
+      state.callingData = null;
+
+      state.pending = false;
+      state.error = null;
+    },
+    putEndCallFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     putStartCallRequest: (state, action) => {
       state.pending = true;
       state.error = null;
@@ -217,17 +235,11 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
-    addMessage: (state, action) => {
-      state.messages = [...state.messages, action.payload];
-    },
     setCallingData: (state, action) => {
       state.callingData = action.payload;
     },
     increaseCallTime: state => {
       state.callTime = state.callTime + 1;
-    },
-    resetCallTime: state => {
-      state.callTime = 0;
     },
   },
 });
@@ -251,15 +263,16 @@ export const {
   putStopCallRequest,
   putStopCallSuccess,
   putStopCallFailure,
+  putEndCallRequest,
+  putEndCallSuccess,
+  putEndCallFailure,
   putStartCallRequest,
   putStartCallSuccess,
   putStartCallFailure,
   resetReadMessages,
   setReadMessages,
-  addMessage,
   setCallingData,
   increaseCallTime,
-  resetCallTime,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

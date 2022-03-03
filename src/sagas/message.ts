@@ -23,6 +23,9 @@ import {
   putStopCallRequest,
   putStopCallSuccess,
   putStopCallFailure,
+  putEndCallRequest,
+  putEndCallSuccess,
+  putEndCallFailure,
   putStartCallRequest,
   putStartCallSuccess,
   putStartCallFailure,
@@ -140,6 +143,23 @@ export function* putStopCall(action) {
   );
 }
 
+export function* putEndCall(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/message/end-dialog-call',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(putEndCallSuccess(data));
+      yield put(
+        addLastMessage({ message: data, increaseUnreadMessage: false }),
+      );
+    },
+    putEndCallFailure,
+  );
+}
+
 export function* putStartCall(action) {
   yield sagaLayoutFunction(
     {
@@ -167,5 +187,6 @@ export function* messageWatcher() {
   yield takeEvery(postDialogMessageRequest, postDialogMessage);
   yield takeEvery(putReadMessagesRequest, putReadMessages);
   yield takeEvery(putStopCallRequest, putStopCall);
+  yield takeEvery(putEndCallRequest, putEndCall);
   yield takeEvery(putStartCallRequest, putStartCall);
 }

@@ -18,9 +18,10 @@ import {
   setReadMessageContact,
 } from 'reducers/contact';
 import {
-  addMessage,
+  postMessageSuccess,
+  putEndCallSuccess,
   putStartCallSuccess,
-  putStopCallRequest,
+  putStopCallSuccess,
   setCallingData,
   setReadMessages,
 } from 'reducers/message';
@@ -46,7 +47,7 @@ const MainFrame = () => {
         );
         selectedContactId &&
           selectedContactId === data?.contact?.id &&
-          dispatch(addMessage(data));
+          dispatch(postMessageSuccess(data));
       });
 
       return () => {
@@ -111,7 +112,7 @@ const MainFrame = () => {
   useEffect(() => {
     if (channel) {
       channel.bind(PUSHER_EVENTS.STOP_CALL, data => {
-        dispatch(putStopCallRequest(data));
+        dispatch(putStopCallSuccess(data));
         dispatch(
           addLastMessage({ message: data, increaseUnreadMessage: false }),
         );
@@ -119,6 +120,21 @@ const MainFrame = () => {
 
       return () => {
         channel.unbind(PUSHER_EVENTS.STOP_CALL);
+      };
+    }
+  }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind(PUSHER_EVENTS.END_CALL, data => {
+        dispatch(putEndCallSuccess(data));
+        dispatch(
+          addLastMessage({ message: data, increaseUnreadMessage: false }),
+        );
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.END_CALL);
       };
     }
   }, [channel, dispatch]);

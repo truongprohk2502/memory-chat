@@ -23,9 +23,14 @@ import { getFullname } from 'utils/getFullname';
 import { useTranslation } from 'react-i18next';
 import { SettingDevice } from 'components/SettingDeviceModal/SettingDevice';
 import CallingProgressBar from './components/CallingProgressBar';
-import { postDialogMessageRequest, putStopCallRequest } from 'reducers/message';
+import {
+  postDialogMessageRequest,
+  putEndCallRequest,
+  putStopCallRequest,
+} from 'reducers/message';
 import { useSkyway } from 'hooks/useSkyway';
 import Timer from './components/Timer';
+import { setIsAnsweringCall, setIsTalkingCall } from 'reducers/contact';
 
 interface IProps {
   isOpen: boolean;
@@ -50,6 +55,8 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     useSelector((state: RootState) => state.contact);
   const {
     dialogingMessageId,
+    callingMessageId,
+    callTime,
     pendingPostDialogMessage,
     errorPostDialogMessage,
   } = useSelector((state: RootState) => state.message);
@@ -97,6 +104,19 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
   }, [dialogingMessageId, callStatus]);
 
   useEffect(() => {
+    if (!callingMessageId && callStatus === 'talking') {
+      dispatch(setIsTalkingCall(false));
+      dispatch(setIsAnsweringCall(false));
+      setCallStatus('ready');
+      setIsDialogingCall(false);
+      stopMediaStream();
+      onClose();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callingMessageId, callStatus]);
+
+  useEffect(() => {
     if (isAnsweringCall) {
       startMediaStream();
       setCallStatus('talking');
@@ -122,8 +142,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     }
   }, [postingDialogMessage, pendingPostDialogMessage, errorPostDialogMessage]);
 
-  const handleEndCall = () => {
-    setIsOpenClosePopup(false);
+  const handleCloseCallModal = () => {
     stopMediaStream();
     onClose();
   };
@@ -134,6 +153,11 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
     if (selectedContactId && audioStreamTrack) {
       setIsDialogingCall(true);
     }
+  };
+
+  const handleEndCall = () => {
+    setIsOpenClosePopup(false);
+    dispatch(putEndCallRequest({ messageId: callingMessageId, callTime }));
   };
 
   const handleStopDialog = useCallback(() => {
@@ -219,7 +243,7 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
           ref={remoteVideoRef}
           playsInline
           className={clsx(
-            { hidden: !remoteCameraOn },
+            { hidden: !remoteStream || !remoteCameraOn },
             'w-full h-full rounded-md',
           )}
         />
@@ -306,7 +330,11 @@ export const CallModal = ({ isOpen, onClose }: IProps) => {
               icon={faPhoneSlash}
               hasOnlyButton={false}
               color="danger"
-              onClick={() => setIsOpenClosePopup(true)}
+              onClick={() =>
+                callStatus === 'ready'
+                  ? handleCloseCallModal()
+                  : setIsOpenClosePopup(true)
+              }
             />
           </div>
         </div>

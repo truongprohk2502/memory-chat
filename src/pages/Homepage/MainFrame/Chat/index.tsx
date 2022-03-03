@@ -66,18 +66,15 @@ const Chat = ({ selectedUser }: IProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (containerRef.current && !pendingGetInitMessages) {
+    if (
+      containerRef.current &&
+      (!pendingGetInitMessages || pendingPostMessage || messages.length)
+    ) {
       setTimeout(() => {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
       }, TIMEOUT.RENDER_MESSAGES);
     }
-  }, [pendingGetInitMessages]);
-
-  useEffect(() => {
-    if (containerRef.current && pendingPostMessage) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [pendingPostMessage, pendingGetInitMessages]);
+  }, [pendingGetInitMessages, pendingPostMessage, messages]);
 
   useEffect(() => {
     const containerElement = containerRef.current;
