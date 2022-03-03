@@ -8,6 +8,12 @@ import {
   getUsersByEmailRequest,
   getUsersByEmailSuccess,
   getUsersByEmailFailure,
+  putBlockUserRequest,
+  putBlockUserSuccess,
+  putBlockUserFailure,
+  putUnblockUserRequest,
+  putUnblockUserSuccess,
+  putUnblockUserFailure,
 } from 'reducers/user';
 import { takeEvery, put } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -52,11 +58,37 @@ export function* getUsersByEmail(action) {
       queries: [{ name: 'email', value: action.payload }],
     },
     function* (data) {
-      console.log(data);
-
       yield put(getUsersByEmailSuccess(data));
     },
     getUsersByEmailFailure,
+  );
+}
+
+export function* putBlockUser(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/user/block/:userId',
+      params: [{ name: 'userId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(putBlockUserSuccess(data));
+    },
+    putBlockUserFailure,
+  );
+}
+
+export function* putUnblockUser(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/user/unblock/:userId',
+      params: [{ name: 'userId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(putUnblockUserSuccess(data));
+    },
+    putUnblockUserFailure,
   );
 }
 
@@ -64,4 +96,6 @@ export function* userWatcher() {
   yield takeEvery(getUsersByKeywordRequest, getUsersByKeyword);
   yield takeEvery(getUsersRequest, getUsers);
   yield takeEvery(getUsersByEmailRequest, getUsersByEmail);
+  yield takeEvery(putBlockUserRequest, putBlockUser);
+  yield takeEvery(putUnblockUserRequest, putUnblockUser);
 }

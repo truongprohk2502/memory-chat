@@ -81,6 +81,38 @@ export const userSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    putBlockUserRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putBlockUserSuccess: (state, action) => {
+      const user = state.users.find(user => user.id === action.payload);
+      if (user) {
+        user.isActive = false;
+      }
+      state.pending = false;
+      state.error = null;
+    },
+    putBlockUserFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
+    putUnblockUserRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putUnblockUserSuccess: (state, action) => {
+      const user = state.users.find(user => user.id === action.payload);
+      if (user) {
+        user.isActive = true;
+      }
+      state.pending = false;
+      state.error = null;
+    },
+    putUnblockUserFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -94,6 +126,12 @@ export const {
   getUsersByEmailRequest,
   getUsersByEmailSuccess,
   getUsersByEmailFailure,
+  putBlockUserRequest,
+  putBlockUserSuccess,
+  putBlockUserFailure,
+  putUnblockUserRequest,
+  putUnblockUserSuccess,
+  putUnblockUserFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

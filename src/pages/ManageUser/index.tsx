@@ -4,7 +4,12 @@ import ReactPaginate from 'react-paginate';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsersByEmailRequest, getUsersRequest } from 'reducers/user';
+import {
+  getUsersByEmailRequest,
+  getUsersRequest,
+  putBlockUserRequest,
+  putUnblockUserRequest,
+} from 'reducers/user';
 import { LIMIT_USERS } from 'constants/limitRecords';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
@@ -84,15 +89,28 @@ const ManageUser = () => {
                 {getFullname(user.firstName, user.middleName, user.lastName)}
               </td>
               <td className="border border-gray-400">{user.email}</td>
-              <td className="border border-gray-400 text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150">
-                {t('management.manage_user.table.detail')}
+              <td className="border border-gray-400">
+                <span className="text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150">
+                  {t('management.manage_user.table.detail')}
+                </span>
               </td>
-              <td className="border border-gray-400 text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150">
-                {t(
-                  `management.manage_user.table.${
-                    user.isActive ? 'block' : 'unblock'
-                  }`,
-                )}
+              <td className="border border-gray-400">
+                <span
+                  onClick={() =>
+                    dispatch(
+                      user.isActive
+                        ? putBlockUserRequest(user.id)
+                        : putUnblockUserRequest(user.id),
+                    )
+                  }
+                  className="text-blue-500 underline cursor-pointer hover:text-blue-400 transition duration-150"
+                >
+                  {t(
+                    `management.manage_user.table.${
+                      user.isActive ? 'block' : 'unblock'
+                    }`,
+                  )}
+                </span>
               </td>
             </tr>
           ))}
