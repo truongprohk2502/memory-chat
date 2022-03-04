@@ -35,6 +35,7 @@ interface StateProps {
   dialogingMessageId: number;
   callingMessageId: number;
   callingData: { sender: IUser; dialogId: number };
+  postMessageTime: number;
   pendingPostMessage: boolean;
   errorPostMessage: string;
   pendingPostDialogMessage: boolean;
@@ -56,6 +57,7 @@ const initialState: StateProps = {
   dialogingMessageId: 0,
   callingMessageId: 0,
   callingData: null,
+  postMessageTime: 0,
   pendingPostMessage: false,
   errorPostMessage: null,
   pendingPostDialogMessage: false,
@@ -119,7 +121,7 @@ export const messageSlice = createSlice({
     },
     postMessageSuccess: (state, action) => {
       state.messages = [...state.messages, action.payload];
-
+      state.postMessageTime = Date.now();
       state.pendingPostMessage = false;
       state.errorPostMessage = null;
     },
@@ -160,6 +162,7 @@ export const messageSlice = createSlice({
     },
     putStopCallSuccess: (state, action) => {
       state.messages = [...state.messages, action.payload];
+      state.postMessageTime = Date.now();
       state.dialogingMessageId = 0;
       state.callingData = null;
 
@@ -176,6 +179,7 @@ export const messageSlice = createSlice({
     },
     putEndCallSuccess: (state, action) => {
       state.messages = [...state.messages, action.payload];
+      state.postMessageTime = Date.now();
       state.callTime = 0;
       state.dialogingMessageId = 0;
       state.callingMessageId = 0;
