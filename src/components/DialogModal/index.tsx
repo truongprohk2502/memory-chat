@@ -8,32 +8,45 @@ import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
 import { DIALOG_TIME } from 'constants/call';
 import { putStartCallRequest, putStopCallRequest } from 'reducers/message';
+// @ts-ignore
+import ringtone from 'assets/audio/ringtone.mp3';
 
 export const DialogModal = () => {
   const { callingData } = useSelector((state: RootState) => state.message);
 
   const stopCallTimeoutRef = useRef<any>(null);
+  const ringtoneRef = useRef<HTMLAudioElement>(null);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  const handleClearDialog = () => {
+    if (ringtoneRef.current && stopCallTimeoutRef.current) {
+      ringtoneRef.current.pause();
+      ringtoneRef.current.currentTime = 0;
+      clearTimeout(stopCallTimeoutRef.current);
+    }
+  };
+
   useEffect(() => {
     if (callingData) {
+      ringtoneRef.current.play();
       stopCallTimeoutRef.current = setTimeout(() => {
         dispatch(putStopCallRequest({ messageId: callingData.dialogId }));
+        handleClearDialog();
       }, DIALOG_TIME * 1000);
     } else {
-      clearTimeout(stopCallTimeoutRef.current);
+      handleClearDialog();
     }
   }, [callingData, dispatch]);
 
   const handleStartCall = () => {
-    clearTimeout(stopCallTimeoutRef.current);
+    handleClearDialog();
     dispatch(putStartCallRequest({ messageId: callingData?.dialogId }));
   };
 
   const handleStopCall = () => {
-    clearTimeout(stopCallTimeoutRef.current);
+    handleClearDialog();
     dispatch(putStopCallRequest({ messageId: callingData?.dialogId }));
   };
 
@@ -45,6 +58,7 @@ export const DialogModal = () => {
       hideFooter
       className="select-none flex justify-center py-5"
     >
+      <audio src={ringtone} ref={ringtoneRef} />
       <div className="flex justify-center">
         <img
           className="w-40 h-40 rounded-full"
