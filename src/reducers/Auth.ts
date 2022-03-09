@@ -36,6 +36,7 @@ interface StateProps {
   sendResetPasswordSuccess: boolean;
   initializedToken: boolean;
   updateInfoSuccess: boolean;
+  updatePasswordSuccess: boolean;
   pending: boolean;
   error: string;
   updateAvatarSuccess: boolean;
@@ -49,6 +50,7 @@ const initialState: StateProps = {
   sendResetPasswordSuccess: false,
   initializedToken: false,
   updateInfoSuccess: false,
+  updatePasswordSuccess: false,
   pending: false,
   error: null,
   updateAvatarSuccess: false,
@@ -184,6 +186,21 @@ export const authSlice = createSlice({
       state.error = null;
     },
     putUserInfoFailure: (state, action) => {
+      state.updatePasswordSuccess = false;
+      state.pending = false;
+      state.error = action.payload;
+    },
+    putPasswordRequest: (state, action) => {
+      state.updatePasswordSuccess = false;
+      state.pending = true;
+      state.error = null;
+    },
+    putPasswordSuccess: (state, action) => {
+      state.updatePasswordSuccess = true;
+      state.pending = false;
+      state.error = null;
+    },
+    putPasswordFailure: (state, action) => {
       state.updateInfoSuccess = false;
       state.pending = false;
       state.error = action.payload;
@@ -233,6 +250,9 @@ export const {
   putUserInfoRequest,
   putUserInfoSuccess,
   putUserInfoFailure,
+  putPasswordRequest,
+  putPasswordSuccess,
+  putPasswordFailure,
   postAvatarRequest,
   postAvatarSuccess,
   postAvatarFailure,

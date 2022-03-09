@@ -20,6 +20,9 @@ import {
   putUserInfoRequest,
   putUserInfoSuccess,
   putUserInfoFailure,
+  putPasswordRequest,
+  putPasswordSuccess,
+  putPasswordFailure,
   postAvatarRequest,
   postAvatarSuccess,
   postAvatarFailure,
@@ -128,6 +131,20 @@ export function* putUserInfo(action) {
   );
 }
 
+export function* putPassword(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/auth/change-password',
+      data: action.payload,
+    },
+    function* (data) {
+      yield put(putPasswordSuccess(data));
+    },
+    putPasswordFailure,
+  );
+}
+
 export function* postAvatar(action) {
   yield sagaLayoutFunction(
     {
@@ -150,5 +167,6 @@ export function* authWatcher() {
   yield takeEvery(getSendResetPasswordRequest, getSendResetPassword);
   yield takeEvery(getUserInfoRequest, getUserInfo);
   yield takeEvery(putUserInfoRequest, putUserInfo);
+  yield takeEvery(putPasswordRequest, putPassword);
   yield takeEvery(postAvatarRequest, postAvatar);
 }

@@ -98,6 +98,18 @@ const translation = {
     drop_here: 'Drop the file here',
     drag_or_click: 'Drag and drop image file here, or click to select file',
   },
+  password_setting: {
+    title: 'Change password',
+    labels: {
+      old_password: 'Old password',
+      new_password: 'New password',
+      confirm_password: 'Confirm password',
+    },
+    toasts: {
+      updated_password_success: 'Updated password successfully',
+      incorrect_password: 'Incorrect old password',
+    },
+  },
 };
 
 export default translation;

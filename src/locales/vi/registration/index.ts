@@ -56,6 +56,11 @@ const translation = {
       null: 'Yêu cầu nhập ngày sinh',
     },
   },
+  oldPassword: {
+    errors: {
+      null: 'Yêu cầu nhập mật khẩu cũ',
+    },
+  },
   password: {
     title: 'Mật khẩu',
     placeholder: 'Nhập mật khẩu',

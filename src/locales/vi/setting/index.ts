@@ -99,6 +99,18 @@ const translation = {
     drag_or_click:
       'Kéo và thả tệp hình ảnh vào đây, hoặc click chuột để chọn ảnh',
   },
+  password_setting: {
+    title: 'Thay đổi mật khẩu',
+    labels: {
+      old_password: 'Mật khẩu cũ',
+      new_password: 'Mật khẩu mới',
+      confirm_password: 'Xác nhận mật khẩu',
+    },
+    toasts: {
+      updated_password_success: 'Cập nhật mật khẩu thành công',
+      incorrect_password: 'Mật khẩu cũ không đúng',
+    },
+  },
 };
 
 export default translation;

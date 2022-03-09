@@ -56,6 +56,11 @@ const translation = {
       null: 'Required date of birth',
     },
   },
+  oldPassword: {
+    errors: {
+      null: 'Required old password',
+    },
+  },
   password: {
     title: 'Password',
     placeholder: 'Enter password',

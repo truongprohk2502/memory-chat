@@ -6,4 +6,4 @@ export type ISubFrameType =
   | 'notification'
   | 'setting';
 
-export type SettingLabelType = 'personal-info' | 'system';
+export type SettingLabelType = 'personal-info' | 'system' | 'password';

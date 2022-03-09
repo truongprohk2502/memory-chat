@@ -10,6 +10,7 @@ import { UploadAvatarModal } from 'components/UploadAvatarModal';
 import { useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { getFullname } from 'utils/getFullname';
+import PasswordSetting from './PasswordSetting';
 
 const Setting = () => {
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
@@ -55,6 +56,12 @@ const Setting = () => {
         }
       />
       <SystemSetting
+        expandingSettingType={expandingSettingType}
+        setExpandingSettingType={(value: SettingLabelType) =>
+          setExpandingSettingType(value)
+        }
+      />
+      <PasswordSetting
         expandingSettingType={expandingSettingType}
         setExpandingSettingType={(value: SettingLabelType) =>
           setExpandingSettingType(value)
