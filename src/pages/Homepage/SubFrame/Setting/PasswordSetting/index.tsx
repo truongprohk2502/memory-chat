@@ -61,7 +61,7 @@ const PasswordSetting = ({
   }, [expandingSettingType]);
 
   useEffect(() => {
-    if (updatePasswordSuccess) {
+    if (updatePasswordSuccess && expandingSettingType === 'password') {
       toast.success(
         t('setting.password_setting.toasts.updated_password_success'),
       );
@@ -69,16 +69,16 @@ const PasswordSetting = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updatePasswordSuccess, resetForm, t]);
+  }, [updatePasswordSuccess, expandingSettingType, resetForm, t]);
 
   useEffect(() => {
-    if (error) {
+    if (error && expandingSettingType === 'password') {
       toast.error(t(`setting.password_setting.toasts.${error}`));
       resetForm({ values: initialFormValues });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error, resetForm, t]);
+  }, [error, expandingSettingType, resetForm, t]);
 
   const handleToggleExpand = () => {
     if (!expanding) {
@@ -107,7 +107,7 @@ const PasswordSetting = ({
             {t('setting.password_setting.labels.old_password')}&nbsp;*
           </div>
           <Input
-            type="text"
+            type="password"
             name="oldPassword"
             value={values.oldPassword}
             i18nErrorPath={errors.oldPassword}
@@ -122,7 +122,7 @@ const PasswordSetting = ({
             {t('setting.password_setting.labels.new_password')}&nbsp;*
           </div>
           <Input
-            type="text"
+            type="password"
             name="newPassword"
             value={values.newPassword}
             i18nErrorPath={errors.newPassword}
@@ -137,7 +137,7 @@ const PasswordSetting = ({
             {t('setting.password_setting.labels.confirm_password')}&nbsp;*
           </div>
           <Input
-            type="text"
+            type="password"
             name="confirmPassword"
             value={values.confirmPassword}
             i18nErrorPath={errors.confirmPassword}

@@ -72,14 +72,15 @@ const PersonalSetting = ({
 
   useEffect(() => {
     updateInfoSuccess &&
+      expandingSettingType === 'personal-info' &&
       toast.success(t('setting.personal_info.toasts.updated_info_success'));
-  }, [updateInfoSuccess, t]);
+  }, [updateInfoSuccess, expandingSettingType, t]);
 
   useEffect(() => {
-    if (error) {
+    if (error && expandingSettingType === 'personal-info') {
       toast.error(t(`setting.personal_info.toasts.${error}`));
     }
-  }, [error, t]);
+  }, [error, expandingSettingType, t]);
 
   const handleCancel = () => {
     resetForm({ values: initialFormValues });
