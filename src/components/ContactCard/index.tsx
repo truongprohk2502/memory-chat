@@ -14,6 +14,7 @@ import { getFullname } from 'utils/getFullname';
 import { getTimeAgo } from 'utils/getTime';
 import { LIMIT_MESSAGES } from 'constants/limitRecords';
 import { FILE_TYPES } from 'constants/file';
+import { REMOVE_MESSAGE_TIME } from 'constants/call';
 
 interface IProps {
   contactId: number;
@@ -106,7 +107,14 @@ export const ContactCard = ({
             }`}
           >
             {lastMessage
-              ? lastMessage.messageType === 'text'
+              ? lastMessage.remover &&
+                (lastMessage.remover.email !== userInfo?.email ||
+                  lastMessage.remover.accountType !== userInfo?.accountType ||
+                  new Date(lastMessage.removedAt).getTime() -
+                    new Date(lastMessage.createdAt).getTime() <=
+                    REMOVE_MESSAGE_TIME * 1000)
+                ? t('chat.remove_message')
+                : lastMessage.messageType === 'text'
                 ? lastMessage.text
                 : lastMessage.messageType === 'file'
                 ? t(

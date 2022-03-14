@@ -12,13 +12,18 @@ import {
   faFilePdf,
   faFilePowerpoint,
   faFileWord,
+  faMinusCircle,
   faPhoneAlt,
   faPhoneSlash,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RootState } from 'reducers';
-import { getMessagesRequest, IMessage } from 'reducers/message';
+import {
+  getMessagesRequest,
+  IMessage,
+  putRemoveMessageRequest,
+} from 'reducers/message';
 import { Spinner } from 'components/Spinner';
 import { useTranslation } from 'react-i18next';
 import { TIMEOUT } from 'constants/timeout';
@@ -28,6 +33,7 @@ import { FILE_TYPES } from 'constants/file';
 import { faHtml5 } from '@fortawesome/free-brands-svg-icons';
 import { downloadFile } from 'utils/downloadFile';
 import { getLanguage } from 'utils/storage';
+import { REMOVE_MESSAGE_TIME } from 'constants/call';
 
 type MessageType = 'you' | 'me';
 
@@ -383,10 +389,28 @@ const Chat = ({ selectedUser }: IProps) => {
               className="w-10 h-10 object-cover rounded-full mr-4"
             />
             <div>
-              {group.messages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`mb-2 
+              {group.messages.map((message, index) =>
+                message.removedAt &&
+                new Date(message.removedAt).getTime() -
+                  new Date(message.createdAt).getTime() <=
+                  REMOVE_MESSAGE_TIME * 1000 ? (
+                  <div
+                    className={clsx(
+                      { 'rounded-tl-lg': index === 0 },
+                      {
+                        'rounded-bl-lg': index === group.messages.length - 1,
+                      },
+                      'mb-2 fle justify-end',
+                    )}
+                  >
+                    <div className="w-fit px-2 py-1 rounded-md border border-gray-500 border-dashed">
+                      {t('chat.remove_message')}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    key={message.id}
+                    className={`mb-2 relative group cursor-pointer 
                     ${
                       message.messageType === 'text'
                         ? clsx(
@@ -409,10 +433,27 @@ const Chat = ({ selectedUser }: IProps) => {
                             'rounded-r-lg bg-blue-500 text-white px-3 py-2 my-1 w-100 h-20',
                           )
                     }`}
-                >
-                  {renderMessage(message, index, group.messages.length, false)}
-                </div>
-              ))}
+                  >
+                    {renderMessage(
+                      message,
+                      index,
+                      group.messages.length,
+                      false,
+                    )}
+                    <div
+                      onClick={() =>
+                        dispatch(putRemoveMessageRequest(message.id))
+                      }
+                      className="absolute inset-y-0 left-full items-center pl-2 hidden group-hover:flex"
+                    >
+                      <FontAwesomeIcon
+                        icon={faMinusCircle}
+                        className="text-black"
+                      />
+                    </div>
+                  </div>
+                ),
+              )}
             </div>
           </div>
         ) : (
@@ -420,56 +461,72 @@ const Chat = ({ selectedUser }: IProps) => {
             key={index}
             className="w-3/4 lg:w-3/5 xl:w-3/4 ml-auto relative text-black"
           >
-            {group.messages.map((message, index) => (
-              <div
-                key={message.id}
-                className="flex items-center justify-end mb-2"
-              >
+            {group.messages.map((message, index) =>
+              message.removedAt ? (
+                <div className={clsx('mb-2 mr-6 flex justify-end')}>
+                  <div className="w-fit px-2 py-1 rounded-md border border-gray-500 border-dashed">
+                    {t('chat.remove_message')}
+                  </div>
+                </div>
+              ) : (
                 <div
-                  className={`dark:bg-gray-700 dark:text-white ${
-                    message.messageType === 'text'
-                      ? clsx(
-                          { 'rounded-tr-lg': index === 0 },
-                          {
-                            'rounded-br-lg':
-                              index === group.messages.length - 1,
-                          },
-                          'rounded-l-lg bg-gray-300 px-3 py-2',
-                        )
-                      : message.messageType === 'file' &&
-                        FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
-                      ? 'w-32 h-32'
-                      : clsx(
-                          { 'rounded-tr-lg': index === 0 },
-                          {
-                            'rounded-br-lg':
-                              index === group.messages.length - 1,
-                          },
-                          'rounded-l-lg bg-gray-300 px-3 py-2 w-100 h-20',
-                        )
-                  }`}
+                  key={message.id}
+                  className="flex items-center justify-end mb-2"
                 >
-                  {renderMessage(message, index, group.messages.length, true)}
-                </div>
-                <div className="w-4 h-4 ml-2">
-                  {message.isRead && lastReadMessage?.id === message.id && (
-                    <img
-                      src={selectedUser?.avatar}
-                      alt="logo"
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  )}
-                  {!message.isRead && (
-                    <div className="ml-1">
-                      <FontAwesomeIcon
-                        icon={faCheckCircle}
-                        className="text-gray-400"
-                      />
+                  <div
+                    className={`relative cursor-pointer group dark:bg-gray-700 dark:text-white ${
+                      message.messageType === 'text'
+                        ? clsx(
+                            { 'rounded-tr-lg': index === 0 },
+                            {
+                              'rounded-br-lg':
+                                index === group.messages.length - 1,
+                            },
+                            'rounded-l-lg bg-gray-300 px-3 py-2',
+                          )
+                        : message.messageType === 'file' &&
+                          FILE_TYPES.IMAGE_TYPES.includes(message.file.type)
+                        ? 'w-32 h-32'
+                        : clsx(
+                            { 'rounded-tr-lg': index === 0 },
+                            {
+                              'rounded-br-lg':
+                                index === group.messages.length - 1,
+                            },
+                            'rounded-l-lg bg-gray-300 px-3 py-2 w-100 h-20',
+                          )
+                    }`}
+                  >
+                    {renderMessage(message, index, group.messages.length, true)}
+                    <div
+                      onClick={() =>
+                        dispatch(putRemoveMessageRequest(message.id))
+                      }
+                      className="absolute inset-y-0 right-full items-center pr-2 hidden group-hover:flex"
+                    >
+                      <FontAwesomeIcon icon={faMinusCircle} />
                     </div>
-                  )}
+                  </div>
+                  <div className="w-4 h-4 ml-2">
+                    {message.isRead && lastReadMessage?.id === message.id && (
+                      <img
+                        src={selectedUser?.avatar}
+                        alt="logo"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    )}
+                    {!message.isRead && (
+                      <div className="ml-1">
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          className="text-gray-400"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         ),
       )}

@@ -198,6 +198,17 @@ export const contactSlice = createSlice({
         increaseUnreadMessage && contact.unreadMessagesTotal++;
       }
     },
+    updateLastMessage: (state, action) => {
+      const message = action.payload;
+
+      const contact = state.activeContacts.find(
+        contact => contact.id === message?.contact?.id,
+      );
+      if (contact && contact.lastMessage?.id === message.id) {
+        contact.lastMessage.removedAt = message.removedAt;
+        contact.lastMessage.remover = message.remover;
+      }
+    },
     setContactConnection: (state, action) => {
       const { userId, isOnline } = action.payload;
 
@@ -258,6 +269,7 @@ export const {
   removeActiveContact,
   changeSelectedContact,
   addLastMessage,
+  updateLastMessage,
   setContactConnection,
   setReadMessageContact,
   setIsAnsweringCall,

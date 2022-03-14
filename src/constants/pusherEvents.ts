@@ -8,6 +8,7 @@ export const PUSHER_EVENTS = {
   CONNECT_CONTACT: 'connect_contact',
   DISCONNECT_CONTACT: 'disconnect_contact',
   READ_MESSAGES: 'read_messages',
+  REMOVE_MESSAGE: 'remove_message',
   RECEIVE_CALL: 'receive_call',
   STOP_CALL: 'stop_call',
   START_CALL: 'start_call',

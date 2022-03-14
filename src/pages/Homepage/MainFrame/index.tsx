@@ -16,10 +16,12 @@ import {
   setContactConnection,
   setIsTalkingCall,
   setReadMessageContact,
+  updateLastMessage,
 } from 'reducers/contact';
 import {
   postMessageSuccess,
   putEndCallSuccess,
+  putRemoveMessageSuccess,
   putStartCallSuccess,
   putStopCallSuccess,
   setCallingData,
@@ -155,6 +157,20 @@ const MainFrame = () => {
       };
     }
   }, [channel, dispatch]);
+
+  useEffect(() => {
+    if (channel && selectedContactId) {
+      channel.bind(PUSHER_EVENTS.REMOVE_MESSAGE, data => {
+        dispatch(updateLastMessage(data));
+        data.contact.id === selectedContactId &&
+          dispatch(putRemoveMessageSuccess(data));
+      });
+
+      return () => {
+        channel.unbind(PUSHER_EVENTS.REMOVE_MESSAGE);
+      };
+    }
+  }, [channel, selectedContactId, dispatch]);
 
   const selectedUser = activeContacts
     .find(contact => contact.id === selectedContactId)

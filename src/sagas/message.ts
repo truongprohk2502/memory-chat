@@ -3,6 +3,7 @@ import {
   changeSelectedContact,
   setIsAnsweringCall,
   setReadMessageContact,
+  updateLastMessage,
 } from 'reducers/contact';
 import {
   getInitMessagesRequest,
@@ -29,6 +30,9 @@ import {
   putStartCallRequest,
   putStartCallSuccess,
   putStartCallFailure,
+  putRemoveMessageRequest,
+  putRemoveMessageSuccess,
+  putRemoveMessageFailure,
 } from 'reducers/message';
 import { put, takeEvery } from 'redux-saga/effects';
 import { sagaLayoutFunction } from 'utils/callApi';
@@ -180,6 +184,21 @@ export function* putStartCall(action) {
   );
 }
 
+export function* putRemoveMessage(action) {
+  yield sagaLayoutFunction(
+    {
+      method: 'put',
+      urlTemplate: '/message/remove/:messageId',
+      params: [{ name: 'messageId', value: action.payload }],
+    },
+    function* (data) {
+      yield put(putRemoveMessageSuccess(data));
+      yield put(updateLastMessage(data));
+    },
+    putRemoveMessageFailure,
+  );
+}
+
 export function* messageWatcher() {
   yield takeEvery(getInitMessagesRequest, getInitMessages);
   yield takeEvery(getMessagesRequest, getMessages);
@@ -189,4 +208,5 @@ export function* messageWatcher() {
   yield takeEvery(putStopCallRequest, putStopCall);
   yield takeEvery(putEndCallRequest, putEndCall);
   yield takeEvery(putStartCallRequest, putStartCall);
+  yield takeEvery(putRemoveMessageRequest, putRemoveMessage);
 }

@@ -2,6 +2,7 @@ const translation = {
   welcome: 'Welcome to Memory Chat App',
   sending_message: 'Sending message',
   loading_message: 'Loading message',
+  remove_message: 'Message was removed',
   more_actions: {
     profile: 'Profile',
     delete: 'Delete',

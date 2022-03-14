@@ -19,6 +19,8 @@ export interface IMessage {
   messageType: 'text' | 'file' | 'call' | 'dialog';
   isRead: boolean;
   createdAt: string;
+  removedAt: string;
+  remover: IUser;
 }
 
 interface IReadMessage {
@@ -216,6 +218,24 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload;
     },
+    putRemoveMessageRequest: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    putRemoveMessageSuccess: (state, action) => {
+      const message = state.messages.find(
+        message => message.id === action.payload.id,
+      );
+      message.removedAt = action.payload.removedAt;
+      message.remover = action.payload.remover;
+
+      state.pending = false;
+      state.error = null;
+    },
+    putRemoveMessageFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload;
+    },
     resetReadMessages: state => {
       state.alreadyReadMessageData = null;
     },
@@ -273,6 +293,9 @@ export const {
   putStartCallRequest,
   putStartCallSuccess,
   putStartCallFailure,
+  putRemoveMessageRequest,
+  putRemoveMessageSuccess,
+  putRemoveMessageFailure,
   resetReadMessages,
   setReadMessages,
   setCallingData,

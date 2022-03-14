@@ -2,6 +2,7 @@ const translation = {
   welcome: 'Chào mừng tới Memory Chat App',
   sending_message: 'Đang gửi tin nhắn',
   loading_message: 'Đang tải tin nhắn',
+  remove_message: 'Tin nhắn đã bị xóa',
   more_actions: {
     profile: 'Thông tin cá nhân',
     delete: 'Xóa liên hệ',
