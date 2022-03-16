@@ -6,6 +6,7 @@ import {
   faCheckCircle,
   faDownload,
   faFile,
+  faFileAudio,
   faFileCode,
   faFileContract,
   faFileExcel,
@@ -277,6 +278,12 @@ const Chat = ({ selectedUser }: IProps) => {
         ).data.includes(type)
       ) {
         icon = faFileContract;
+      } else if (
+        FILE_TYPES.UPLOAD_TYPES.find(
+          fileType => fileType.type === 'audio',
+        ).data.includes(type)
+      ) {
+        icon = faFileAudio;
       } else {
         icon = faFile;
       }
@@ -328,19 +335,27 @@ const Chat = ({ selectedUser }: IProps) => {
             />
           </div>
         </div>
-        <div className="w-2/3">
+        <div className={message.file?.type === 'audio/mp3' ? 'w-5/6' : 'w-2/3'}>
           <div
             className={`font-semibold ${
               isOwnMessage ? 'text-gray-600 dark:text-white' : 'text-white'
             }`}
           >
-            {message.messageType === 'file'
-              ? message.file.name
-              : message.callTime
-              ? t('chat.call.media_call')
-              : t('chat.call.missed_a_call')}
+            {message.file?.type === 'audio/mp3' ? (
+              <audio controls className="w-full">
+                <source src={message.file.url} type="audio/mpeg" />
+              </audio>
+            ) : message.messageType === 'file' ? (
+              message.file.name
+            ) : message.callTime ? (
+              t('chat.call.media_call')
+            ) : (
+              t('chat.call.missed_a_call')
+            )}
           </div>
-          {(message.messageType === 'file' || !!message.callTime) && (
+          {((message.messageType === 'file' &&
+            message.file.type !== 'audio/mp3') ||
+            !!message.callTime) && (
             <div
               className={`text-sm ${
                 isOwnMessage
@@ -354,7 +369,7 @@ const Chat = ({ selectedUser }: IProps) => {
             </div>
           )}
         </div>
-        {message.messageType === 'file' && (
+        {message.messageType === 'file' && message.file.type !== 'audio/mp3' && (
           <div className="w-1/6 flex justify-end pr-2">
             <button
               onClick={() =>

@@ -14,6 +14,7 @@ const translation = {
     start_chatting_now: 'Start chatting now',
     sent_image: '{{name}} sent a photo',
     sent_file: '{{name}} sent a file',
+    sent_audio: '{{name}} sent a record audio',
     you: 'You',
   },
   message: {
@@ -23,6 +24,7 @@ const translation = {
       file: 'Choose a file',
       media: 'Choose a video/image',
       record_audio: 'Send a record audio',
+      stop_record: 'Stop record audio',
       send: 'Send message',
     },
   },

@@ -121,6 +121,8 @@ export const ContactCard = ({
                     `chat.contact_card.sent_${
                       FILE_TYPES.IMAGE_TYPES.includes(lastMessage.file.type)
                         ? 'image'
+                        : lastMessage.file.type === 'audio/mp3'
+                        ? 'audio'
                         : 'file'
                     }`,
                     {

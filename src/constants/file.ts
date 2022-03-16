@@ -43,6 +43,10 @@ export const FILE_TYPES = {
       type: 'txt',
       data: ['text/plain'],
     },
+    {
+      type: 'audio',
+      data: ['audio/mp3'],
+    },
   ],
 };
 

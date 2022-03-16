@@ -14,6 +14,7 @@ const translation = {
     start_chatting_now: 'Bắt đầu trò chuyện ngay bây giờ',
     sent_image: '{{name}} đã gửi một ảnh',
     sent_file: '{{name}} đã gửi một tệp',
+    sent_audio: '{{name}} đã gửi một đoạn ghi âm',
     you: 'Bạn',
   },
   message: {
@@ -23,6 +24,7 @@ const translation = {
       file: 'Chọn file',
       media: 'Chọn video/hình ảnh',
       record_audio: 'Gửi đoạn thu âm',
+      stop_record: 'Dừng thu âm',
       send: 'Gửi tin nhắn',
     },
   },

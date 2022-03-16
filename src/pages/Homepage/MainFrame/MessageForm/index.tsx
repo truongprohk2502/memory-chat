@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,6 +7,7 @@ import {
   faPaperclip,
   faPaperPlane,
   faPhotoVideo,
+  faRecordVinyl,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'components/Button';
 import {
@@ -22,9 +23,14 @@ import useClickOutside from 'hooks/useClickOutside';
 import { FILE_TYPES, LIMIT_SIZE } from 'constants/file';
 import { toast } from 'react-toastify';
 import { useVisibleWebsite } from 'hooks/useVisibleWebsite';
+import { LocalMediaContext } from 'pages/Homepage';
 
 const MessageForm = () => {
   const [message, setMessage] = useState<string>('');
+  const [startingRecord, setStartingRecord] = useState<boolean>(false);
+  const [recording, setRecording] = useState<boolean>(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>(null);
+  const [chunks, setChunks] = useState<Blob[]>([]);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +42,9 @@ const MessageForm = () => {
   const { messages, alreadyReadMessageData } = useSelector(
     (state: RootState) => state.message,
   );
+
+  const { audioStreamTrack, startMediaStream, stopMediaStream } =
+    useContext(LocalMediaContext);
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -57,6 +66,48 @@ const MessageForm = () => {
       inputRef.current.blur();
     }
   }, [visibleWebsite]);
+
+  useEffect(() => {
+    if (window.MediaRecorder) {
+      if (audioStreamTrack) {
+        const recorder = new MediaRecorder(new MediaStream([audioStreamTrack]));
+        recorder.ondataavailable = e => {
+          chunks.push(e.data);
+        };
+        recorder.onstop = () => {
+          const blob = new Blob(chunks, {
+            type: 'audio/mp3',
+          });
+
+          const formData = new FormData();
+          formData.append('file', blob);
+          console.log(blob);
+
+          dispatch(
+            postMessageRequest({
+              contactId: selectedContactId,
+              formData,
+              dataType: 'file',
+            }),
+          );
+
+          setChunks([]);
+        };
+        setMediaRecorder(recorder);
+      }
+    } else {
+      setMediaRecorder(null);
+    }
+  }, [audioStreamTrack, selectedContactId, chunks, dispatch]);
+
+  useEffect(() => {
+    if (mediaRecorder && startingRecord) {
+      console.log('start recoord');
+
+      mediaRecorder.start();
+      setRecording(true);
+    }
+  }, [mediaRecorder, startingRecord]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -144,6 +195,22 @@ const MessageForm = () => {
       dispatch(putReadMessagesRequest(selectedContactId));
   };
 
+  const handleStartRecord = () => {
+    console.log('start');
+
+    startMediaStream();
+    setStartingRecord(true);
+  };
+
+  const handleStopRecord = () => {
+    console.log('stop');
+
+    setStartingRecord(false);
+    setRecording(false);
+    mediaRecorder && mediaRecorder.stop();
+    stopMediaStream();
+  };
+
   return (
     <div className="absolute inset-x-0 bottom-0 h-16 py-4 px-5 xl:px-20 flex justify-between items-center border-t border-gray-150 dark:border-gray-500 bg-white dark:bg-gray-900">
       <div className="flex relative">
@@ -210,13 +277,18 @@ const MessageForm = () => {
         <Button
           containerClassName="ml-4"
           variant="circle"
-          icon={faMicrophone}
+          color={recording ? 'danger' : 'light'}
+          icon={startingRecord ? faRecordVinyl : faMicrophone}
           iconColorClassName="text-blue-500"
           hasOnlyButton={false}
           hasTooltip
-          tooltipName={t('chat.message.buttons.record_audio')}
+          tooltipName={t(
+            `chat.message.buttons.${
+              recording ? 'stop_record' : 'record_audio'
+            }`,
+          )}
           tooltipPlacement="top-left"
-          onClick={() => {}}
+          onClick={recording ? handleStopRecord : handleStartRecord}
         />
         <Button
           type="submit"
